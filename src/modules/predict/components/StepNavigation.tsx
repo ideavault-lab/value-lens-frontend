@@ -31,7 +31,7 @@ export default function StepNavigation({
       transition={{ delay: 0.25, duration: 0.35 }}
     >
       {/* Back */}
-      {!isFirst ? (
+      {/* {!isFirst ? (
         <Button
           variant="ghost"
           onClick={onBack}
@@ -43,7 +43,17 @@ export default function StepNavigation({
         </Button>
       ) : (
         <div /> // keeps spacing consistent
-      )}
+      )} */}
+
+      <Button
+        variant="ghost"
+        onClick={onBack}
+        disabled={isLoading} // 🔴 prevents weird double clicks
+        className="text-muted-foreground hover:text-foreground group transition-all duration-200"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+        Back
+      </Button>
 
       {/* Next */}
       <Button
@@ -51,10 +61,9 @@ export default function StepNavigation({
         disabled={isDisabled}
         className={`
           px-8 py-3 rounded-xl font-semibold transition-all duration-300 
-          ${
-            isLast
-              ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30"
-              : "bg-foreground hover:bg-foreground/90 text-background"
+          ${isLast
+            ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30"
+            : "bg-foreground hover:bg-foreground/90 text-background"
           }
           disabled:opacity-40 disabled:cursor-not-allowed
           group

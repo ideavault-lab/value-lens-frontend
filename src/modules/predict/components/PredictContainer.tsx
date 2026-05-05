@@ -13,6 +13,7 @@ import Step4 from "../components/steps/StepMileage";
 import Step5 from "../components/steps/StepCondition";
 import Step6 from "../components/steps/StepLocation";
 import Step7 from "../components/steps/StepOwnership";
+import { useRouter } from "next/navigation";
 
 const TOTAL_STEPS = 7;
 
@@ -34,6 +35,7 @@ const slideVariants = {
 };
 
 const PredictContainer = () => {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -45,9 +47,12 @@ const PredictContainer = () => {
   };
 
   const back = () => {
+   
     if (step > 0) {
       setDirection(-1);
       setStep((prev) => prev - 1);
+    }else if(step === 0) {
+      router.push('/valuation')
     }
   };
 

@@ -46,7 +46,7 @@ export default function Hero() {
 
           {/* BUTTONS */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <Link href="/predict">
+            <Link href="/valuation">
               <Button size="lg" className="rounded-xl px-8 h-14 group">
                 Value My Car
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

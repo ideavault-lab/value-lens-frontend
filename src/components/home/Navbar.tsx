@@ -17,7 +17,7 @@ export default function Navbar() {
           </span>
         </div>
 
-        <Link href="/predict">
+        <Link href="/valuation">
           <Button className="rounded-full px-5 h-9 text-sm">
             Get Started
           </Button>

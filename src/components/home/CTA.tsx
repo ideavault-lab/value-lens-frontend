@@ -24,7 +24,7 @@ export default function CTA() {
             It takes less than a minute. No signup required.
           </p>
 
-          <Link href="/predict" className="mt-8">
+          <Link href="/valuation" className="mt-8">
             <Button
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-10 h-14 text-base font-semibold group"
