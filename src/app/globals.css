@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
+/* ------------------ DESIGN TOKENS ------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 30 33% 96%;
+  --foreground: 20 14% 9%;
+
+  --card: 30 33% 98%;
+  --card-foreground: 20 14% 9%;
+
+  --popover: 30 33% 98%;
+  --popover-foreground: 20 14% 9%;
+
+  --primary: 21 90% 48%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 20 14% 9%;
+
+  --muted: 0 0% 96%;
+  --muted-foreground: 20 6% 44%;
+
+  --accent: 27 96% 83%;
+  --accent-foreground: 17 85% 28%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 20 6% 90%;
+  --input: 20 6% 90%;
+  --ring: 21 90% 48%;
+
+  --chart-1: 21 90% 48%;
+  --chart-2: 142 72% 36%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 20 14% 9%;
+  --chart-5: 27 96% 83%;
+
+  --radius: 0.75rem;
+
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
+/* ------------------ DARK MODE ------------------ */
+.dark {
+  --background: 20 14% 6%;
+  --foreground: 30 33% 96%;
+
+  --card: 20 14% 8%;
+  --card-foreground: 30 33% 96%;
+
+  --popover: 20 14% 8%;
+  --popover-foreground: 30 33% 96%;
+
+  --primary: 21 90% 48%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 20 14% 14%;
+  --secondary-foreground: 30 33% 96%;
+
+  --muted: 20 14% 14%;
+  --muted-foreground: 20 6% 60%;
+
+  --accent: 27 50% 30%;
+  --accent-foreground: 27 96% 83%;
+
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 20 14% 16%;
+  --input: 20 14% 16%;
+  --ring: 21 90% 48%;
+
+  --chart-1: 21 90% 48%;
+  --chart-2: 142 72% 36%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 30 33% 96%;
+  --chart-5: 27 50% 30%;
+
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* ------------------ THEME MAPPING (TAILWIND v4) ------------------ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius: var(--radius);
+
+  --font-sans: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ------------------ BASE STYLES ------------------ */
+* {
+  border-color: hsl(var(--border));
+  outline-color: hsl(var(--ring) / 0.5);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
 }
