@@ -84,10 +84,10 @@ export function DragStrip({
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
-        className="relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-3xl transition-all"
+        className="relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-3xl transition-all h-45 sm:h-55"
         style={{
           width: `${width}px`,
-          height: `${height}px`,
+          // height: `${height}px`,
           maxWidth: "58px",           // Force smaller on very small screens
         }}
       >
