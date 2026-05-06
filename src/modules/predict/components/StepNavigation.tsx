@@ -25,7 +25,7 @@ export default function StepNavigation({
 
   return (
     <motion.div
-      className="flex items-center justify-between pt-8"
+      className="flex items-center justify-between pt-2"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.25, duration: 0.35 }}

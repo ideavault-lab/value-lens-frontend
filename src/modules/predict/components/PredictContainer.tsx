@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ProgressBar from "@/modules/predict/components/ProgressBar";
@@ -39,6 +39,18 @@ const PredictContainer = () => {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
 
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // ✅ ADD THIS (scroll reset on step change)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: 0,
+      behavior: "auto", // important: don't use smooth
+    });
+  }, [step]);
+
+
   const next = () => {
     if (step < TOTAL_STEPS - 1) {
       setDirection(1);
@@ -47,11 +59,11 @@ const PredictContainer = () => {
   };
 
   const back = () => {
-   
+
     if (step > 0) {
       setDirection(-1);
       setStep((prev) => prev - 1);
-    }else if(step === 0) {
+    } else if (step === 0) {
       router.push('/valuation')
     }
   };
@@ -59,15 +71,15 @@ const PredictContainer = () => {
   const CurrentStep = steps[step];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      
+    <div className="flex flex-col h-[calc(100vh-0rem)]">
+
       {/* 🔵 Progress */}
       <div className="shrink-0">
         <ProgressBar currentStep={step} totalSteps={TOTAL_STEPS} />
       </div>
 
       {/* 🟡 Scrollable Step Area */}
-      <div className="flex-1 overflow-y-auto mt-6 pr-1">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto mt-6 pr-1 sm:px-0 px-2">
         <div className="min-h-[420px] relative">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -86,7 +98,7 @@ const PredictContainer = () => {
       </div>
 
       {/* 🟢 Sticky Bottom Navigation */}
-      <div className="sticky bottom-0 left-0 w-full bg-background/95 backdrop-blur border-t border-border pt-4 pb-5">
+      <div className="sticky bottom-0 left-0 w-full bg-background/95 backdrop-blur border-t border-border pt-4 pb-5 sm:px-0 px-2">
         <StepNavigation
           onBack={back}
           onNext={next}

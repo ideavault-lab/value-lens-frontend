@@ -31,7 +31,7 @@ const OWNER_ICONS: Record<OwnerId, string> = {
 /* ---------------- COMPONENT ---------------- */
 
 const StepOwnership = () => {
-  const [value , setValue] = useState<OwnerId>();
+  const [value, setValue] = useState<OwnerId>();
   return (
     <div className="space-y-6 p-2">
       <div>
@@ -52,47 +52,51 @@ const StepOwnership = () => {
             transition={{ delay: i * 0.08, duration: 0.35 }}
             onClick={() => setValue(owner.id)}
             className={`
-              w-full flex items-center gap-4 p-5 rounded-xl border-2 text-left transition-all duration-200
-              hover:border-primary/40 hover:bg-accent/20
-              ${
-                value === owner.id
-                  ? "border-primary bg-accent/40 shadow-sm"
-                  : "border-border bg-card"
+    w-full flex items-start sm:items-center gap-3 sm:gap-4 
+    p-4 sm:p-5 rounded-xl border-2 text-left 
+    transition-all duration-200
+    hover:border-primary/40 hover:bg-accent/20
+    ${value === owner.id
+                ? "border-primary bg-accent/40 shadow-sm"
+                : "border-border bg-card"
               }
-            `}
+  `}
           >
+            {/* ICON */}
             <div
               className={`
-                w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg
-                ${
-                  value === owner.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-muted-foreground"
+      w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center 
+      font-bold text-sm sm:text-lg shrink-0
+      ${value === owner.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-muted-foreground"
                 }
-                transition-colors duration-200
-              `}
+      transition-colors duration-200
+    `}
             >
               {OWNER_ICONS[owner.id]}
             </div>
 
-            <div className="flex-1">
-              <p className="font-semibold text-foreground">
+            {/* TEXT */}
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm sm:text-base text-foreground truncate">
                 {owner.label}
               </p>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 line-clamp-2 sm:line-clamp-none">
                 {owner.description}
               </p>
             </div>
 
+            {/* CHECK */}
             {value === owner.id && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 500 }}
-                className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0"
+                className="w-5 h-5 sm:w-6 sm:h-6 bg-primary rounded-full flex items-center justify-center shrink-0"
               >
                 <svg
-                  className="w-3.5 h-3.5 text-primary-foreground"
+                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

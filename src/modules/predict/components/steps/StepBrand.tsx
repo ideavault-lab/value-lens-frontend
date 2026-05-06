@@ -90,7 +90,7 @@ const StepBrand = () => {
                             }
             `}
                     >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 w-full min-w-0">
                             <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center overflow-hidden">
                                 <img
                                     src={brand.logo}
@@ -102,11 +102,12 @@ const StepBrand = () => {
                                 />
                             </div>
 
-                            <div className="flex flex-col items-start">
-                                <span className="font-medium text-sm text-foreground">
+                            {/* TEXT */}
+                            <div className="flex flex-col items-start min-w-0 flex-1 text-left">
+                                <span className="font-medium text-xs sm:text-sm text-foreground truncate w-full">
                                     {brand.name}
                                 </span>
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-[10px] sm:text-xs text-muted-foreground truncate w-full">
                                     {brand.country}
                                 </span>
                             </div>

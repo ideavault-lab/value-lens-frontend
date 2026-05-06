@@ -20,10 +20,12 @@ export function InsightBadge({ insight }: InsightBadgeProps): React.ReactElement
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="flex items-start gap-3 p-4 rounded-xl bg-accent/30 border border-accent overflow-hidden"
+          // className="flex items-start gap-3 p-4 rounded-xl bg-accent/30 border border-accent overflow-hidden mt-2
+          className="flex items-center gap-3 p-2 rounded-xl  bg-accent/30 overflow-hidden mt-2 w-full"
+          
         >
           <span className="text-lg leading-none mt-0.5">{insight.icon}</span>
-          <p className="text-sm text-accent-foreground">{insight.text}</p>
+          <p className="text-xs sm:text-sm text-accent-foreground">{insight.text}</p>
         </motion.div>
       )}
     </AnimatePresence>

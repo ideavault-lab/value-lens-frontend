@@ -18,18 +18,20 @@ export default function Hero() {
           className="max-w-2xl"
         >
           {/* TOP BADGES */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/60 rounded-full border border-accent mb-6">
-            <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-accent-foreground">
-              Trusted by 50,000+ car owners
-            </span>
-          </div>
+          <div className="hidden sm:flex flex-row gap-2">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/60 rounded-full border border-accent mb-6">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span className="text-sm font-medium text-accent-foreground">
+                Trusted by 50,000+ car owners
+              </span>
+            </div>
 
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 mb-6 ml-5">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-muted-foreground">
-              AI-Powered • Real Market Data
-            </span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 mb-6">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-sm font-medium text-muted-foreground">
+                AI-Powered • Real Market Data
+              </span>
+            </div>
           </div>
 
           {/* TITLE */}
@@ -44,22 +46,41 @@ export default function Hero() {
             No guesswork, no dealer bias — just honest numbers.
           </p>
 
+          {/* //for mobile view */}
+          <div className="flex flex-wrap sm:hidden gap-2 mt-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/60 rounded-full border border-accent mb-2">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span className="text-sm font-small text-accent-foreground">
+                Trusted by 50,000+ car owners
+              </span>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 mb-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-sm font-small text-muted-foreground">
+                AI-Powered • Real Market Data
+              </span>
+            </div>
+          </div>
+
           {/* BUTTONS */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <Link href="/valuation">
-              <Button size="lg" className="rounded-xl px-8 h-14 group">
+            <Link href="/valuation" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 h-14 group">
                 Value My Car
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
 
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-xl px-8 h-14"
-            >
-              How It Works
-            </Button>
+            <Link href="/valuation">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto rounded-xl px-8 h-14"
+              >
+                How It Works
+              </Button>
+            </Link>
           </div>
 
           {/* SOCIAL PROOF */}
