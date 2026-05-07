@@ -55,6 +55,8 @@ const PredictContainer = () => {
     if (step < TOTAL_STEPS - 1) {
       setDirection(1);
       setStep((prev) => prev + 1);
+    }else if(step === TOTAL_STEPS - 1){
+      router.push('/result')
     }
   };
 
@@ -79,7 +81,7 @@ const PredictContainer = () => {
       </div>
 
       {/* 🟡 Scrollable Step Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto mt-6 pr-1 sm:px-0 px-2">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto pt-5 pr-1 sm:px-0 px-2">
         <div className="min-h-[420px] relative">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
