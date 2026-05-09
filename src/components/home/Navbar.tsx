@@ -32,7 +32,7 @@ export default function Navbar() {
             <Car className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-heading font-bold text-xl text-foreground">
-            Vehicle<span className="text-primary">Val</span>
+            Value<span className="text-primary">LENS</span>
           </span>
         </a>
 

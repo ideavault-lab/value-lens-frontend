@@ -13,7 +13,7 @@ function Footer() {
                 <Car className="w-4 h-4 text-primary-foreground" />
               </div>
               <span className="font-heading font-bold text-lg text-foreground">
-                Vehicle<span className="text-primary">Val</span>
+                Value<span className="text-primary">LENS</span>
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
