@@ -1,8 +1,9 @@
 "use client";
 
-import { Car, Bike, Truck, ArrowRight } from "lucide-react";
+import { Car, Bike, Truck, ArrowRight, LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, Variants } from "framer-motion";
+import { useVehicleTypes } from "../hooks/useVehicleTypes";
 
 interface VehicleOption {
   id: string;
@@ -13,30 +14,11 @@ interface VehicleOption {
   popular?: boolean;
 }
 
-const VEHICLE_OPTIONS: VehicleOption[] = [
-  {
-    id: "car",
-    label: "Car",
-    description: "Cars, SUVs, Sedans & Hatchbacks",
-    icon: Car,
-    enabled: true,
-    popular: true,
-  },
-  {
-    id: "bike",
-    label: "Bike / Scooter",
-    description: "Two-wheelers valuation coming soon",
-    icon: Bike,
-    enabled: false,
-  },
-  {
-    id: "truck",
-    label: "Truck & Commercial",
-    description: "Heavy vehicles & commercial vehicles coming soon",
-    icon: Truck,
-    enabled: false,
-  },
-];
+const ICONS: Record<string, LucideIcon> = {
+  car: Car,
+  bike: Bike,
+  truck: Truck,
+};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -61,9 +43,16 @@ const itemVariants: Variants = {
 export default function VehicleSelector() {
   const router = useRouter();
 
+    const {
+    data: vehicleTypes = [],
+    isLoading,
+    isError,
+    error,
+  } = useVehicleTypes();
+
   const handleSelect = (id: string, enabled: boolean) => {
     if (!enabled) return;
-    router.push(`/predict/${id}`);
+    router.push(`/valuation/${id}`);
   };
 
   return (
@@ -94,8 +83,10 @@ export default function VehicleSelector() {
           animate="show"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
         >
-          {VEHICLE_OPTIONS.map((item) => {
-            const Icon = item.icon;
+          {vehicleTypes.map((item) => {
+            const Icon =
+              ICONS[item.icon] ?? Car;
+
             const isEnabled = item.enabled;
 
             return (

@@ -3,16 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-import ProgressBar from "@/modules/predict/components/ProgressBar";
+import ProgressBar from "@/modules/valuation/components/ProgressBar";
 import StepNavigation from "./StepNavigation";
 
-import Step1 from "../components/steps/StepBrand"
-import Step2 from "../components/steps/StepModel";
-import Step3 from "../components/steps/StepDetails";
-import Step4 from "../components/steps/StepMileage";
-import Step5 from "../components/steps/StepCondition";
-import Step6 from "../components/steps/StepLocation";
-import Step7 from "../components/steps/StepOwnership";
+import Step1 from "./steps/StepBrand"
+import Step2 from "./steps/StepModel";
+import Step3 from "./steps/StepDetails";
+import Step4 from "./steps/StepMileage";
+import Step5 from "./steps/StepCondition";
+import Step6 from "./steps/StepLocation";
+import Step7 from "./steps/StepOwnership";
 import { useRouter } from "next/navigation";
 
 const TOTAL_STEPS = 7;
@@ -34,7 +34,7 @@ const slideVariants = {
   }),
 };
 
-const PredictContainer = () => {
+const ValuationContainer = ({ vehicleType }: { vehicleType: string }) => {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -56,7 +56,7 @@ const PredictContainer = () => {
       setDirection(1);
       setStep((prev) => prev + 1);
     }else if(step === TOTAL_STEPS - 1){
-      router.push('/result')
+      router.push(`/valuation/${vehicleType}/result`)
     }
   };
 
@@ -66,7 +66,7 @@ const PredictContainer = () => {
       setDirection(-1);
       setStep((prev) => prev - 1);
     } else if (step === 0) {
-      router.push('/valuation')
+      router.push(`/valuation`)
     }
   };
 
@@ -114,4 +114,4 @@ const PredictContainer = () => {
   );
 }
 
-export default PredictContainer;
+export default ValuationContainer;

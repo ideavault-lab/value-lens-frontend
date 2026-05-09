@@ -1,69 +1,34 @@
 "use client";
 
+import { FEATURES } from "@/lib/homeData";
 import { motion } from "framer-motion";
-import { Zap, Shield, TrendingUp } from "lucide-react";
 
-const features = [
-  {
-    icon: Zap,
-    title: "Instant Valuation",
-    description:
-      "Get an accurate estimate in under 60 seconds with our smart pricing engine",
-  },
-  {
-    icon: Shield,
-    title: "Trusted Data",
-    description:
-      "Backed by market analysis across thousands of listings nationwide",
-  },
-  {
-    icon: TrendingUp,
-    title: "Market Insights",
-    description:
-      "Understand what factors drive your car's value up or down",
-  },
-];
+export default 
+// ─── FEATURES ─────────────────────────────────────────────────────────────────
 
-export default function Features() {
+function Features() {
   return (
-    <section className="py-20 md:py-28 border-t border-border">
+    <section id="features" className="py-20 md:py-28 border-t border-border bg-card/40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground">
-            Why CarValue?
-          </h2>
-          <p className="mt-4 text-muted-foreground text-lg max-w-md mx-auto">
-            A smarter way to understand your vehicle's market position
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+          <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Why VehicleVal</p>
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-foreground">Built for every vehicle owner.</h2>
+          <p className="mt-3 text-muted-foreground text-lg max-w-lg mx-auto">
+            A smarter way to understand your vehicle's true market position.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15, duration: 0.5 }}
-              className="bg-card rounded-2xl border border-border p-8 hover:shadow-lg hover:border-primary/20 transition-all duration-300 group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-accent/60 flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors">
-                <feature.icon className="w-6 h-6 text-primary" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {FEATURES.map((f, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="bg-card rounded-2xl border border-border p-7 hover:border-primary/25 hover:shadow-md transition-all group cursor-default">
+              <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors">
+                <f.Icon className="w-6 h-6 text-primary" />
               </div>
-
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                {feature.title}
-              </h3>
-
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
+              <h3 className="font-semibold text-foreground mb-2">{f.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>

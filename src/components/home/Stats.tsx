@@ -1,43 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Award, Clock, CheckCircle } from "lucide-react";
+import { Users, Award, Clock, CheckCircle, Star } from "lucide-react";
 
-const stats = [
-  { number: "50,000+", label: "Cars Valued", icon: Users },
-  { number: "98.7%", label: "Accuracy Rate", icon: Award },
-  { number: "15s", label: "Average Time", icon: Clock },
-  { number: "4.9/5", label: "User Rating", icon: CheckCircle },
-];
+export default 
+// ─── STATS ────────────────────────────────────────────────────────────────────
 
-export default function Stats() {
+function Stats() {
+  const items = [
+    { Icon: Users,        number: "50,000+", label: "Vehicles Valued" },
+    { Icon: CheckCircle,  number: "98.7%",   label: "Accuracy Rate"   },
+    { Icon: Clock,        number: "15s",     label: "Average Time"    },
+    { Icon: Star,         number: "4.9/5",   label: "User Rating"     },
+  ];
   return (
-    <section className="py-16 border-t border-border bg-card/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 md:gap-10">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-4 p-4 rounded-2xl bg-background/60 border border-border backdrop-blur-sm md:flex-col md:text-center md:items-center md:p-6 md:bg-transparent md:border-0 md:backdrop-blur-0"
-            >
-              {/* ICON */}
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 md:w-14 md:h-14 md:rounded-2xl md:mb-4">
-                <stat.icon className="w-5 h-5 md:w-7 md:h-7 text-primary" />
+    <section className="border-y border-border bg-card/60">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:divide-x divide-border">
+          {items.map((s, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="flex flex-col items-center text-center gap-2 px-4">
+              <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                <s.Icon className="w-5 h-5 text-primary" />
               </div>
-
-              {/* TEXT */}
-              <div className="flex flex-col leading-tight md:items-center">
-                <span className="text-2xl font-bold text-foreground md:text-4xl">
-                  {stat.number}
-                </span>
-                <span className="text-xs text-muted-foreground md:text-sm md:mt-1">
-                  {stat.label}
-                </span>
-              </div>
+              <span className="font-heading font-bold text-3xl text-foreground">{s.number}</span>
+              <span className="text-xs text-muted-foreground font-medium">{s.label}</span>
             </motion.div>
           ))}
         </div>

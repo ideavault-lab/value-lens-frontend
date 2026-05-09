@@ -1,11 +1,11 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import PredictView from "@/modules/predict/views/PredictView";
+import ValuationView from "@/modules/valuation/views/ValuationView";
 
-export default function PredictPage() {
+export default function ValuationPage() {
   const params = useParams();
-  const vehicleType = params.type as string;
+  const vehicleType = params.vehicleType as string;
 
   console.log("Vehicle Type:", vehicleType);
   
@@ -13,5 +13,5 @@ export default function PredictPage() {
     return <div>Invalid vehicle type</div>;
   }
 
-  return <PredictView  />;
+  return <ValuationView vehicleType={vehicleType} />;
 }

@@ -1,119 +1,181 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { useEffect, useState } from "react";
+import {
+  Car, Bike, Truck, Bus,
+  ArrowRight, 
+  Star
+} from "lucide-react";
+import { VEHICLE_TYPES } from "@/lib/homeData";
 
-export default function Hero() {
+export default 
+// ─── HERO ─────────────────────────────────────────────────────────────────────
+
+function Hero() {
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setActiveIdx(i => (i + 1) % VEHICLE_TYPES.length), 3200);
+    return () => clearInterval(t);
+  }, []);
+
+  const active = VEHICLE_TYPES[activeIdx];
+
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-accent/40 via-background to-background" />
+    <section className="relative overflow-hidden bg-background">
+      {/* Warm gradient backdrop using theme colors */}
+      <div className="absolute inset-0 bg-gradient-to-br from-accent/50 via-background to-background pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-24 md:pt-32 md:pb-36">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-          className="max-w-2xl"
-        >
-          {/* TOP BADGES */}
-          <div className="hidden sm:flex flex-row gap-2">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/60 rounded-full border border-accent mb-6">
-              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-accent-foreground">
-                Trusted by 50,000+ car owners
-              </span>
-            </div>
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-2 gap-12 items-center">
 
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 mb-6">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-muted-foreground">
-                AI-Powered • Real Market Data
-              </span>
-            </div>
+        {/* LEFT */}
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+
+          {/* Badges */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent border border-accent-foreground/10 text-xs font-semibold text-accent-foreground">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Trusted by 50,000+ owners
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-xs font-medium text-muted-foreground">
+              <span className="w-1.5 h-1.5 rounded-full bg-chart-2" />
+              AI-Powered · Live Market Data
+            </span>
           </div>
 
-          {/* TITLE */}
-          <h1 className="text-4xl md:text-6xl font-heading font-bold text-foreground leading-tight">
-            Know your car's
-            <span className="text-primary block">true worth</span>
+          <h1 className="font-heading font-bold text-5xl md:text-6xl text-foreground leading-[1.08]">
+            Know your
+            <br />vehicle's
+            <br />
+            <AnimatePresence mode="wait">
+              <motion.span key={activeIdx}
+                initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.35 }}
+                className="text-primary inline-block">
+                true worth.
+              </motion.span>
+            </AnimatePresence>
           </h1>
 
-          {/* DESCRIPTION */}
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg">
-            Get an instant, data-driven estimate of your car's resale value.
-            No guesswork, no dealer bias — just honest numbers.
+          <p className="mt-5 text-lg text-muted-foreground leading-relaxed max-w-md">
+            Instant resale valuations for <strong className="text-foreground font-semibold">cars, bikes, trucks,</strong> and commercial vehicles — no guesswork, no dealer bias.
           </p>
 
-          {/* //for mobile view */}
-          <div className="flex flex-wrap sm:hidden gap-2 mt-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/60 rounded-full border border-accent mb-2">
-              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-sm font-small text-accent-foreground">
-                Trusted by 50,000+ car owners
-              </span>
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card/80 mb-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-sm font-small text-muted-foreground">
-                AI-Powered • Real Market Data
-              </span>
-            </div>
+          {/* Vehicle type pills */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            {VEHICLE_TYPES.map((v, i) => (
+              <button key={v.id} onClick={() => setActiveIdx(i)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                  i === activeIdx
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground bg-card"
+                }`}>
+                <v.Icon className="w-3.5 h-3.5" />
+                {v.label}
+              </button>
+            ))}
           </div>
 
-          {/* BUTTONS */}
-          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+          {/* CTA buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Link href="/valuation" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 h-14 group">
-                Value My Car
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 h-13 group">
+                Value My Vehicle
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-
-            <Link href="/valuation">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto rounded-xl px-8 h-14"
-              >
+            <a href="#how-it-works" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-xl px-8 h-13">
                 How It Works
               </Button>
-            </Link>
+            </a>
           </div>
 
-          {/* SOCIAL PROOF */}
-          <div className="mt-12 flex items-center gap-6">
+          {/* Social proof */}
+          <div className="mt-8 flex flex-wrap items-center gap-5">
             <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-accent border-2 border-background flex items-center justify-center text-xs font-semibold text-accent-foreground"
-                >
-                  {String.fromCharCode(64 + i)}
+              {["A","R","M","P","V"].map((l, i) => (
+                <div key={i}
+                  className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-xs font-bold text-primary-foreground"
+                  style={{ background: `hsl(${21 + i * 15} 80% ${42 + i * 6}%)` }}>
+                  {l}
                 </div>
               ))}
             </div>
-
             <div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <svg
-                    key={i}
-                    className="w-4 h-4 text-chart-3"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 text-chart-3 fill-chart-3" />)}
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">4.9/5 from 2,400+ reviews</p>
+            </div>
+            <div className="h-7 w-px bg-border hidden sm:block" />
+            <p className="text-xs text-muted-foreground hidden sm:block">
+              <span className="text-foreground font-bold">50,000+</span> vehicles valued
+            </p>
+          </div>
+        </motion.div>
+
+        {/* RIGHT — Animated vehicle showcase card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="hidden md:block">
+          <AnimatePresence mode="wait">
+            <motion.div key={activeIdx}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.4 }}
+              className="bg-card rounded-3xl border border-border shadow-xl p-8">
+
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-accent text-accent-foreground">
+                    {active.badge}
+                  </span>
+                  <h3 className="font-heading font-bold text-2xl text-foreground mt-3">{active.label}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{active.description}</p>
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center flex-shrink-0">
+                  <active.Icon className="w-8 h-8 text-primary" />
+                </div>
+              </div>
+
+              {/* Example models */}
+              <div className="space-y-2 mb-6">
+                {active.examples.map((ex, i) => (
+                  <div key={i} className="flex items-center justify-between bg-muted rounded-xl px-4 py-2.5">
+                    <span className="text-foreground text-sm font-medium">{ex}</span>
+                    <span className="text-primary text-xs font-bold">Get Value →</span>
+                  </div>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                4.8/5 from 2,400+ ratings
-              </p>
-            </div>
-          </div>
+
+              {/* Mini valuation preview */}
+              <div className="bg-accent/50 rounded-2xl p-4 border border-accent">
+                <p className="text-accent-foreground/70 text-xs uppercase tracking-wider mb-1 font-semibold">Sample Estimate</p>
+                <p className="font-heading font-bold text-2xl text-foreground">₹4.2L – ₹6.8L</p>
+                <div className="mt-2 h-1.5 rounded-full bg-border overflow-hidden">
+                  <motion.div className="h-full rounded-full bg-primary"
+                    initial={{ width: 0 }} animate={{ width: "72%" }}
+                    transition={{ duration: 1, delay: 0.3 }} />
+                </div>
+                <p className="text-muted-foreground text-xs mt-1">Market confidence: 98%</p>
+              </div>
+
+              {/* Dot nav */}
+              <div className="flex gap-1.5 justify-center mt-5">
+                {VEHICLE_TYPES.map((_, i) => (
+                  <button key={i} onClick={() => setActiveIdx(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === activeIdx ? "w-6 bg-primary" : "w-1.5 bg-border"
+                    }`} />
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

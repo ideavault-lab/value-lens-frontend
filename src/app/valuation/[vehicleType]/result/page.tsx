@@ -1,4 +1,4 @@
-import ResultView from "@/modules/result/views/ResultView";
+import ResultView from "@/modules/valuation-result/views/ResultView";
 
 export default function ValuationPage() {
   return (

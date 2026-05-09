@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "@/providers/query-provider";
 
 /* ------------------ FONTS ------------------ */
 const inter = Inter({
@@ -33,7 +34,9 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+         <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

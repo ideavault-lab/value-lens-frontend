@@ -1,4 +1,4 @@
-import VehicleSelectorView from "@/modules/vehicleSelector/views/vehicleSelectorView";
+import VehicleSelectorView from "@/modules/vehicle-selection/views/vehicleSelectorView";
 
 export default function ValuationPage() {
   return (
