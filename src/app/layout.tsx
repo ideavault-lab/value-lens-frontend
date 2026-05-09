@@ -31,12 +31,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} h-full w-auto overflow-x-hidden antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-         <QueryProvider>
-          {children}
-        </QueryProvider>
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+        <div className="overflow-auto w-full height-full">
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </div>
       </body>
     </html>
   );

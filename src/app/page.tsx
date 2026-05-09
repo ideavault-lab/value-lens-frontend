@@ -14,7 +14,7 @@ import VehicleTypes from "@/components/home/vehicleTypes";
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
       <Hero />
       <Stats />
