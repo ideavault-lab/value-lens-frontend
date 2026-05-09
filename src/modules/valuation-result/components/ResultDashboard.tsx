@@ -2,11 +2,14 @@
 
 import { ValuationHeader } from "./ValuationHeader";
 import { MetricCards } from "./MetricCards";
+import { ScoreCards } from "./ScoreCards";
 import { PriceCard } from "./PriceCard";
-import { PriceTrendChart } from "./PriceTrendChart";
 import { FactorAnalysis, type Factor } from "./FactorAnalysis";
-import { CompetitorChart, type CompetitorModel } from "./CompetitorChart";
-import { MarketSnapshot } from "./MarketSnapshot";
+import { SegmentCompetitorChart, type CompetitorModel } from "./SegmentCompetitorChart";
+import { AlternativeRecommendations, type Alternative } from "./AlternativeRecommendations";
+import { ProjectedTrendChart } from "./ProjectedTrendChart";
+import { SegmentInsights } from "./SegmentInsights";
+import { ValuationSnapshot } from "./ValuationSnapshot";
 import { Button } from "@/components/ui/Button";
 import { RotateCcw } from "lucide-react";
 
@@ -27,6 +30,14 @@ export interface ValuationResult {
     fuel_impact: number;
     transmission_impact: number;
   };
+  scores?: {
+    value_retention: number;
+    ownership_score: number;
+    demand_index: number;
+  };
+  projections?: { year: string; value: number }[];
+  competitors?: CompetitorModel[];
+  alternatives?: Alternative[];
 }
 
 export interface ValuationFormData {
@@ -40,6 +51,7 @@ export interface ValuationFormData {
   condition?: string;
   owner_type?: string;
   location?: string;
+  segment?: string;
 }
 
 interface ResultDashboardProps {
@@ -48,7 +60,7 @@ interface ResultDashboardProps {
   onReset?: () => void;
 }
 
-// ─── DEMO DATA ───────────────────────────────────────────────────────────────
+// ─── DEMO DATA ────────────────────────────────────────────────────────────────
 
 const demoFormData: ValuationFormData = {
   brand: "toyota",
@@ -61,6 +73,7 @@ const demoFormData: ValuationFormData = {
   condition: "excellent",
   owner_type: "first",
   location: "Thrissur, Kerala",
+  segment: "Premium Hatchback",
 };
 
 const demoResult: ValuationResult = {
@@ -68,7 +81,8 @@ const demoResult: ValuationResult = {
   price_low: 7.8,
   price_high: 9.1,
   confidence: 87,
-  explanation: "Excellent condition Glanza with low mileage in a high-demand location. Strong resale value due to Toyota reliability and fuel efficiency.",
+  explanation:
+    "Excellent condition Glanza with low mileage in a high-demand location. Strong resale value due to Toyota reliability and segment-leading fuel efficiency.",
   factors: {
     age_impact: -12,
     km_impact: -8,
@@ -78,44 +92,71 @@ const demoResult: ValuationResult = {
     fuel_impact: 5,
     transmission_impact: 3,
   },
+  scores: {
+    value_retention: 91,
+    ownership_score: 88,
+    demand_index: 78,
+  },
+  projections: [
+    { year: "2023", value: 8.45 },
+    { year: "2024", value: 7.9 },
+    { year: "2025", value: 7.4 },
+    { year: "2026", value: 6.9 },
+    { year: "2027", value: 6.4 },
+  ],
+  competitors: [
+    { name: "Glanza", price: 8.45, isYours: true },
+    { name: "i20", price: 8.6 },
+    { name: "Baleno", price: 8.1 },
+    { name: "Jazz", price: 8.2 },
+    { name: "Altroz", price: 7.85 },
+  ],
+  alternatives: [
+    {
+      make: "Hyundai",
+      model: "i20",
+      price: 8.6,
+      fuel: "Petrol",
+      transmission: "Manual",
+      resaleScore: 89,
+    },
+    {
+      make: "Maruti",
+      model: "Baleno",
+      price: 8.1,
+      fuel: "Petrol",
+      transmission: "Auto",
+      resaleScore: 87,
+    },
+    {
+      make: "Tata",
+      model: "Altroz",
+      price: 7.85,
+      fuel: "Petrol",
+      transmission: "Manual",
+      resaleScore: 82,
+    },
+    {
+      make: "Honda",
+      model: "Jazz",
+      price: 8.2,
+      fuel: "Petrol",
+      transmission: "CVT",
+      resaleScore: 85,
+    },
+  ],
 };
-
-// ─── Demo / placeholder data ─────────────────────────────────────────────────
-
-const TREND_DATA = [
-  { year: "2020", avgMarket: 9.2, depFloor: 7.8, yourCar: null },
-  { year: "2021", avgMarket: 8.9, depFloor: 7.5, yourCar: null },
-  { year: "2022", avgMarket: 8.6, depFloor: 7.2, yourCar: null },
-  { year: "2023", avgMarket: 8.3, depFloor: 6.9, yourCar: 8.45 },
-  { year: "2024*", avgMarket: 8.0, depFloor: 6.6, yourCar: null },
-];
-
-const COMPETITOR_MODELS: CompetitorModel[] = [
-  { name: "Glanza", price: 8.45, isYours: true },
-  { name: "Swift", price: 7.9 },
-  { name: "Baleno", price: 8.1 },
-  { name: "i20", price: 8.6 },
-  { name: "Punch", price: 7.5 },
-];
-
-const MARKET_ROWS = [
-  { label: "Avg. days to sell", value: "18 days", badge: { text: "Fast", variant: "good" as const } },
-  { label: "Active listings", value: "Moderate", badge: { text: "42 listings", variant: "warn" as const } },
-  { label: "Buyer demand index", value: "78 / 100", badge: { text: "Strong", variant: "good" as const } },
-  { label: "Best sell season", value: "Oct – Dec", badge: { text: "4 mo away", variant: "info" as const } },
-  { label: "Annual depreciation", value: "~4.8% / yr" },
-];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ResultDashboard({
   result = demoResult,
   formData = demoFormData,
-  // onReset,
 }: ResultDashboardProps) {
   const onReset = () => {
     window.location.href = "/valuation";
-  }
+  };
+
   const handleShare = () => {
     const text = `My ${formData.year} ${formData.brandName} ${formData.model} is valued at ₹${result.predicted_price}L!`;
     if (navigator.share) {
@@ -140,7 +181,9 @@ export default function ResultDashboard({
       label: "Estimated value",
       value: `₹${result.predicted_price}L`,
       sub: "Market best-fit",
-      color: "green" as const,
+      color: "orange" as const,
+      animate: true,
+      animTarget: result.predicted_price,
     },
     {
       label: "Price range",
@@ -154,9 +197,9 @@ export default function ResultDashboard({
       color: "blue" as const,
     },
     {
-      label: "Resale trend",
-      value: "+4.2%",
-      sub: "vs last quarter",
+      label: "Retention score",
+      value: `${result.scores?.value_retention ?? 91}/100`,
+      sub: "Value retention",
       color: "green" as const,
     },
     {
@@ -169,14 +212,15 @@ export default function ResultDashboard({
 
   const specs = [
     formData.fuel && formData.fuel.charAt(0).toUpperCase() + formData.fuel.slice(1),
-    formData.transmission && formData.transmission.charAt(0).toUpperCase() + formData.transmission.slice(1),
+    formData.transmission &&
+      formData.transmission.charAt(0).toUpperCase() + formData.transmission.slice(1),
     formData.condition && `${formData.condition} condition`,
     formData.owner_type && `${formData.owner_type.replace("_", " ")} owner`,
     formData.location,
   ].filter(Boolean) as string[];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+    <div className="max-w-5xl mx-auto px-3 sm:px-5 pb-16">
       <ValuationHeader
         brand={formData.brandName}
         brandLogo={formData.brandLogo}
@@ -190,16 +234,16 @@ export default function ResultDashboard({
 
       <MetricCards metrics={metrics} />
 
-      {/* Main grid: left = charts+factors, right = price card + market */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
-        {/* Left column */}
-        <div className="space-y-4">
-          <PriceTrendChart data={TREND_DATA} />
-          <FactorAnalysis factors={factors} />
-        </div>
+      <ScoreCards
+        retentionScore={result.scores?.value_retention ?? 91}
+        ownershipScore={result.scores?.ownership_score ?? 88}
+        demandIndex={result.scores?.demand_index ?? 78}
+      />
 
-        {/* Right column */}
-        <div className="space-y-4">
+      {/* Main grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+        {/* Left */}
+        <div className="space-y-4 min-w-0">
           <PriceCard
             price={result.predicted_price}
             priceLow={result.price_low}
@@ -208,18 +252,34 @@ export default function ResultDashboard({
             explanation={result.explanation}
             specs={specs}
           />
-          <CompetitorChart models={COMPETITOR_MODELS} />
-          <MarketSnapshot rows={MARKET_ROWS} />
+          <FactorAnalysis factors={factors} />
+          <SegmentCompetitorChart
+            models={result.competitors ?? demoResult.competitors!}
+            segment={formData.segment ?? "Premium Hatchback"}
+          />
+          <AlternativeRecommendations
+            alternatives={result.alternatives ?? demoResult.alternatives!}
+            segment={formData.segment ?? "Premium Hatchback"}
+          />
+        </div>
+
+        {/* Right */}
+        <div className="space-y-4 min-w-0">
+          <ProjectedTrendChart
+            projections={result.projections ?? demoResult.projections!}
+            carLabel={`${formData.brandName} ${formData.model}`}
+          />
+          <SegmentInsights
+            segment={formData.segment ?? "Premium Hatchback"}
+            location={formData.location}
+            brand={formData.brandName}
+          />
+          <ValuationSnapshot location={formData.location} />
         </div>
       </div>
 
-      {/* Reset */}
       <div className="mt-8 flex justify-start">
-        <Button
-          variant="outline"
-          onClick={onReset ?? (() => (window.location.href = "/valuation"))}
-          className="gap-2 h-11 px-6"
-        >
+        <Button variant="outline" onClick={onReset} className="gap-2 h-11 px-6">
           <RotateCcw className="w-4 h-4" />
           New valuation
         </Button>

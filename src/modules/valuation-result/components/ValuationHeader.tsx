@@ -34,14 +34,14 @@ export function ValuationHeader({
     .join(" • ");
 
   return (
-    <div className="flex items-center justify-between gap-4 flex-wrap py-4">
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center flex-shrink-0">
+    <div className="flex items-center justify-between gap-3 flex-wrap py-4 border-b border-border mb-4">
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-accent/20 border border-accent/30 flex items-center justify-center flex-shrink-0">
           {brandLogo ? (
             <img
               src={brandLogo}
               alt={brand}
-              className="w-8 h-8 object-contain"
+              className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
@@ -50,21 +50,22 @@ export function ValuationHeader({
             <span className="text-xl">🚗</span>
           )}
         </div>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">
             {brand} {model}
           </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate">{subtitle}</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="gap-2 h-9">
-          <Lightbulb className="w-4 h-4" />
-          Get sell tips
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <Button variant="outline" size="sm" className="gap-1.5 h-8 sm:h-9 px-3 text-xs sm:text-sm">
+          <Lightbulb className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Sell tips</span>
+          <span className="sm:hidden">Tips</span>
         </Button>
-        <Button size="sm" className="gap-2 h-9" onClick={onShare}>
-          <Share2 className="w-4 h-4" />
+        <Button size="sm" className="gap-1.5 h-8 sm:h-9 px-3 text-xs sm:text-sm" onClick={onShare}>
+          <Share2 className="w-3.5 h-3.5" />
           Share
         </Button>
       </div>

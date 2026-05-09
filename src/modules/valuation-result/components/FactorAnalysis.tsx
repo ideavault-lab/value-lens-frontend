@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 export interface Factor {
   label: string;
-  value: number; // percentage, positive or negative
+  value: number;
 }
 
 interface FactorAnalysisProps {
@@ -20,7 +20,7 @@ export function FactorAnalysis({ factors }: FactorAnalysisProps) {
       <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-2">
         <span className="text-base">⚖️</span> Price factor analysis
       </p>
-      <div className="space-y-3.5">
+      <div className="space-y-3">
         {sorted.map((f, i) => {
           const isPos = f.value > 0;
           const isNeg = f.value < 0;
@@ -34,10 +34,10 @@ export function FactorAnalysis({ factors }: FactorAnalysisProps) {
               transition={{ delay: 0.3 + i * 0.06 }}
               className="flex items-center gap-3"
             >
-              <span className="text-xs text-muted-foreground w-20 flex-shrink-0">
+              <span className="text-xs text-muted-foreground w-[72px] sm:w-20 flex-shrink-0">
                 {f.label}
               </span>
-              <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden min-w-0">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${barPct}%` }}
@@ -46,14 +46,19 @@ export function FactorAnalysis({ factors }: FactorAnalysisProps) {
                 />
               </div>
               <div
-                className={`flex items-center gap-1 text-xs font-medium min-w-[40px] justify-end ${
-                  isPos ? "text-emerald-600" : isNeg ? "text-rose-600" : "text-muted-foreground"
+                className={`flex items-center gap-1 text-xs font-medium min-w-[42px] justify-end flex-shrink-0 ${
+                  isPos
+                    ? "text-emerald-600"
+                    : isNeg
+                    ? "text-rose-600"
+                    : "text-muted-foreground"
                 }`}
               >
                 {isPos && <TrendingUp className="w-3 h-3" />}
                 {isNeg && <TrendingDown className="w-3 h-3" />}
                 {!isPos && !isNeg && <Minus className="w-3 h-3" />}
-                {isPos ? "+" : ""}{f.value}%
+                {isPos ? "+" : ""}
+                {f.value}%
               </div>
             </motion.div>
           );

@@ -23,7 +23,7 @@ export function PriceCard({
   const [displayed, setDisplayed] = React.useState(0);
 
   React.useEffect(() => {
-    const duration = 1600;
+    const duration = 1500;
     const start = performance.now();
     const tick = (now: number) => {
       const p = Math.min((now - start) / duration, 1);
@@ -44,7 +44,7 @@ export function PriceCard({
         <motion.p
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-5xl font-bold tracking-tight text-emerald-600 leading-none"
+          className="text-4xl sm:text-5xl font-bold tracking-tight text-primary leading-none"
         >
           ₹{displayed.toFixed(2)}L
         </motion.p>
@@ -53,7 +53,7 @@ export function PriceCard({
         </p>
 
         {/* Confidence bar */}
-        <div className="flex items-center gap-3 mt-4">
+        <div className="flex items-center gap-3 mt-4 max-w-xs mx-auto">
           <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
@@ -69,15 +69,13 @@ export function PriceCard({
       </div>
 
       {/* Insight */}
-      <div className="px-5 py-4 border-b border-border bg-accent/20">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          {explanation}
-        </p>
+      <div className="px-5 py-4 border-b border-border bg-accent/10">
+        <p className="text-sm text-foreground/80 leading-relaxed">{explanation}</p>
       </div>
 
       {/* Spec tags */}
       <div className="px-5 py-4 flex flex-wrap gap-2">
-        {specs.filter(Boolean).map((tag, i) => (
+        {specs.map((tag, i) => (
           <span
             key={i}
             className="text-xs px-3 py-1.5 bg-secondary rounded-full border border-border text-muted-foreground capitalize"
