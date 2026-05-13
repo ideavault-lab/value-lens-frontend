@@ -3,13 +3,14 @@ export const API_ENDPOINTS = {
     
     TYPES: "/vehicles/types",
 
-    BRANDS: (type: string) =>
-      `/vehicles/${type}/brands`,
+    BRANDS:
+      (vehicleType: string) =>
+        `/vehicles/${vehicleType}/brands`,
 
     MODELS: (
-      type: string,
+      vehicleType: string,
       brandId: string
     ) =>
-      `/vehicles/${type}/brands/${brandId}/models`,
+      `/vehicles/${vehicleType}/brands/${brandId}/models`,
   },
 };

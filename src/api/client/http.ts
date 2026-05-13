@@ -5,7 +5,7 @@ interface RequestOptions
   extends RequestInit {
   params?: Record<
     string,
-    string | number | boolean
+    string | number | boolean | undefined
   >;
 }
 

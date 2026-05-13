@@ -6,18 +6,43 @@ import { motion, AnimatePresence } from "framer-motion";
 import ProgressBar from "@/modules/valuation/components/ProgressBar";
 import StepNavigation from "./StepNavigation";
 
-import Step1 from "./steps/StepBrand"
-import Step2 from "./steps/StepModel";
-import Step3 from "./steps/StepDetails";
-import Step4 from "./steps/StepMileage";
-import Step5 from "./steps/StepCondition";
-import Step6 from "./steps/StepLocation";
-import Step7 from "./steps/StepOwnership";
 import { useRouter } from "next/navigation";
+import { useValuation, ValuationProvider } from "../context/valuation.context";
+
+import StepBrand
+  from "./steps/StepBrand";
+
+import StepModel
+  from "./steps/StepModel";
+
+import StepDetails
+  from "./steps/StepDetails";
+
+import StepMileage
+  from "./steps/StepMileage";
+
+import StepCondition
+  from "./steps/StepCondition";
+
+import StepLocation
+  from "./steps/StepLocation";
+
+import StepOwnership
+  from "./steps/StepOwnership";
+
 
 const TOTAL_STEPS = 7;
 
-const steps = [Step1, Step2, Step3, Step4, Step5, Step6, Step7];
+const steps = [
+  StepBrand,
+  StepModel,
+  StepDetails,
+  StepMileage,
+  StepCondition,
+  StepLocation,
+  StepOwnership,
+];
+
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -34,11 +59,13 @@ const slideVariants = {
   }),
 };
 
-const ValuationContainer = ({ vehicleType }: { vehicleType: string }) => {
+const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
 
+  //context
+  const { data } = useValuation();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +82,7 @@ const ValuationContainer = ({ vehicleType }: { vehicleType: string }) => {
     if (step < TOTAL_STEPS - 1) {
       setDirection(1);
       setStep((prev) => prev + 1);
-    }else if(step === TOTAL_STEPS - 1){
+    } else if (step === TOTAL_STEPS - 1) {
       router.push(`/valuation/${vehicleType}/result`)
     }
   };
@@ -72,7 +99,25 @@ const ValuationContainer = ({ vehicleType }: { vehicleType: string }) => {
 
   const CurrentStep = steps[step];
 
+  // ========================================
+  // STEP VALIDATION
+  // ========================================
+
+  const canProceedByStep = [
+    !!data.brand?.id,        // Step 1
+    !!data.model?.id,        // Step 2
+    !!data.year,             // Step 3
+    !!data.mileage, // Step 4
+    !!data.condition,        // Step 5
+    !!data.city?.id,         // Step 6
+    !!data.ownership,        // Step 7
+  ];
+
+  const canProceed =
+    canProceedByStep[step];
+
   return (
+
     <div className="flex flex-col h-[calc(100vh-0rem)]">
 
       {/* 🔵 Progress */}
@@ -106,12 +151,30 @@ const ValuationContainer = ({ vehicleType }: { vehicleType: string }) => {
           onNext={next}
           isFirst={step === 0}
           isLast={step === TOTAL_STEPS - 1}
-          canProceed={true}   // ✅ always enabled (UI phase)
+          canProceed={canProceed}   // ✅ always enabled (UI phase)
           isLoading={false}   // ✅ no loading yet
         />
       </div>
     </div>
   );
 }
+
+
+const ValuationContainer = ({
+  vehicleType,
+}: {
+  vehicleType: string;
+}) => {
+
+  return (
+    <ValuationProvider
+      vehicleType={vehicleType}
+    >
+      <ValuationContent
+        vehicleType={vehicleType}
+      />
+    </ValuationProvider>
+  );
+};
 
 export default ValuationContainer;

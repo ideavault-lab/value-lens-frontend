@@ -1,5 +1,6 @@
 export interface VehicleType {
   id: string;
+  slug: string;
   label: string;
   shortLabel: string;
   description: string;
