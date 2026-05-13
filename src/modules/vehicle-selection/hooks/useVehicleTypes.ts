@@ -4,7 +4,7 @@ import { getVehicleTypes } from "../services/vehicle.api";
 
 export function useVehicleTypes() {
   return useQuery({
-    queryKey: ["vehicle-types"],
+    queryKey: ["vehicle","types"],
 
     queryFn: async () => {
       const response =

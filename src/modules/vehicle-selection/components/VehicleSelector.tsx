@@ -5,14 +5,6 @@ import { useRouter } from "next/navigation";
 import { motion, Variants } from "framer-motion";
 import { useVehicleTypes } from "../hooks/useVehicleTypes";
 
-interface VehicleOption {
-  id: string;
-  label: string;
-  description: string;
-  icon: React.ComponentType<any>;
-  enabled: boolean;
-  popular?: boolean;
-}
 
 const ICONS: Record<string, LucideIcon> = {
   car: Car,
@@ -95,7 +87,7 @@ export default function VehicleSelector() {
                 variants={itemVariants}
                 whileHover={isEnabled ? { scale: 1.03, y: -6 } : {}}
                 whileTap={isEnabled ? { scale: 0.97 } : {}}
-                onClick={() => handleSelect(item.id, isEnabled)}
+                onClick={() => handleSelect(item.slug, isEnabled)}
                 className={`
                   group relative rounded-3xl p-7 md:p-8 border flex flex-col h-full transition-all duration-300
                   ${isEnabled
