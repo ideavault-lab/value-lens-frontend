@@ -4,15 +4,18 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/Input";
 import { Search } from "lucide-react";
-import { useValuation } from "../../context/valuation.context";
+import { useValuation, VehicleModelOption } from "../../context/valuation.context";
 import { useVehicleModels } from "../../hooks/useVehicleSteps.hooks";
+import { VehicleModel } from "../../types/vehicle-valuation-steps.types";
 
 
 const StepModel = () => {
     const [search, setSearch] = useState("");
-
-    const { data, updateData } =
-        useValuation();
+    const {
+        data,
+        updateForm,
+        updateMeta,
+    } = useValuation();
 
     //API hooks 
     const {
@@ -20,26 +23,54 @@ const StepModel = () => {
         isLoading,
         isError,
     } = useVehicleModels(
-        data.vehicleType?.slug || "",
-        data.brand?.id || "",
+        data.form.vehicleType?.slug || "",
+        data.form.brand?.id || "",
         search.trim()
     );
+    const handleSelectModel = (
+        model: VehicleModelOption
+    ) => {
 
-    const handleSelectModel = (modelId: string, modelName: string) => {
-        updateData({
-            model: data.brand ? {
-                id: modelId,
-                name: modelName,
-            } : null,
+        const currentYear =
+            new Date().getFullYear();
+
+        const years =
+            Array.from(
+                {
+                    length:
+                        currentYear -
+                        model.launchYear +
+                        1,
+                },
+                (_, i) => currentYear - i
+            );
+
+        /* selected values */
+        updateForm({
+            model,
+            year:
+                currentYear,
         });
-    }
 
+        /* cached metadata */
+        updateMeta({
+
+            availableFuelTypes:
+                model.fuelTypes,
+
+            availableTransmissions:
+                model.transmissions,
+
+            availableYears:
+                years,
+        });
+    };
     return (
         <div className="space-y-6 p-2">
             {/* Header */}
             <div>
                 <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
-                    Which {data.brand?.name} model?
+                    Which {data.form.brand?.name} model?
                 </h2>
                 <p className="text-muted-foreground mt-2 text-sm md:text-base">
                     Choose the specific model of your car
@@ -65,11 +96,11 @@ const StepModel = () => {
                         initial={{ opacity: 0, x: -12 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.04, duration: 0.3 }}
-                        onClick={() => handleSelectModel(model.id, model.name)}
+                        onClick={() => handleSelectModel(model)}
                         className={`
               relative flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200
               hover:border-primary/40 hover:bg-accent/30
-              ${data.model?.id === model.id
+              ${data.form.model?.id === model.id
                                 ? "border-primary bg-accent/50 shadow-sm"
                                 : "border-border bg-card"
                             }
@@ -79,7 +110,7 @@ const StepModel = () => {
                             {model.name}
                         </span>
 
-                        {data.model?.id === model.id && (
+                        {data.form.model?.id === model.id && (
                             <motion.div
                                 layoutId="model-check"
                                 className="w-5 h-5 bg-primary rounded-full flex items-center justify-center"

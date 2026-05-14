@@ -13,16 +13,16 @@ const StepBrand = () => {
 
     const {
         data,
-        updateData,
+        updateForm,
     } = useValuation();
 
 
     //API hooks
-    const { data: vehicleBrands, isLoading, isError, error } = useVehicleBrands(data.vehicleType?.slug!, search.trim());
+    const { data: vehicleBrands, isLoading, isError, error } = useVehicleBrands(data.form.vehicleType?.slug!, search.trim());
 
-      const handleSelectBrand = (brandId: string, brandName: string) => {
-        updateData({
-            brand: data.vehicleType ? {
+    const handleSelectBrand = (brandId: string, brandName: string) => {
+        updateForm({
+            brand: data.form.vehicleType ? {
                 id: brandId,
                 name: brandName,
             } : null,
@@ -68,7 +68,7 @@ const StepBrand = () => {
                             className={`
               relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200
               hover:border-primary/40 hover:bg-accent/30
-              ${data.brand?.id === brand.id
+              ${data.form.brand?.id === brand.id
                                     ? "border-primary bg-accent/50 shadow-sm"
                                     : "border-border bg-card"
                                 }
@@ -97,7 +97,7 @@ const StepBrand = () => {
                                 </div>
                             </div>
 
-                            {data.brand?.id === brand.id && (
+                            {data.form.brand?.id === brand.id && (
                                 <motion.div
                                     layoutId="brand-check"
                                     className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center"

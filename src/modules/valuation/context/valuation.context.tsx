@@ -6,53 +6,165 @@ import {
   useState,
   ReactNode,
 } from "react";
-type SelectOption = {
+
+/* =========================================
+   COMMON TYPES
+========================================= */
+
+export type BaseOption = {
   id: string;
   name: string;
 };
 
-type VehicleTypeOption = {
+export type VehicleTypeOption = {
   slug: string;
   name: string;
 };
 
+/* =========================================
+   FUEL TYPE
+========================================= */
+
+export type FuelTypeOption = {
+  id: string;
+
+  slug: string;
+
+  name: string;
+
+  icon?: string;
+
+  description?: string;
+};
+
+/* =========================================
+   TRANSMISSION
+========================================= */
+
+export type TransmissionOption = {
+  id: string;
+
+  slug: string;
+
+  name: string;
+
+  icon?: string;
+
+  description?: string;
+};
+
+/* =========================================
+   VEHICLE MODEL
+========================================= */
+
+export type VehicleModelOption = {
+  id: string;
+
+  slug: string;
+
+  name: string;
+
+  launchYear: number;
+
+  fuelTypes: FuelTypeOption[];
+
+  transmissions: TransmissionOption[];
+};
+
+/* =========================================
+   FORM STATE
+   (actual payload values)
+========================================= */
+
+export type ValuationFormState = {
+
+  vehicleType:
+    VehicleTypeOption | null;
+
+  brand:
+    BaseOption | null;
+
+  model:
+    VehicleModelOption | null;
+
+  fuelType:
+    FuelTypeOption | null;
+
+  transmission:
+    TransmissionOption | null;
+
+  year:
+    number | null;
+
+  city:
+    BaseOption | null;
+
+  variant:
+    BaseOption | null;
+
+  condition:
+    BaseOption | null;
+
+  ownership:
+    BaseOption | null;
+
+  mileage:
+    number | null;
+};
+
+/* =========================================
+   META STATE
+   (cached reusable UI data)
+========================================= */
+
+export type ValuationMetaState = {
+
+  availableFuelTypes:
+    FuelTypeOption[];
+
+  availableTransmissions:
+    TransmissionOption[];
+
+  availableYears:
+    number[];
+};
+
+/* =========================================
+   ROOT STATE
+========================================= */
+
 export type ValuationState = {
 
-  vehicleType: VehicleTypeOption | null;
+  form: ValuationFormState;
 
-  brand: SelectOption | null;
-
-  model: SelectOption | null;
-
-  city: SelectOption | null;
-
-  variant: SelectOption | null;
-
-  fuelType: SelectOption | null;
-
-  transmission: SelectOption | null;
-  
-condition: SelectOption | null;
-
-  ownership: SelectOption | null;
-
-  year: number | null;
-
-  mileage: number | null;
+  meta: ValuationMetaState;
 };
+
+/* =========================================
+   CONTEXT TYPE
+========================================= */
 
 type ValuationContextType = {
 
   data: ValuationState;
 
-  updateData: (
-    values: Partial<ValuationState>
+  updateForm: (
+    values: Partial<ValuationFormState>
+  ) => void;
+
+  updateMeta: (
+    values: Partial<ValuationMetaState>
   ) => void;
 
   resetData: () => void;
 };
 
-const initialState: ValuationState = {
+/* =========================================
+   INITIAL STATES
+========================================= */
+
+const initialFormState:
+  ValuationFormState = {
 
   vehicleType: null,
 
@@ -60,27 +172,45 @@ const initialState: ValuationState = {
 
   model: null,
 
-  year: null,
-
   fuelType: null,
 
   transmission: null,
 
-  mileage: null,
+  year: null,
+
+  city: null,
+
+  variant: null,
 
   condition: null,
 
   ownership: null,
 
-  city: null,
-
-  variant: null,
+  mileage: null,
 };
+
+const initialMetaState:
+  ValuationMetaState = {
+
+  availableFuelTypes: [],
+
+  availableTransmissions: [],
+
+  availableYears: [],
+};
+
+/* =========================================
+   CONTEXT
+========================================= */
 
 const ValuationContext =
   createContext<
     ValuationContextType | undefined
   >(undefined);
+
+/* =========================================
+   PROVIDER
+========================================= */
 
 type Props = {
   children: ReactNode;
@@ -95,31 +225,81 @@ export function ValuationProvider({
 
   const [data, setData] =
     useState<ValuationState>({
-      ...initialState,
-      vehicleType : vehicleType ? {
-        slug: vehicleType,
-        name: vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1),
-      } : null,
+      form: {
+        ...initialFormState,
+
+        vehicleType: vehicleType
+          ? {
+              slug: vehicleType,
+
+              name:
+                vehicleType.charAt(0).toUpperCase() +
+                vehicleType.slice(1),
+            }
+          : null,
+      },
+
+      meta: initialMetaState,
     });
 
-  const updateData = (
-    values: Partial<ValuationState>
+  /* =========================
+     UPDATE FORM
+  ========================= */
+
+  const updateForm = (
+    values: Partial<ValuationFormState>
   ) => {
 
     setData((prev) => ({
       ...prev,
-      ...values,
+
+      form: {
+        ...prev.form,
+        ...values,
+      },
     }));
   };
+
+  /* =========================
+     UPDATE META
+  ========================= */
+
+  const updateMeta = (
+    values: Partial<ValuationMetaState>
+  ) => {
+
+    setData((prev) => ({
+      ...prev,
+
+      meta: {
+        ...prev.meta,
+        ...values,
+      },
+    }));
+  };
+
+  /* =========================
+     RESET
+  ========================= */
 
   const resetData = () => {
 
     setData({
-      ...initialState,
-      vehicleType : vehicleType ? {
-        slug: vehicleType,
-        name: vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1),
-      } : null,
+      form: {
+        ...initialFormState,
+
+        vehicleType: vehicleType
+          ? {
+              slug: vehicleType,
+
+              name:
+                vehicleType.charAt(0).toUpperCase() +
+                vehicleType.slice(1),
+            }
+          : null,
+      },
+
+      meta: initialMetaState,
     });
   };
 
@@ -127,7 +307,8 @@ export function ValuationProvider({
     <ValuationContext.Provider
       value={{
         data,
-        updateData,
+        updateForm,
+        updateMeta,
         resetData,
       }}
     >
@@ -136,12 +317,17 @@ export function ValuationProvider({
   );
 }
 
+/* =========================================
+   HOOK
+========================================= */
+
 export function useValuation() {
 
   const context =
     useContext(ValuationContext);
 
   if (!context) {
+
     throw new Error(
       "useValuation must be used inside ValuationProvider"
     );

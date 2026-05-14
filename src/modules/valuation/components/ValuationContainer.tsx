@@ -104,13 +104,13 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
   // ========================================
 
   const canProceedByStep = [
-    !!data.brand?.id,        // Step 1
-    !!data.model?.id,        // Step 2
-    !!data.year,             // Step 3
-    !!data.mileage, // Step 4
-    !!data.condition,        // Step 5
-    !!data.city?.id,         // Step 6
-    !!data.ownership,        // Step 7
+    !!data.form.brand?.id,        // Step 1
+    !!data.form.model?.id,        // Step 2
+    !!data.form.year,             // Step 3
+    !!data.form.mileage, // Step 4
+    !!data.form.condition,        // Step 5
+    !!data.form.city?.id,         // Step 6
+    !!data.form.ownership,        // Step 7
   ];
 
   const canProceed =
@@ -151,7 +151,7 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
           onNext={next}
           isFirst={step === 0}
           isLast={step === TOTAL_STEPS - 1}
-          canProceed={canProceed}   // ✅ always enabled (UI phase)
+          canProceed={true}   // always enabled (UI phase)
           isLoading={false}   // ✅ no loading yet
         />
       </div>
