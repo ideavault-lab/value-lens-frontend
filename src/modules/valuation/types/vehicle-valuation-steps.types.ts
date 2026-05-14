@@ -11,10 +11,40 @@ export type VehicleBrand = {
 };
 
 
+export type VehicleFuelType = {
+  id: string;
+
+  slug: string;
+
+  name: string;
+
+  icon: string;
+
+  description: string;
+};
+
+export type VehicleTransmission = {
+  id: string;
+
+  slug: string;
+
+  name: string;
+
+  icon: string;
+
+  description: string;
+};
+
 export type VehicleModel = {
   id: string;
 
   slug: string;
 
   name: string;
+
+  launchYear: number;
+
+  fuelTypes: VehicleFuelType[];
+
+  transmissions: VehicleTransmission[];
 };
