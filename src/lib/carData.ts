@@ -48,10 +48,12 @@ export const LOCATIONS = [
 ];
 
 export const CONDITIONS = [
-  { id: "excellent", label: "Excellent", description: "Like new, no visible wear", icon: "✨" },
-  { id: "good", label: "Good", description: "Minor wear, well maintained", icon: "👍" },
-  { id: "fair", label: "Fair", description: "Some scratches, average condition", icon: "🔧" },
-  { id: "poor", label: "Poor", description: "Significant wear, needs work", icon: "⚠️" },
+    { id: "excellent", label: "Excellent", description: "Like new, no visible wear", icon: "✨", severity: 1 },
+      { id: "good", label: "Good", description: "Minor wear, well maintained", icon: "👍", severity: 2 },
+      { id: "fair", label: "Fair", description: "Some scratches & dents, average condition", icon: "🔧", severity: 3 },
+      { id: "poor", label: "Poor", description: "Significant wear, needs repairs", icon: "⚠️", severity: 4 },
+      // Add more if needed
+      { id: "very_poor", label: "Very Poor", description: "Major damage, not roadworthy", icon: "🚨", severity: 5 },
 ];
 
 export const OWNER_TYPES = [

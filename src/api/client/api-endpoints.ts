@@ -1,6 +1,6 @@
 export const API_ENDPOINTS = {
   VEHICLES: {
-    
+
     TYPES: "/vehicles/types",
 
     BRANDS:
@@ -12,5 +12,7 @@ export const API_ENDPOINTS = {
       brandId: string
     ) =>
       `/vehicles/${vehicleType}/brands/${brandId}/models`,
+
+    MILEAGE_INSIGHTS: `/vehicles/mileage-insights`,
   },
 };

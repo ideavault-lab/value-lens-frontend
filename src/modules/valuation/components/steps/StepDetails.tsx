@@ -95,10 +95,8 @@ const StepDetails = () => {
               : ""
           }
           onValueChange={(v) =>
-            updateForm({
-              year:
-                parseInt(v),
-            })
+            updateForm("year",parseInt(v),
+    )
           }
         >
           <SelectTrigger className="h-12 rounded-xl bg-card border-border">
@@ -156,10 +154,11 @@ const StepDetails = () => {
                   key={fuel.id}
                   type="button"
                   onClick={() =>
-                    updateForm({
-                      fuelType:
-                        fuel,
-                    })
+                    updateForm(
+                      'fuelType',
+                 
+                          fuel,
+                    )
                   }
                   className={`
                     relative flex flex-col items-center justify-center gap-2
@@ -280,9 +279,7 @@ const StepDetails = () => {
                   key={transmission.id}
                   type="button"
                   onClick={() =>
-                    updateForm({
-                      transmission,
-                    })
+                    updateForm("transmission", transmission)
                   }
                   className={`
                     relative flex items-center gap-4

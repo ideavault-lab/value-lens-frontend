@@ -2,14 +2,16 @@
 
 import {
   createContext,
+  ReactNode,
   useContext,
   useState,
-  ReactNode,
 } from "react";
 
-/* =========================================
-   COMMON TYPES
-========================================= */
+import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
+
+/* ========================================================================== */
+/*                                   TYPES                                    */
+/* ========================================================================== */
 
 export type BaseOption = {
   id: string;
@@ -21,47 +23,25 @@ export type VehicleTypeOption = {
   name: string;
 };
 
-/* =========================================
-   FUEL TYPE
-========================================= */
-
 export type FuelTypeOption = {
   id: string;
-
   slug: string;
-
   name: string;
-
   icon?: string;
-
   description?: string;
 };
-
-/* =========================================
-   TRANSMISSION
-========================================= */
 
 export type TransmissionOption = {
   id: string;
-
   slug: string;
-
   name: string;
-
   icon?: string;
-
   description?: string;
 };
 
-/* =========================================
-   VEHICLE MODEL
-========================================= */
-
 export type VehicleModelOption = {
   id: string;
-
   slug: string;
-
   name: string;
 
   launchYear: number;
@@ -71,97 +51,183 @@ export type VehicleModelOption = {
   transmissions: TransmissionOption[];
 };
 
-/* =========================================
-   FORM STATE
-   (actual payload values)
-========================================= */
+/* ========================================================================== */
+/*                               FORM STATE                                   */
+/* ========================================================================== */
 
 export type ValuationFormState = {
 
+  /* VEHICLE */
+
   vehicleType:
-    VehicleTypeOption | null;
+  VehicleTypeOption | null;
 
   brand:
-    BaseOption | null;
+  BaseOption | null;
 
   model:
-    VehicleModelOption | null;
+  VehicleModelOption | null;
 
-  fuelType:
-    FuelTypeOption | null;
-
-  transmission:
-    TransmissionOption | null;
+  /* DETAILS STEP */
 
   year:
-    number | null;
+  number | null;
 
-  city:
-    BaseOption | null;
+  fuelType:
+  FuelTypeOption | null;
 
-  variant:
-    BaseOption | null;
+  transmission:
+  TransmissionOption | null;
 
-  condition:
-    BaseOption | null;
-
-  ownership:
-    BaseOption | null;
+  /* MILEAGE */
 
   mileage:
-    number | null;
+  number | null;
+
+  /* CONDITION STEP */
+
+  condition:
+  BaseOption | null;
+
+  conditionIssues:
+  string[];
+
+  conditionNotes:
+  string;
+
+  /* LOCATION */
+
+  city:
+  BaseOption | null;
+
+  /* OWNERSHIP */
+
+  ownership:
+  BaseOption | null;
+
+  /* VARIANT */
+
+  variant:
+  BaseOption | null;
 };
 
-/* =========================================
-   META STATE
-   (cached reusable UI data)
-========================================= */
+/* ========================================================================== */
+/*                                META STATE                                  */
+/* ========================================================================== */
 
 export type ValuationMetaState = {
 
   availableFuelTypes:
-    FuelTypeOption[];
+  FuelTypeOption[];
 
   availableTransmissions:
-    TransmissionOption[];
+  TransmissionOption[];
 
   availableYears:
-    number[];
+  number[];
 };
 
-/* =========================================
-   ROOT STATE
-========================================= */
+/* ========================================================================== */
+/*                                ROOT STATE                                  */
+/* ========================================================================== */
 
 export type ValuationState = {
 
-  form: ValuationFormState;
+  form:
+  ValuationFormState;
 
-  meta: ValuationMetaState;
+  meta:
+  ValuationMetaState;
 };
 
-/* =========================================
-   CONTEXT TYPE
-========================================= */
+/* ========================================================================== */
+/*                               STEP GROUPS                                  */
+/* ========================================================================== */
 
-type ValuationContextType = {
+export type ValuationStepId =
 
-  data: ValuationState;
+  | "brand"
 
-  updateForm: (
-    values: Partial<ValuationFormState>
-  ) => void;
+  | "model"
 
-  updateMeta: (
-    values: Partial<ValuationMetaState>
-  ) => void;
+  | "details"
 
-  resetData: () => void;
+  | "mileage"
+
+  | "condition"
+
+  | "city"
+
+  | "ownership";
+
+/* ========================================================================== */
+/*                              STEP ORDER                                    */
+/* ========================================================================== */
+
+const STEP_ORDER:
+  ValuationStepId[] = [
+
+    "brand",
+
+    "model",
+
+    "details",
+
+    "mileage",
+
+    "condition",
+
+    "city",
+
+    "ownership",
+  ];
+
+/* ========================================================================== */
+/*                             STEP FIELD MAP                                 */
+/* ========================================================================== */
+
+const STEP_FIELDS:
+  Record<
+    ValuationStepId,
+    (keyof ValuationFormState)[]
+  > = {
+
+  brand: [
+    "brand",
+  ],
+
+  model: [
+    "model",
+  ],
+
+  details: [
+    "year",
+    "fuelType",
+    "transmission",
+  ],
+
+  mileage: [
+    "mileage",
+  ],
+
+  condition: [
+    "condition",
+    "conditionIssues",
+    "conditionNotes",
+  ],
+
+  city: [
+    "city",
+  ],
+
+  ownership: [
+    "ownership",
+  ],
 };
 
-/* =========================================
-   INITIAL STATES
-========================================= */
+/* ========================================================================== */
+/*                           INITIAL FORM STATE                               */
+/* ========================================================================== */
 
 const initialFormState:
   ValuationFormState = {
@@ -172,22 +238,30 @@ const initialFormState:
 
   model: null,
 
+  year: null,
+
   fuelType: null,
 
   transmission: null,
 
-  year: null,
-
-  city: null,
-
-  variant: null,
+  mileage: null,
 
   condition: null,
 
+  conditionIssues: [],
+
+  conditionNotes: "",
+
+  city: null,
+
   ownership: null,
 
-  mileage: null,
+  variant: null,
 };
+
+/* ========================================================================== */
+/*                           INITIAL META STATE                               */
+/* ========================================================================== */
 
 const initialMetaState:
   ValuationMetaState = {
@@ -199,22 +273,62 @@ const initialMetaState:
   availableYears: [],
 };
 
-/* =========================================
-   CONTEXT
-========================================= */
+/* ========================================================================== */
+/*                              CONTEXT TYPE                                  */
+/* ========================================================================== */
+
+type ValuationContextType = {
+
+  data:
+  ValuationState;
+
+  updateForm: (
+    field: keyof ValuationFormState,
+    value: any
+  ) => void;
+
+  updateMeta: (
+    values: Partial<ValuationMetaState>
+  ) => void;
+
+  resetData: () => void;
+};
+
+/* ========================================================================== */
+/*                                  CONTEXT                                   */
+/* ========================================================================== */
 
 const ValuationContext =
   createContext<
     ValuationContextType | undefined
   >(undefined);
 
-/* =========================================
-   PROVIDER
-========================================= */
+/* ========================================================================== */
+/*                             HELPER FUNCTIONS                               */
+/* ========================================================================== */
+
+const getStepByField = (
+  field: keyof ValuationFormState
+): ValuationStepId | null => {
+
+  for (const step of STEP_ORDER) {
+
+    if (
+      STEP_FIELDS[step].includes(field)
+    ) {
+      return step;
+    }
+  }
+
+  return null;
+};
+
+/* ========================================================================== */
+/*                                 PROVIDER                                   */
+/* ========================================================================== */
 
 type Props = {
   children: ReactNode;
-
   vehicleType: string;
 };
 
@@ -223,46 +337,212 @@ export function ValuationProvider({
   vehicleType,
 }: Props) {
 
+  /* ----------------------------------------------------------------------- */
+  /*                         INITIAL VEHICLE TYPE                            */
+  /* ----------------------------------------------------------------------- */
+
+  const initialVehicleType =
+    vehicleType
+      ? {
+        slug: vehicleType,
+
+        name:
+          vehicleType.charAt(0).toUpperCase() +
+          vehicleType.slice(1),
+      }
+      : null;
+
+  /* ----------------------------------------------------------------------- */
+  /*                                 STATE                                   */
+  /* ----------------------------------------------------------------------- */
+
   const [data, setData] =
     useState<ValuationState>({
       form: {
         ...initialFormState,
 
-        vehicleType: vehicleType
-          ? {
-              slug: vehicleType,
-
-              name:
-                vehicleType.charAt(0).toUpperCase() +
-                vehicleType.slice(1),
-            }
-          : null,
+        vehicleType:
+          initialVehicleType,
       },
 
-      meta: initialMetaState,
+      meta:
+        initialMetaState,
     });
 
-  /* =========================
-     UPDATE FORM
-  ========================= */
+  /* ----------------------------------------------------------------------- */
+  /*                        CHECK DEPENDENT STEPS                            */
+  /* ----------------------------------------------------------------------- */
 
-  const updateForm = (
-    values: Partial<ValuationFormState>
+  const hasDependentValues = (
+    field: keyof ValuationFormState,
+    form: ValuationFormState
   ) => {
 
-    setData((prev) => ({
-      ...prev,
+    const currentStep =
+      getStepByField(field);
 
-      form: {
-        ...prev.form,
-        ...values,
-      },
-    }));
+    if (!currentStep) {
+      return false;
+    }
+
+    const currentStepIndex =
+      STEP_ORDER.indexOf(currentStep);
+
+    return STEP_ORDER.some(
+      (step, index) => {
+
+        if (
+          index <= currentStepIndex
+        ) {
+          return false;
+        }
+
+        return STEP_FIELDS[step].some(
+          (fieldKey) => {
+
+            const value =
+              form[fieldKey];
+
+            if (
+              Array.isArray(value)
+            ) {
+              return value.length > 0;
+            }
+
+            return (
+              value !== null &&
+              value !== ""
+            );
+          }
+        );
+      }
+    );
   };
 
-  /* =========================
-     UPDATE META
-  ========================= */
+  /* ----------------------------------------------------------------------- */
+  /*                              APPLY UPDATE                               */
+  /* ----------------------------------------------------------------------- */
+
+  const applyFormUpdate = (
+    field: keyof ValuationFormState,
+    value: any
+  ) => {
+
+    setData((prev) => {
+
+      const currentStep =
+        getStepByField(field);
+
+      /* SAFE */
+
+      if (!currentStep) {
+
+        return {
+          ...prev,
+
+          form: {
+            ...prev.form,
+
+            [field]: value,
+          },
+        };
+      }
+
+      const currentStepIndex =
+        STEP_ORDER.indexOf(currentStep);
+
+      const nextForm: ValuationFormState = {
+        ...prev.form,
+        [field]: value,
+      };
+      /* RESET NEXT STEPS */
+      STEP_ORDER.forEach(
+        (step, index) => {
+
+          if (
+            index <= currentStepIndex
+          ) {
+            return;
+          }
+          STEP_FIELDS[step].forEach(
+            (fieldKey) => {
+
+              (
+                nextForm as Record<
+                  keyof ValuationFormState,
+                  ValuationFormState[keyof ValuationFormState]
+                >
+              )[fieldKey] =
+                initialFormState[fieldKey];
+            }
+          );
+        }
+      );
+      /* KEEP VEHICLE TYPE */
+
+      nextForm.vehicleType =
+        prev.form.vehicleType;
+
+      return {
+        ...prev,
+
+        form: nextForm,
+      };
+    });
+  };
+
+  /* ----------------------------------------------------------------------- */
+  /*                              UPDATE FORM                                */
+  /* ----------------------------------------------------------------------- */
+
+  const updateForm = (
+    field: keyof ValuationFormState,
+    value: any
+  ) => {
+
+    const shouldConfirm =
+      hasDependentValues(
+        field,
+        data.form
+      );
+
+    /* DIRECT UPDATE */
+
+    if (!shouldConfirm) {
+
+      applyFormUpdate(
+        field,
+        value
+      );
+
+      return;
+    }
+
+    /* CONFIRMATION */
+
+    useValuationConfirmation
+      .getState()
+      .openConfirmation({
+
+        title:
+          "Change selection?",
+
+        description:
+          "Changing this will reset the following vehicle details.",
+
+        onConfirm: () => {
+
+          applyFormUpdate(
+            field,
+            value
+          );
+        },
+      });
+  };
+
+  /* ----------------------------------------------------------------------- */
+  /*                              UPDATE META                                */
+  /* ----------------------------------------------------------------------- */
 
   const updateMeta = (
     values: Partial<ValuationMetaState>
@@ -278,9 +558,9 @@ export function ValuationProvider({
     }));
   };
 
-  /* =========================
-     RESET
-  ========================= */
+  /* ----------------------------------------------------------------------- */
+  /*                               RESET ALL                                 */
+  /* ----------------------------------------------------------------------- */
 
   const resetData = () => {
 
@@ -288,27 +568,28 @@ export function ValuationProvider({
       form: {
         ...initialFormState,
 
-        vehicleType: vehicleType
-          ? {
-              slug: vehicleType,
-
-              name:
-                vehicleType.charAt(0).toUpperCase() +
-                vehicleType.slice(1),
-            }
-          : null,
+        vehicleType:
+          initialVehicleType,
       },
 
-      meta: initialMetaState,
+      meta:
+        initialMetaState,
     });
   };
+
+  /* ----------------------------------------------------------------------- */
+  /*                                PROVIDER                                 */
+  /* ----------------------------------------------------------------------- */
 
   return (
     <ValuationContext.Provider
       value={{
         data,
+
         updateForm,
+
         updateMeta,
+
         resetData,
       }}
     >
@@ -317,14 +598,16 @@ export function ValuationProvider({
   );
 }
 
-/* =========================================
-   HOOK
-========================================= */
+/* ========================================================================== */
+/*                                   HOOK                                     */
+/* ========================================================================== */
 
 export function useValuation() {
 
   const context =
-    useContext(ValuationContext);
+    useContext(
+      ValuationContext
+    );
 
   if (!context) {
 

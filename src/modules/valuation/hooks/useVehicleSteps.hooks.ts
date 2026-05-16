@@ -1,7 +1,7 @@
 import { useQuery }
 from "@tanstack/react-query";
 
-import { getVehicleBrands, getVehicleModels }
+import { getMileageInsights, getVehicleBrands, getVehicleModels }
 from "../services/vehicle-steps.api";
 
 export function useVehicleBrands(
@@ -66,5 +66,50 @@ export function useVehicleModels(
     enabled:
       !!vehicleType &&
       !!brandId,
+  });
+}
+
+
+
+export function useMileageInsights(
+  payload: {
+    modelId?: string;
+    fuelTypeId?: string;
+    transmissionId?: string;
+    year?: number | null;
+  }
+) {
+  return useQuery({
+    queryKey: [
+      "vehicle",
+      "mileage-insights",
+      payload.modelId,
+      payload.fuelTypeId,
+      payload.transmissionId,
+      payload.year,
+    ],
+
+    queryFn: async () => {
+      const response =
+        await getMileageInsights({
+          modelId: payload.modelId!,
+          fuelTypeId: payload.fuelTypeId!,
+          transmissionId:
+            payload.transmissionId!,
+          year: payload.year!,
+        });
+
+      return response.data;
+    },
+
+    enabled:
+      !!payload.modelId &&
+      !!payload.fuelTypeId &&
+      !!payload.transmissionId &&
+      !!payload.year,
+
+    staleTime: Infinity,
+
+    retry: false,
   });
 }

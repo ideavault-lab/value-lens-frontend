@@ -2,16 +2,21 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import {
+  Check,
+  ShieldCheck,
+} from "lucide-react";
+
 import { CONDITIONS } from "@/lib/carData";
+import ConditionNotes from "./condition/ConditionNotes";
+import ConditionIssues from "./condition/ConditionIssues";
+import { useValuation } from "../../context/valuation.context";
 
-/* ---------------- TYPES ---------------- */
+/* -------------------------------------------------------------------------- */
+/*                                   TYPES                                    */
+/* -------------------------------------------------------------------------- */
 
-type ConditionId = string; // tighten later if you have exact union
-
-type StepConditionProps = {
-  value: ConditionId | null;
-  onChange: (value: ConditionId) => void;
-};
+type ConditionId = string;
 
 type ConditionItem = {
   id: ConditionId;
@@ -20,82 +25,348 @@ type ConditionItem = {
   icon: React.ReactNode;
 };
 
-/* ---------------- COMPONENT ---------------- */
+const COMMON_ISSUES = [
+  "Minor scratches",
+  "Dent on body",
+  "Paint fade",
+  "Worn tyres",
+  "Seat damage",
+  "Engine noise",
+  "AC issue",
+  "Battery weak",
+  "Service due",
+  "Rust visible",
+  "No issues",
+];
+
+/* -------------------------------------------------------------------------- */
+/*                                 COMPONENT                                  */
+/* -------------------------------------------------------------------------- */
+
 const StepCondition = () => {
-  const [value, setValue] = React.useState<ConditionId | null>(null);
+ const {
+    data,
+    updateForm,
+  } = useValuation();
+
+  /* ---------------------------------------------------------------------- */
+  /*                               FORM VALUES                              */
+  /* ---------------------------------------------------------------------- */
+
+  const selectedCondition =
+    data.form.condition?.id || null;
+
+  const selectedIssues =
+    data.form.conditionIssues;
+
+  const notes =
+    data.form.conditionNotes;
+
+  /* ---------------------------------------------------------------------- */
+  /*                             LOCAL INPUT STATE                          */
+  /* ---------------------------------------------------------------------- */
+
+  const [customIssue, setCustomIssue] =
+    React.useState("");
+
+  /* ---------------------------------------------------------------------- */
+  /*                              SELECT CONDITION                           */
+  /* ---------------------------------------------------------------------- */
+
+  const handleSelectCondition = (
+    condition: ConditionItem
+  ) => {
+
+    updateForm("condition", {
+      id: condition.id,
+      name: condition.label,
+    });
+  };
+
+  /* ---------------------------------------------------------------------- */
+  /*                              TOGGLE ISSUE                              */
+  /* ---------------------------------------------------------------------- */
+
+  const toggleIssue = (
+    issue: string
+  ) => {
+
+    const exists =
+      selectedIssues.includes(issue);
+
+    const updatedIssues =
+      exists
+        ? selectedIssues.filter(
+            (i) => i !== issue
+          )
+        : [...selectedIssues, issue];
+
+    updateForm(
+      "conditionIssues",
+      updatedIssues
+    );
+  };
+
+  /* ---------------------------------------------------------------------- */
+  /*                            ADD CUSTOM ISSUE                            */
+  /* ---------------------------------------------------------------------- */
+
+  const addCustomIssue = () => {
+
+    const value =
+      customIssue.trim();
+
+    if (!value) return;
+
+    if (
+      !selectedIssues.includes(value)
+    ) {
+
+      updateForm(
+        "conditionIssues",
+        [...selectedIssues, value]
+      );
+    }
+
+    setCustomIssue("");
+  };
+
+  /* ---------------------------------------------------------------------- */
+  /*                                  UI                                    */
+  /* ---------------------------------------------------------------------- */
+
+
   return (
-    <div className="space-y-6 p-2">
+    <div className="space-y-6 p-2 pb-10">
+
+      {/* ------------------------------------------------------------------ */}
+      {/* HEADER                                                             */}
+      {/* ------------------------------------------------------------------ */}
+
       <div>
-        <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
-          What condition is it in?
+        <div className="flex items-center gap-2 mb-3">
+
+          <div
+            className="
+              h-9 w-9 rounded-xl
+              bg-primary/10 text-primary
+              flex items-center justify-center
+            "
+          >
+            <ShieldCheck className="h-4 w-4" />
+          </div>
+
+          <div
+            className="
+              h-8 px-3 rounded-full
+              border border-border
+              bg-card
+              text-[11px]
+              font-medium
+              text-muted-foreground
+              flex items-center
+            "
+          >
+            Vehicle Condition
+          </div>
+        </div>
+
+        <h2
+          className="
+            text-2xl md:text-3xl
+            font-heading
+            font-semibold
+            text-foreground
+          "
+        >
+          What condition is your vehicle in?
         </h2>
-        <p className="text-muted-foreground mt-2 text-sm md:text-base">
-          Be honest — it helps us give an accurate estimate
+
+        <p
+          className="
+            text-muted-foreground
+            mt-2
+            text-sm md:text-base
+          "
+        >
+          Select the closest match for better valuation accuracy
         </p>
       </div>
 
-      <div className="space-y-3">
-        {(CONDITIONS as ConditionItem[]).map((cond, i) => (
-          <motion.button
-            key={cond.id}
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.35 }}
-            onClick={() => setValue(cond.id)}
-            className={`
-    w-full flex items-start sm:items-center gap-3 sm:gap-4 
-    p-4 sm:p-5 rounded-xl border-2 text-left 
-    transition-all duration-200
-    hover:border-primary/40 hover:bg-accent/20
-    ${value === cond.id
-                ? "border-primary bg-accent/40 shadow-sm"
-                : "border-border bg-card"
+      {/* ------------------------------------------------------------------ */}
+      {/* CONDITION GRID                                                     */}
+      {/* ------------------------------------------------------------------ */}
+
+      <div
+        className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          gap-3
+        "
+      >
+
+        {(CONDITIONS as ConditionItem[]).map((cond, i) => {
+
+          const active =
+            selectedCondition === cond.id;
+
+          return (
+            <motion.button
+              key={cond.id}
+              type="button"
+              initial={{
+                opacity: 0,
+                y: 12,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: i * 0.03,
+                duration: 0.3,
+              }}
+              whileTap={{
+                scale: 0.985,
+              }}
+              onClick={() =>
+                handleSelectCondition(cond)
               }
-  `}
-          >
-            {/* ICON */}
-            <span className="text-xl sm:text-2xl shrink-0 mt-0.5 sm:mt-0">
-              {cond.icon}
-            </span>
+              className={`
+                relative
+                flex items-start gap-3
+                p-4
+                rounded-xl
+                border-2
+                text-left
+                transition-all
+                duration-200
 
-            {/* TEXT */}
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm sm:text-base text-foreground truncate">
-                {cond.label}
-              </p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 line-clamp-2 sm:line-clamp-none">
-                {cond.description}
-              </p>
-            </div>
+                hover:border-primary/40
+                hover:bg-accent/30
 
-            {/* CHECK */}
-            {value === cond.id && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500 }}
-                className="w-5 h-5 sm:w-6 sm:h-6 bg-primary rounded-full flex items-center justify-center shrink-0"
+                ${active
+                  ? `
+                      border-primary
+                      bg-accent/50
+                      shadow-sm
+                    `
+                  : `
+                      border-border
+                      bg-card
+                    `
+                }
+              `}
+            >
+
+              {/* ICON */}
+              <div
+                className={`
+                  h-11 w-11
+                  rounded-lg
+                  shrink-0
+                  flex items-center justify-center
+                  text-xl
+
+                  ${active
+                    ? "bg-muted"
+                    : "bg-muted"
+                  }
+                `}
               >
-                <svg
-                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={3}
+                {cond.icon}
+              </div>
+
+              {/* CONTENT */}
+              <div className="flex-1 min-w-0">
+
+                <div className="flex items-center gap-2">
+
+                  <h3
+                    className="
+                      text-sm sm:text-base
+                      font-semibold
+                      text-foreground
+                      truncate
+                    "
+                  >
+                    {cond.label}
+                  </h3>
+
+                </div>
+
+                <p
+                  className="
+                    mt-1
+                    text-xs sm:text-sm
+                    text-muted-foreground
+                    leading-relaxed
+                    line-clamp-2
+                  "
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
+                  {cond.description}
+                </p>
+              </div>
+
+              {/* CHECK */}
+              {active && (
+                <motion.div
+                  layoutId="condition-check"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                  }}
+                  className="
+                    absolute
+                    top-2 right-2
+                    h-5 w-5
+                    rounded-full
+                    bg-primary
+                    flex items-center justify-center
+                  "
+                >
+                  <Check
+                    className="
+                      h-3 w-3
+                      text-primary-foreground
+                    "
+                    strokeWidth={3}
                   />
-                </svg>
-              </motion.div>
-            )}
-          </motion.button>
-        ))}
+                </motion.div>
+              )}
+            </motion.button>
+          );
+        })}
       </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* ISSUE TAGS                                                         */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Issues */}
+      <ConditionIssues
+        issues={COMMON_ISSUES}
+        selectedIssues={selectedIssues}
+        customIssue={customIssue}
+        setCustomIssue={setCustomIssue}
+        onToggleIssue={toggleIssue}
+        onAddCustomIssue={addCustomIssue}
+      />
+
+      {/* Notes */}
+      <ConditionNotes
+        value={notes}
+         onChange={(value) =>
+          updateForm(
+            "conditionNotes",
+            value
+          )
+        }
+      />
     </div>
   );
-}
+};
 
-export default StepCondition
+export default StepCondition;

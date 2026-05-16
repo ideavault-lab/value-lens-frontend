@@ -46,11 +46,8 @@ const StepModel = () => {
             );
 
         /* selected values */
-        updateForm({
-            model,
-            year:
-                currentYear,
-        });
+        updateForm("model", model);
+        updateForm("year", currentYear);
 
         /* cached metadata */
         updateMeta({

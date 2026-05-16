@@ -21,19 +21,17 @@ const StepBrand = () => {
     const { data: vehicleBrands, isLoading, isError, error } = useVehicleBrands(data.form.vehicleType?.slug!, search.trim());
 
     const handleSelectBrand = (brandId: string, brandName: string) => {
-        updateForm({
-            brand: data.form.vehicleType ? {
-                id: brandId,
-                name: brandName,
-            } : null,
-        });
+        updateForm("brand", data.form.vehicleType ? {
+            id: brandId,
+            name: brandName,
+        } : null);  
     };
 
     return (
         <div className="space-y-6 p-2">
             {/* Header */}
             <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
+                <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground"> 
                     What brand is your car?
                 </h2>
                 <p className="text-muted-foreground mt-2 text-sm md:text-base">

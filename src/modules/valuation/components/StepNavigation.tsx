@@ -11,6 +11,7 @@ interface StepNavigationProps {
   isLast: boolean;
   canProceed: boolean;
   isLoading?: boolean; // optional (safer)
+  disabled?: boolean; // optional (safer)
 }
 
 export default function StepNavigation({
@@ -20,8 +21,9 @@ export default function StepNavigation({
   isLast,
   canProceed,
   isLoading = false,
+  disabled = false,
 }: StepNavigationProps) {
-  const isDisabled = !canProceed || isLoading;
+  const isDisabled = !canProceed || isLoading || disabled;
 
   return (
     <motion.div
@@ -48,7 +50,7 @@ export default function StepNavigation({
       <Button
         variant="ghost"
         onClick={onBack}
-        disabled={isLoading} // 🔴 prevents weird double clicks
+        disabled={isLoading || disabled} // 🔴 prevents weird double clicks
         className="text-muted-foreground hover:text-foreground group transition-all duration-200"
       >
         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
