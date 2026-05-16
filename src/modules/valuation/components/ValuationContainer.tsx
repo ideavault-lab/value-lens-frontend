@@ -29,6 +29,7 @@ import StepLocation
 
 import StepOwnership
   from "./steps/StepOwnership";
+import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
 
 
 const TOTAL_STEPS = 7;
@@ -66,6 +67,12 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
 
   //context
   const { data } = useValuation();
+  // ✅ confirmation state
+  const isConfirmationOpen =
+    useValuationConfirmation(
+      (state) => state.isOpen
+    );
+
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -79,6 +86,10 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
 
 
   const next = () => {
+
+    // prevent navigation while locked
+    if (isConfirmationOpen) return;
+
     if (step < TOTAL_STEPS - 1) {
       setDirection(1);
       setStep((prev) => prev + 1);
@@ -88,6 +99,9 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
   };
 
   const back = () => {
+
+    // prevent navigation while locked
+    if (isConfirmationOpen) return;
 
     if (step > 0) {
       setDirection(-1);
@@ -126,9 +140,38 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
       </div>
 
       {/* 🟡 Scrollable Step Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto pt-5 pr-1 sm:px-0 px-2">
+      {/* content */}
+      <motion.div
+        ref={scrollRef}
+        animate={{
+          opacity: isConfirmationOpen
+            ? 0.45
+            : 1,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+        className={`
+          flex-1
+          overflow-y-auto
+          pt-5
+          pr-1
+          sm:px-0
+          px-2
+          ${isConfirmationOpen
+            ? "pointer-events-none select-none"
+            : ""
+          }
+        `}
+      >
+
         <div className="min-h-[420px] relative">
-          <AnimatePresence mode="wait" custom={direction}>
+
+          <AnimatePresence
+            mode="wait"
+            custom={direction}
+          >
+
             <motion.div
               key={step}
               custom={direction}
@@ -136,25 +179,62 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+              transition={{
+                duration: 0.35,
+                ease: [0.4, 0, 0.2, 1],
+              }}
             >
               <CurrentStep />
             </motion.div>
+
           </AnimatePresence>
+
         </div>
-      </div>
+      </motion.div>
+
 
       {/* 🟢 Sticky Bottom Navigation */}
-      <div className="sticky bottom-0 left-0 w-full bg-background/95 backdrop-blur border-t border-border pt-4 pb-5 sm:px-0 px-2">
+      {/* navigation */}
+      <motion.div
+        animate={{
+          opacity: isConfirmationOpen
+            ? 0.45
+            : 1,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+        className={`
+          sticky
+          bottom-0
+          left-0
+          w-full
+          bg-background/95
+          backdrop-blur
+          border-t
+          border-border
+          pt-4
+          pb-5
+          sm:px-0
+          px-2
+          ${isConfirmationOpen
+            ? "pointer-events-none"
+            : ""
+          }
+        `}
+      >
+
         <StepNavigation
           onBack={back}
           onNext={next}
           isFirst={step === 0}
           isLast={step === TOTAL_STEPS - 1}
-          canProceed={true}   // always enabled (UI phase)
-          isLoading={false}   // ✅ no loading yet
+          canProceed={true}
+          isLoading={false}
         />
-      </div>
+
+      </motion.div>
+
     </div>
   );
 }

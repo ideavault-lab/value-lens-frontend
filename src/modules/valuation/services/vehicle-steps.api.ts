@@ -3,7 +3,7 @@
 import { API_ENDPOINTS } from "@/api/client/api-endpoints";
 import { http } from "@/api/client/http";
 import { ApiSuccessResponse } from "@/types/api.types";
-import { VehicleBrand, VehicleModel } from "../types/vehicle-valuation-steps.types";
+import { MileageInsights, VehicleBrand, VehicleModel } from "../types/vehicle-valuation-steps.types";
 
 // ========================================
 // BRANDS
@@ -50,6 +50,28 @@ export async function getVehicleModels(
       params: {
         search,
       },
+    }
+  );
+}
+
+
+
+export async function getMileageInsights(
+  payload: {
+    modelId: string;
+    fuelTypeId: string;
+    transmissionId: string;
+    year: number;
+  }
+) {
+  return http.get<
+    ApiSuccessResponse<
+      MileageInsights
+    >
+  >(
+    API_ENDPOINTS.VEHICLES.MILEAGE_INSIGHTS,
+    {
+      params: payload
     }
   );
 }

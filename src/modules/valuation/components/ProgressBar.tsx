@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
+import { AnimatePresence, motion } from "framer-motion";
 import { Check, AlertTriangle } from "lucide-react";
-import { deriveInsight } from "./steps/mileage/gaugeUtils";
-import { InsightBadge } from "./steps/mileage/InsightBadge";
+import ValuationResetAlert from "./ValuationResetAlert";
 
 const STEP_LABELS = [
   "Brand", "Model", "Details", "Mileage", "Condition", "Location", "Ownership"
@@ -14,16 +14,23 @@ interface ProgressBarProps {
   totalSteps: number;
 }
 
-export default function ProgressBar({ 
-  currentStep, 
-  totalSteps 
+export default function ProgressBar({
+  currentStep,
+  totalSteps
 }: ProgressBarProps) {
-  
+
+  const {
+    isOpen,
+    title,
+    description,
+    confirm,
+    closeConfirmation,
+  } = useValuationConfirmation();
+
   const safeStep = Math.min(Math.max(currentStep, 0), totalSteps - 1);
   const progress = ((safeStep + 1) / totalSteps) * 100;
 
-  const showMileageWarning = safeStep === 3;
-  const insight = deriveInsight(300000);
+  const showWarning = false;
 
   // 👇 only show nearby steps on mobile
   const visibleSteps = STEP_LABELS.map((_, i) => i).filter(
@@ -32,7 +39,7 @@ export default function ProgressBar({
 
   return (
     <div className="w-full bg-card border-b border-border sticky top-0 z-50 px-5 py-4">
-      
+
       {/* Progress line */}
       <div className="h-0.5 bg-border rounded-full mb-4 overflow-hidden">
         <motion.div
@@ -44,13 +51,13 @@ export default function ProgressBar({
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        
+
         {/* LEFT: current step */}
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center justify-center w-7 h-7 rounded-xl bg-primary text-primary-foreground font-semibold text-sm ring-2 ring-primary/20 shrink-0">
             {safeStep + 1}
           </div>
-          
+
           <div className="min-w-0">
             <p className="font-medium text-sm text-foreground truncate">
               {STEP_LABELS[safeStep]}
@@ -63,7 +70,7 @@ export default function ProgressBar({
 
         {/* RIGHT: step indicators */}
         <div className="flex items-center gap-2">
-          
+
           {/* Mobile (compressed) */}
           <div className="flex sm:hidden items-center gap-2">
             {visibleSteps.map((index) => {
@@ -75,10 +82,10 @@ export default function ProgressBar({
                   key={index}
                   className={`
                     w-7 h-7 rounded-xl flex items-center justify-center border text-xs font-medium
-                    ${isCompleted 
-                      ? "bg-primary border-primary text-primary-foreground" 
-                      : isActive 
-                        ? "border-primary bg-card text-primary" 
+                    ${isCompleted
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : isActive
+                        ? "border-primary bg-card text-primary"
                         : "border-border text-muted-foreground"
                     }
                   `}
@@ -100,10 +107,10 @@ export default function ProgressBar({
                   key={index}
                   className={`
                     relative w-6 h-6 rounded-xl flex items-center justify-center border transition-all
-                    ${isCompleted 
-                      ? "bg-primary border-primary text-primary-foreground" 
-                      : isActive 
-                        ? "border-primary bg-card shadow-sm" 
+                    ${isCompleted
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : isActive
+                        ? "border-primary bg-card shadow-sm"
                         : "border-border bg-card"
                     }
                   `}
@@ -128,8 +135,17 @@ export default function ProgressBar({
         </div>
       </div>
 
+     {/* confirmation */}
+<ValuationResetAlert
+  isOpen={isOpen}
+  title={title}
+  description={description}
+  onCancel={closeConfirmation}
+  onConfirm={confirm}
+/>
+
       {/* Warning */}
-      {showMileageWarning && (
+      {showWarning && (
         // <motion.div
         //   initial={{ opacity: 0, y: -10 }}
         //   animate={{ opacity: 1, y: 0 }}
@@ -141,7 +157,7 @@ export default function ProgressBar({
         //     Consider mentioning any major service history.
         //   </div>
         // </motion.div>
-        <InsightBadge insight={insight} />
+        <></>
       )}
     </div>
   );

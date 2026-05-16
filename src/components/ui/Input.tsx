@@ -1,16 +1,107 @@
+"use client";
+
 import * as React from "react";
+import {
+  cva,
+  type VariantProps,
+} from "class-variance-authority";
+
 import { cn } from "@/lib/utils";
 
-export type InputProps = React.ComponentPropsWithoutRef<"input">;
+/* -------------------------------------------------------------------------- */
+/*                                   VARIANTS                                 */
+/* -------------------------------------------------------------------------- */
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = "text", ...props }, ref) => {
+const inputVariants = cva(
+  `
+    flex w-full rounded-xl border
+    text-sm
+    transition-all
+    outline-none
+
+    disabled:cursor-not-allowed
+    disabled:opacity-50
+
+    placeholder:text-muted-foreground
+  `,
+  {
+    variants: {
+      variant: {
+        primary: `
+          border-input
+          bg-background
+
+          focus:border-primary/30
+          focus:ring-4
+          focus:ring-primary/10
+        `,
+
+        secondary: `
+          border-border
+          bg-muted/40
+
+          focus:border-primary/20
+          focus:bg-background
+        `,
+
+        ghost: `
+          border-transparent
+          bg-transparent
+
+          focus:border-primary/20
+          focus:bg-background
+        `,
+      },
+
+      inputSize: {
+        sm: "h-9 px-3",
+        default: "h-11 px-4",
+        lg: "h-12 px-5",
+      },
+    },
+
+    defaultVariants: {
+      variant: "primary",
+      inputSize: "default",
+    },
+  }
+);
+
+/* -------------------------------------------------------------------------- */
+/*                                    TYPES                                   */
+/* -------------------------------------------------------------------------- */
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {}
+
+/* -------------------------------------------------------------------------- */
+/*                                 COMPONENT                                  */
+/* -------------------------------------------------------------------------- */
+
+const Input = React.forwardRef<
+  HTMLInputElement,
+  InputProps
+>(
+  (
+    {
+      className,
+      variant,
+      inputSize,
+      type = "text",
+      ...props
+    },
+    ref
+  ) => {
     return (
       <input
-        type={type}
         ref={ref}
+        type={type}
         className={cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          inputVariants({
+            variant,
+            inputSize,
+          }),
           className
         )}
         {...props}
@@ -21,4 +112,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = "Input";
 
-export { Input };
+/* -------------------------------------------------------------------------- */
+/*                                   EXPORTS                                  */
+/* -------------------------------------------------------------------------- */
+
+export {
+  Input,
+  inputVariants,
+};

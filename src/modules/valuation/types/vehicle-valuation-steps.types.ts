@@ -48,3 +48,40 @@ export type VehicleModel = {
 
   transmissions: VehicleTransmission[];
 };
+
+
+//Mileage
+export interface MileageZone {
+  min: number;
+  max: number;
+
+  label: string;
+
+  emoji: string;
+
+  description: string;
+}
+
+export interface MileageQuickPick {
+  label: string;
+
+  value: number;
+}
+
+export interface MileageInsights {
+
+  expectedKm: number;
+
+  yearlyAverage: number;
+
+  recommendedRange: {
+    min: number;
+    max: number;
+  };
+
+  quickPicks:
+    MileageQuickPick[];
+
+  zones:
+    MileageZone[];
+}
