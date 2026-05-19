@@ -7,6 +7,7 @@ import { getCurrentZone } from "./mileage/mileage.utils";
 import QuickPicks from "./mileage/QuickPicks";
 import MileageSlider from "./mileage/MileageSlider";
 import ReadoutBox from "./mileage/ReadoutBox";
+import StepHeader from "./StepHeader";
 
 // ─── Types from API Response ─────────────────────────────────────────────
 export interface MileageZone {
@@ -47,7 +48,7 @@ export default function StepMileage() {
   // Update context when user changes mileage
   const handleMileageChange = useCallback((km: number | null) => {
     setSelectedKm(km);
-    updateForm("mileage", km );
+    updateForm("mileage", km);
   }, [updateForm]);
 
   // Refetch insights when car details change
@@ -62,18 +63,15 @@ export default function StepMileage() {
   return (
     <div className="space-y-6 px-1 pb-4">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
-          How far has it gone?
-        </h2>
-        <p className="text-muted-foreground mt-2 text-sm md:text-base">
-          Mileage significantly impacts your vehicle’s valuation
-        </p>
-      </div>
+      <StepHeader
+        title="How far has it gone?"
+        description="Mileage significantly impacts your vehicle’s valuation"
+      />
+
 
       {/* Readout Box - Shows exact value + Backend Insight */}
       <ReadoutBox
-         value={selectedKm}
+        value={selectedKm}
         zone={currentZone}
         expectedKm={
           insights?.expectedKm

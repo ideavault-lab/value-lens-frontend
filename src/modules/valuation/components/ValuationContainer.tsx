@@ -1,171 +1,211 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import ProgressBar from "@/modules/valuation/components/ProgressBar";
-import StepNavigation from "./StepNavigation";
+import {
+  motion,
+  AnimatePresence,
+} from "framer-motion";
 
 import { useRouter } from "next/navigation";
-import { useValuation, ValuationProvider } from "../context/valuation.context";
 
-import StepBrand
-  from "./steps/StepBrand";
+import ProgressBar
+  from "@/modules/valuation/components/ProgressBar";
 
-import StepModel
-  from "./steps/StepModel";
+import StepNavigation
+  from "./StepNavigation";
 
-import StepDetails
-  from "./steps/StepDetails";
+import {
+  useValuation,
+  ValuationProvider,
+} from "../context/valuation.context";
 
-import StepMileage
-  from "./steps/StepMileage";
+import {
+  useValuationConfirmation,
+} from "@/stores/valuation/valuation-step-guard.store";
 
-import StepCondition
-  from "./steps/StepCondition";
+import { STEP_CONFIG } from "./steps/step-config";
 
-import StepLocation
-  from "./steps/StepLocation";
+/* -------------------------------------------------------------------------- */
+/*                               STEP CONFIG                                  */
+/* -------------------------------------------------------------------------- */
 
-import StepOwnership
-  from "./steps/StepOwnership";
-import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
-
-
-const TOTAL_STEPS = 7;
-
-const steps = [
-  StepBrand,
-  StepModel,
-  StepDetails,
-  StepMileage,
-  StepCondition,
-  StepLocation,
-  StepOwnership,
-];
-
+const TOTAL_STEPS =
+  STEP_CONFIG.length;
+/* -------------------------------------------------------------------------- */
+/*                               ANIMATIONS                                   */
+/* -------------------------------------------------------------------------- */
 
 const slideVariants = {
+
   enter: (direction: number) => ({
     x: direction > 0 ? 80 : -80,
     opacity: 0,
   }),
+
   center: {
     x: 0,
     opacity: 1,
   },
+
   exit: (direction: number) => ({
     x: direction < 0 ? 80 : -80,
     opacity: 0,
   }),
 };
 
-const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
-  const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [direction, setDirection] = useState(1);
+/* -------------------------------------------------------------------------- */
+/*                             CONTENT COMPONENT                              */
+/* -------------------------------------------------------------------------- */
 
-  //context
-  const { data } = useValuation();
-  // ✅ confirmation state
+const ValuationContent = ({
+  vehicleType,
+}: {
+  vehicleType: string;
+}) => {
+
+  const router =
+    useRouter();
+
+  const {
+    data,
+  } = useValuation();
+
   const isConfirmationOpen =
     useValuationConfirmation(
       (state) => state.isOpen
     );
 
+  const [step, setStep] =
+    useState(0);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [direction, setDirection] =
+    useState(1);
 
-  // ✅ ADD THIS (scroll reset on step change)
+  const scrollRef =
+    useRef<HTMLDivElement>(null);
+
+  /* ---------------------------------------------------------------------- */
+  /*                              STEP RESET                                */
+  /* ---------------------------------------------------------------------- */
+
   useEffect(() => {
+
     scrollRef.current?.scrollTo({
       top: 0,
-      behavior: "auto", // important: don't use smooth
+      behavior: "auto",
     });
+
   }, [step]);
 
+  /* ---------------------------------------------------------------------- */
+  /*                              NAVIGATION                                */
+  /* ---------------------------------------------------------------------- */
 
   const next = () => {
 
-    // prevent navigation while locked
-    if (isConfirmationOpen) return;
+    if (isConfirmationOpen) {
+      return;
+    }
+
+    console.log(data, "valuation data at step change");
 
     if (step < TOTAL_STEPS - 1) {
+
       setDirection(1);
+
       setStep((prev) => prev + 1);
-    } else if (step === TOTAL_STEPS - 1) {
-      router.push(`/valuation/${vehicleType}/result`)
+
+      return;
     }
+
+    router.push(
+      `/valuation/${vehicleType}/result`
+    );
   };
 
   const back = () => {
 
-    // prevent navigation while locked
-    if (isConfirmationOpen) return;
+    if (isConfirmationOpen) {
+      return;
+    }
 
     if (step > 0) {
+
       setDirection(-1);
+
       setStep((prev) => prev - 1);
-    } else if (step === 0) {
-      router.push(`/valuation`)
+
+      return;
     }
+
+    router.push("/valuation");
   };
 
-  const CurrentStep = steps[step];
+  /* ---------------------------------------------------------------------- */
+  /*                              CURRENT STEP                              */
+  /* ---------------------------------------------------------------------- */
 
-  // ========================================
-  // STEP VALIDATION
-  // ========================================
 
-  const canProceedByStep = [
-    !!data.form.brand?.id,        // Step 1
-    !!data.form.model?.id,        // Step 2
-    !!data.form.year,             // Step 3
-    !!data.form.mileage, // Step 4
-    !!data.form.condition,        // Step 5
-    !!data.form.city?.id,         // Step 6
-    !!data.form.ownership,        // Step 7
-  ];
+  const CurrentStep =
+    STEP_CONFIG[step].component;
+  /* ---------------------------------------------------------------------- */
+  /*                             VALIDATIONS                                */
+  /* ---------------------------------------------------------------------- */
 
   const canProceed =
-    canProceedByStep[step];
+    STEP_CONFIG[step].isValid(
+      data.form
+    );
+
+  /* ---------------------------------------------------------------------- */
+  /*                                   UI                                   */
+  /* ---------------------------------------------------------------------- */
 
   return (
 
-    <div className="flex flex-col h-[calc(100vh-0rem)]">
+    <div
+      className="flex h-[calc(100vh-0rem)] flex-col"
+    >
 
-      {/* 🔵 Progress */}
+      {/* PROGRESS */}
       <div className="shrink-0">
-        <ProgressBar currentStep={step} totalSteps={TOTAL_STEPS} />
+
+        <ProgressBar
+          currentStep={step}
+          totalSteps={TOTAL_STEPS}
+          steps={STEP_CONFIG.map(
+            (step) => ({
+              id: step.id,
+              label: step.label,
+            })
+          )}
+        />
+
       </div>
 
-      {/* 🟡 Scrollable Step Area */}
-      {/* content */}
+      {/* CONTENT */}
       <motion.div
         ref={scrollRef}
         animate={{
-          opacity: isConfirmationOpen
-            ? 0.45
-            : 1,
+          opacity:
+            isConfirmationOpen
+              ? 0.45
+              : 1,
         }}
         transition={{
           duration: 0.2,
         }}
-        className={`
-          flex-1
-          overflow-y-auto
-          pt-5
-          pr-1
-          sm:px-0
-          px-2
-          ${isConfirmationOpen
-            ? "pointer-events-none select-none"
-            : ""
-          }
-        `}
+        className={`flex-1 overflow-y-auto pt-5 pr-1 sm:px-0 px-2 ${isConfirmationOpen ? "pointer-events-none select-none" : "" }`}
       >
 
-        <div className="min-h-[420px] relative">
+        <div
+          className="relative min-h-[420px]"
+        >
 
           <AnimatePresence
             mode="wait"
@@ -184,44 +224,29 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
                 ease: [0.4, 0, 0.2, 1],
               }}
             >
+
               <CurrentStep />
+
             </motion.div>
 
           </AnimatePresence>
 
         </div>
+
       </motion.div>
 
-
-      {/* 🟢 Sticky Bottom Navigation */}
-      {/* navigation */}
+      {/* NAVIGATION */}
       <motion.div
         animate={{
-          opacity: isConfirmationOpen
-            ? 0.45
-            : 1,
+          opacity:
+            isConfirmationOpen
+              ? 0.45
+              : 1,
         }}
         transition={{
           duration: 0.2,
         }}
-        className={`
-          sticky
-          bottom-0
-          left-0
-          w-full
-          bg-background/95
-          backdrop-blur
-          border-t
-          border-border
-          pt-4
-          pb-5
-          sm:px-0
-          px-2
-          ${isConfirmationOpen
-            ? "pointer-events-none"
-            : ""
-          }
-        `}
+        className={` sticky bottom-0 left-0 w-full border-t border-border bg-background/95 backdrop-blur pt-4 pb-5 sm:px-0 px-2 ${isConfirmationOpen ? "pointer-events-none" : ""}`}
       >
 
         <StepNavigation
@@ -229,7 +254,7 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
           onNext={next}
           isFirst={step === 0}
           isLast={step === TOTAL_STEPS - 1}
-          canProceed={true}
+          canProceed={canProceed}
           isLoading={false}
         />
 
@@ -237,8 +262,11 @@ const ValuationContent = ({ vehicleType }: { vehicleType: string }) => {
 
     </div>
   );
-}
+};
 
+/* -------------------------------------------------------------------------- */
+/*                              ROOT CONTAINER                                */
+/* -------------------------------------------------------------------------- */
 
 const ValuationContainer = ({
   vehicleType,
@@ -247,12 +275,15 @@ const ValuationContainer = ({
 }) => {
 
   return (
+
     <ValuationProvider
       vehicleType={vehicleType}
     >
+
       <ValuationContent
         vehicleType={vehicleType}
       />
+
     </ValuationProvider>
   );
 };

@@ -38,13 +38,376 @@ export const CAR_MODELS = {
   renault: ["Kwid", "Triber", "Kiger", "Duster"],
   mg: ["Hector", "Astor", "Gloster", "ZS EV", "Comet EV"],
   jeep: ["Compass", "Meridian", "Wrangler", "Grand Cherokee"],
+  
 };
 
-export const LOCATIONS = [
-  "Mumbai", "Delhi NCR", "Bangalore", "Chennai", "Hyderabad",
-  "Pune", "Kolkata", "Ahmedabad", "Jaipur", "Lucknow",
-  "Chandigarh", "Kochi", "Indore", "Coimbatore", "Nagpur",
-  "Surat", "Vadodara", "Bhopal", "Visakhapatnam", "Goa"
+export type LocationOption = {
+  id: string;
+  slug: string;
+
+  name: string;
+  state: string;
+
+  tier: "Metro" | "Tier 1" | "Tier 2";
+
+  marketPriority: number;
+
+  demandLevel: "High" | "Medium" | "Low";
+
+  marketLabel: string;
+
+  featured?: boolean;
+};
+
+export const LOCATIONS: LocationOption[] = [
+
+  /* ---------------------------------------------------------------------- */
+  /*                                METRO                                   */
+  /* ---------------------------------------------------------------------- */
+
+  {
+    id: "mum",
+    slug: "mumbai",
+    name: "Mumbai",
+    state: "Maharashtra",
+    tier: "Metro",
+    marketPriority: 1,
+    demandLevel: "High",
+    marketLabel: "Excellent resale market",
+    featured: true,
+  },
+
+  {
+    id: "del",
+    slug: "delhi-ncr",
+    name: "Delhi NCR",
+    state: "Delhi",
+    tier: "Metro",
+    marketPriority: 2,
+    demandLevel: "High",
+    marketLabel: "High used-car demand",
+    featured: true,
+  },
+
+  {
+    id: "blr",
+    slug: "bangalore",
+    name: "Bangalore",
+    state: "Karnataka",
+    tier: "Metro",
+    marketPriority: 3,
+    demandLevel: "High",
+    marketLabel: "Fast-moving resale market",
+    featured: true,
+  },
+
+  {
+    id: "hyd",
+    slug: "hyderabad",
+    name: "Hyderabad",
+    state: "Telangana",
+    tier: "Metro",
+    marketPriority: 4,
+    demandLevel: "High",
+    marketLabel: "Strong resale value",
+    featured: true,
+  },
+
+  {
+    id: "chn",
+    slug: "chennai",
+    name: "Chennai",
+    state: "Tamil Nadu",
+    tier: "Metro",
+    marketPriority: 5,
+    demandLevel: "Medium",
+    marketLabel: "Stable resale demand",
+    featured: true,
+  },
+
+  {
+    id: "kol",
+    slug: "kolkata",
+    name: "Kolkata",
+    state: "West Bengal",
+    tier: "Metro",
+    marketPriority: 6,
+    demandLevel: "Medium",
+    marketLabel: "Growing resale market",
+    featured: true,
+  },
+
+  {
+    id: "pun",
+    slug: "pune",
+    name: "Pune",
+    state: "Maharashtra",
+    tier: "Metro",
+    marketPriority: 7,
+    demandLevel: "High",
+    marketLabel: "Strong buyer demand",
+    featured: true,
+  },
+
+  {
+    id: "ahm",
+    slug: "ahmedabad",
+    name: "Ahmedabad",
+    state: "Gujarat",
+    tier: "Metro",
+    marketPriority: 8,
+    demandLevel: "Medium",
+    marketLabel: "Good resale activity",
+    featured: false,
+  },
+
+  /* ---------------------------------------------------------------------- */
+  /*                               TIER 1                                   */
+  /* ---------------------------------------------------------------------- */
+
+  {
+    id: "koc",
+    slug: "kochi",
+    name: "Kochi",
+    state: "Kerala",
+    tier: "Tier 1",
+    marketPriority: 9,
+    demandLevel: "Medium",
+    marketLabel: "Reliable resale market",
+    featured: true,
+  },
+
+  {
+    id: "cbe",
+    slug: "coimbatore",
+    name: "Coimbatore",
+    state: "Tamil Nadu",
+    tier: "Tier 1",
+    marketPriority: 10,
+    demandLevel: "Medium",
+    marketLabel: "Consistent resale demand",
+    featured: false,
+  },
+
+  {
+    id: "tvm",
+    slug: "thiruvananthapuram",
+    name: "Thiruvananthapuram",
+    state: "Kerala",
+    tier: "Tier 1",
+    marketPriority: 11,
+    demandLevel: "Medium",
+    marketLabel: "Steady resale value",
+    featured: false,
+  },
+
+  {
+    id: "cal",
+    slug: "calicut",
+    name: "Calicut",
+    state: "Kerala",
+    tier: "Tier 1",
+    marketPriority: 12,
+    demandLevel: "Medium",
+    marketLabel: "Good local demand",
+    featured: false,
+  },
+
+  {
+    id: "mys",
+    slug: "mysore",
+    name: "Mysore",
+    state: "Karnataka",
+    tier: "Tier 1",
+    marketPriority: 13,
+    demandLevel: "Medium",
+    marketLabel: "Growing resale market",
+    featured: false,
+  },
+
+  {
+    id: "viz",
+    slug: "visakhapatnam",
+    name: "Visakhapatnam",
+    state: "Andhra Pradesh",
+    tier: "Tier 1",
+    marketPriority: 14,
+    demandLevel: "Medium",
+    marketLabel: "Strong local demand",
+    featured: false,
+  },
+
+  {
+    id: "ind",
+    slug: "indore",
+    name: "Indore",
+    state: "Madhya Pradesh",
+    tier: "Tier 1",
+    marketPriority: 15,
+    demandLevel: "Medium",
+    marketLabel: "Healthy resale activity",
+    featured: false,
+  },
+
+  {
+    id: "bhp",
+    slug: "bhopal",
+    name: "Bhopal",
+    state: "Madhya Pradesh",
+    tier: "Tier 1",
+    marketPriority: 16,
+    demandLevel: "Low",
+    marketLabel: "Moderate resale demand",
+    featured: false,
+  },
+
+  {
+    id: "sur",
+    slug: "surat",
+    name: "Surat",
+    state: "Gujarat",
+    tier: "Tier 1",
+    marketPriority: 17,
+    demandLevel: "Medium",
+    marketLabel: "Strong family car market",
+    featured: false,
+  },
+
+  {
+    id: "nag",
+    slug: "nagpur",
+    name: "Nagpur",
+    state: "Maharashtra",
+    tier: "Tier 1",
+    marketPriority: 18,
+    demandLevel: "Medium",
+    marketLabel: "Balanced resale market",
+    featured: false,
+  },
+
+  /* ---------------------------------------------------------------------- */
+  /*                               TIER 2                                   */
+  /* ---------------------------------------------------------------------- */
+
+  {
+    id: "jai",
+    slug: "jaipur",
+    name: "Jaipur",
+    state: "Rajasthan",
+    tier: "Tier 2",
+    marketPriority: 19,
+    demandLevel: "Medium",
+    marketLabel: "Emerging resale market",
+    featured: false,
+  },
+
+  {
+    id: "lko",
+    slug: "lucknow",
+    name: "Lucknow",
+    state: "Uttar Pradesh",
+    tier: "Tier 2",
+    marketPriority: 20,
+    demandLevel: "Medium",
+    marketLabel: "Growing used-car demand",
+    featured: false,
+  },
+
+  {
+    id: "pat",
+    slug: "patna",
+    name: "Patna",
+    state: "Bihar",
+    tier: "Tier 2",
+    marketPriority: 21,
+    demandLevel: "Low",
+    marketLabel: "Moderate resale activity",
+    featured: false,
+  },
+
+  {
+    id: "rnc",
+    slug: "ranchi",
+    name: "Ranchi",
+    state: "Jharkhand",
+    tier: "Tier 2",
+    marketPriority: 22,
+    demandLevel: "Low",
+    marketLabel: "Smaller resale market",
+    featured: false,
+  },
+
+  {
+    id: "guw",
+    slug: "guwahati",
+    name: "Guwahati",
+    state: "Assam",
+    tier: "Tier 2",
+    marketPriority: 23,
+    demandLevel: "Medium",
+    marketLabel: "Regional demand hub",
+    featured: false,
+  },
+
+  {
+    id: "vij",
+    slug: "vijayawada",
+    name: "Vijayawada",
+    state: "Andhra Pradesh",
+    tier: "Tier 2",
+    marketPriority: 24,
+    demandLevel: "Medium",
+    marketLabel: "Stable resale demand",
+    featured: false,
+  },
+
+  {
+    id: "mad",
+    slug: "madurai",
+    name: "Madurai",
+    state: "Tamil Nadu",
+    tier: "Tier 2",
+    marketPriority: 25,
+    demandLevel: "Low",
+    marketLabel: "Moderate local demand",
+    featured: false,
+  },
+
+  {
+    id: "tri",
+    slug: "thrissur",
+    name: "Thrissur",
+    state: "Kerala",
+    tier: "Tier 2",
+    marketPriority: 26,
+    demandLevel: "Medium",
+    marketLabel: "Strong local resale market",
+    featured: false,
+  },
+
+  {
+    id: "kan",
+    slug: "kannur",
+    name: "Kannur",
+    state: "Kerala",
+    tier: "Tier 2",
+    marketPriority: 27,
+    demandLevel: "Low",
+    marketLabel: "Moderate resale demand",
+    featured: false,
+  },
+
+  {
+    id: "mal",
+    slug: "malappuram",
+    name: "Malappuram",
+    state: "Kerala",
+    tier: "Tier 2",
+    marketPriority: 28,
+    demandLevel: "Medium",
+    marketLabel: "Strong SUV demand",
+    featured: false,
+  },
 ];
 
 export const CONDITIONS = [
@@ -55,12 +418,156 @@ export const CONDITIONS = [
       // Add more if needed
       { id: "very_poor", label: "Very Poor", description: "Major damage, not roadworthy", icon: "🚨", severity: 5 },
 ];
+export type OwnershipOption = {
 
-export const OWNER_TYPES = [
-  { id: "first", label: "1st Owner", description: "You're the original buyer" },
-  { id: "second", label: "2nd Owner", description: "One previous owner" },
-  { id: "third", label: "3rd Owner", description: "Two previous owners" },
-  { id: "fourth_plus", label: "4th+ Owner", description: "Three or more previous owners" },
+  id: string;
+
+  slug: string;
+
+  label: string;
+
+  shortLabel: string;
+
+  description: string;
+
+  badge?: string;
+
+  valueImpact: "high" | "medium" | "low";
+
+  marketDemand:
+    | "Excellent"
+    | "Good"
+    | "Average"
+    | "Low";
+
+  resaleStrength:
+    number;
+
+  buyerTrust:
+    number;
+
+  recommendedMileage: string;
+
+  marketInsight: string;
+};
+
+export const OWNER_TYPES: OwnershipOption[] = [
+
+  {
+    id: "first",
+
+    slug: "first-owner",
+
+    label: "First Owner",
+
+    shortLabel: "1",
+
+    description:
+      "Single-owner vehicles usually have cleaner records, better maintenance consistency, and stronger resale demand.",
+
+    badge: "Highest Resale",
+
+    valueImpact: "high",
+
+    marketDemand: "Excellent",
+
+    resaleStrength: 95,
+
+    buyerTrust: 94,
+
+    recommendedMileage:
+      "Ideal below 60,000 km",
+
+    marketInsight:
+      "Most preferred category in premium and mid-range used-car markets.",
+  },
+
+  {
+    id: "second",
+
+    slug: "second-owner",
+
+    label: "Second Owner",
+
+    shortLabel: "2",
+
+    description:
+      "Second-owner cars remain highly acceptable in the market when mileage and condition are well maintained.",
+
+    badge: "Market Preferred",
+
+    valueImpact: "medium",
+
+    marketDemand: "Good",
+
+    resaleStrength: 82,
+
+    buyerTrust: 80,
+
+    recommendedMileage:
+      "Best below 90,000 km",
+
+    marketInsight:
+      "Strong resale performance when supported by service history.",
+  },
+
+  {
+    id: "third",
+
+    slug: "third-owner",
+
+    label: "Third Owner",
+
+    shortLabel: "3",
+
+    description:
+      "Higher ownership count may slightly reduce buyer confidence and financing attractiveness.",
+
+    badge: "Value Sensitive",
+
+    valueImpact: "medium",
+
+    marketDemand: "Average",
+
+    resaleStrength: 63,
+
+    buyerTrust: 58,
+
+    recommendedMileage:
+      "Typically above 90,000 km",
+
+    marketInsight:
+      "Pricing becomes highly dependent on condition and maintenance quality.",
+  },
+
+  {
+    id: "fourth_plus",
+
+    slug: "fourth-owner-or-more",
+
+    label: "Fourth Owner or More",
+
+    shortLabel: "4+",
+
+    description:
+      "Multi-owner vehicles generally face lower demand due to perceived wear, uncertain maintenance history, and resale risk.",
+
+    badge: "Lower Demand",
+
+    valueImpact: "low",
+
+    marketDemand: "Low",
+
+    resaleStrength: 38,
+
+    buyerTrust: 35,
+
+    recommendedMileage:
+      "Usually high mileage vehicles",
+
+    marketInsight:
+      "Commonly evaluated as budget-market vehicles where condition matters more than ownership history.",
+  },
 ];
 
   export const FUEL_TYPES = [

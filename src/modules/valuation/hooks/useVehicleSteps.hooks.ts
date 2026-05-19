@@ -30,6 +30,8 @@ export function useVehicleBrands(
     },
 
     enabled: !!vehicleType,
+
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -66,6 +68,8 @@ export function useVehicleModels(
     enabled:
       !!vehicleType &&
       !!brandId,
+
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -108,8 +112,7 @@ export function useMileageInsights(
       !!payload.transmissionId &&
       !!payload.year,
 
-    staleTime: Infinity,
+    staleTime: 5 * 60 * 1000,
 
-    retry: false,
   });
 }
