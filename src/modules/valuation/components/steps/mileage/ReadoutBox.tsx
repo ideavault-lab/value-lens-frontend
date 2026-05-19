@@ -18,7 +18,7 @@ from "../StepMileage";
 import { formatKm }
 from "./mileage.utils";
 
-const MAX_KM = 300000;
+const MAX_KM = 1000000;
 
 interface ReadoutBoxProps {
   value: number | null;

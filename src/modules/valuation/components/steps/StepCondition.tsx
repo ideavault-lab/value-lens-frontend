@@ -11,6 +11,7 @@ import { CONDITIONS } from "@/lib/carData";
 import ConditionNotes from "./condition/ConditionNotes";
 import ConditionIssues from "./condition/ConditionIssues";
 import { useValuation } from "../../context/valuation.context";
+import StepHeader from "./StepHeader";
 
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
@@ -44,7 +45,7 @@ const COMMON_ISSUES = [
 /* -------------------------------------------------------------------------- */
 
 const StepCondition = () => {
- const {
+  const {
     data,
     updateForm,
   } = useValuation();
@@ -97,8 +98,8 @@ const StepCondition = () => {
     const updatedIssues =
       exists
         ? selectedIssues.filter(
-            (i) => i !== issue
-          )
+          (i) => i !== issue
+        )
         : [...selectedIssues, issue];
 
     updateForm(
@@ -143,56 +144,10 @@ const StepCondition = () => {
       {/* HEADER                                                             */}
       {/* ------------------------------------------------------------------ */}
 
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-
-          <div
-            className="
-              h-9 w-9 rounded-xl
-              bg-primary/10 text-primary
-              flex items-center justify-center
-            "
-          >
-            <ShieldCheck className="h-4 w-4" />
-          </div>
-
-          <div
-            className="
-              h-8 px-3 rounded-full
-              border border-border
-              bg-card
-              text-[11px]
-              font-medium
-              text-muted-foreground
-              flex items-center
-            "
-          >
-            Vehicle Condition
-          </div>
-        </div>
-
-        <h2
-          className="
-            text-2xl md:text-3xl
-            font-heading
-            font-semibold
-            text-foreground
-          "
-        >
-          What condition is your vehicle in?
-        </h2>
-
-        <p
-          className="
-            text-muted-foreground
-            mt-2
-            text-sm md:text-base
-          "
-        >
-          Select the closest match for better valuation accuracy
-        </p>
-      </div>
-
+      <StepHeader
+        title="What condition is your vehicle in?"
+        description="Select the closest match for better valuation accuracy"
+      />
       {/* ------------------------------------------------------------------ */}
       {/* CONDITION GRID                                                     */}
       {/* ------------------------------------------------------------------ */}
@@ -358,7 +313,7 @@ const StepCondition = () => {
       {/* Notes */}
       <ConditionNotes
         value={notes}
-         onChange={(value) =>
+        onChange={(value) =>
           updateForm(
             "conditionNotes",
             value

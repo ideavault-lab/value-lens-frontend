@@ -1,5 +1,7 @@
-import React from 'react'
-import { MileageZone } from '../StepMileage';
+import React from "react";
+import { MileageZone } from "../StepMileage";
+
+const MAX_MILEAGE = 1000000; // 1000k
 
 const MileageSlider = ({
   value,
@@ -10,39 +12,55 @@ const MileageSlider = ({
   onChange: (v: number) => void;
   zones?: MileageZone[];
 }) => {
- const pct = value ? Math.min((value / 300000) * 100, 100) : 0;
-  const currentZone = zones.find((z) => value && value >= z.min && value <= z.max);
+  const safeValue = value ?? 0;
+
+  // Correct percentage calculation
+  const pct = Math.min((safeValue / MAX_MILEAGE) * 100, 100);
+
+  const currentZone = zones.find(
+    (z) => safeValue >= z.min && safeValue <= z.max
+  );
 
   return (
     <div className="space-y-4">
+      {/* Slider Track */}
       <div className="relative h-3 bg-zinc-200 rounded-full overflow-hidden">
+        {/* Filled Progress */}
         <div
-          className="absolute top-0 left-0 h-full transition-all duration-200"
+          className="absolute top-0 left-0 h-full rounded-full transition-all duration-200"
           style={{
             width: `${pct}%`,
             backgroundColor: currentZone ? "#10b981" : "#64748b",
           }}
         />
+
+        {/* Native Range Input */}
         <input
           type="range"
           min={0}
-          max={300000}
+          max={MAX_MILEAGE}
           step={1000}
-          value={value ?? 0}
+          value={safeValue}
           onChange={(e) => onChange(Number(e.target.value))}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
         />
       </div>
 
+      {/* Scale Labels */}
       <div className="flex justify-between text-xs text-muted-foreground font-mono">
         <span>0</span>
-        <span>75k</span>
-        <span>150k</span>
-        <span>225k</span>
-        <span>300k</span>
+        <span>250k</span>
+        <span>500k</span>
+        <span>750k</span>
+        <span>1000k</span>
+      </div>
+
+      {/* Current Selected Value */}
+      <div className="text-center text-sm font-semibold">
+        {(safeValue / 1000).toFixed(0)}k km
       </div>
     </div>
   );
-}
+};
 
 export default MileageSlider;

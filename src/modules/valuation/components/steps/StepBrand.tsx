@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Search } from "lucide-react";
 import { useValuation } from "../../context/valuation.context";
 import { useVehicleBrands } from "../../hooks/useVehicleSteps.hooks";
+import StepHeader from "./StepHeader";
 
 
 const StepBrand = () => {
@@ -24,20 +25,18 @@ const StepBrand = () => {
         updateForm("brand", data.form.vehicleType ? {
             id: brandId,
             name: brandName,
-        } : null);  
+        } : null);
     };
 
     return (
         <div className="space-y-6 p-2">
             {/* Header */}
-            <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground"> 
-                    What brand is your car?
-                </h2>
-                <p className="text-muted-foreground mt-2 text-sm md:text-base">
-                    Select the manufacturer of your vehicle
-                </p>
-            </div>
+
+
+            <StepHeader
+                title="What brand is your car?"
+                description="Select the manufacturer of your vehicle"
+            />
 
             {/* Search */}
             <div className="relative">

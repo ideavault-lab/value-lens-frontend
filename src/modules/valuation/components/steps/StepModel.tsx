@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useValuation, VehicleModelOption } from "../../context/valuation.context";
 import { useVehicleModels } from "../../hooks/useVehicleSteps.hooks";
 import { VehicleModel } from "../../types/vehicle-valuation-steps.types";
+import StepHeader from "./StepHeader";
 
 
 const StepModel = () => {
@@ -65,14 +66,11 @@ const StepModel = () => {
     return (
         <div className="space-y-6 p-2">
             {/* Header */}
-            <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
-                    Which {data.form.brand?.name} model?
-                </h2>
-                <p className="text-muted-foreground mt-2 text-sm md:text-base">
-                    Choose the specific model of your car
-                </p>
-            </div>
+
+            <StepHeader
+                title={`Which ${data.form.brand?.name} model?`}
+                description=" Choose the specific model of your car"
+            />
 
             {/* Search */}
             <div className="relative">

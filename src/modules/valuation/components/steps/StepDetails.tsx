@@ -17,6 +17,7 @@ import {
   FuelTypeOption,
   TransmissionOption,
 } from "../../context/valuation.context";
+import StepHeader from "./StepHeader";
 
 /* =========================================
    COMPONENT
@@ -56,15 +57,10 @@ const StepDetails = () => {
           HEADER
       ===================================== */}
 
-      <div>
-        <h2 className="text-2xl md:text-3xl font-heading font-semibold text-foreground">
-          Tell us more about your car
-        </h2>
-
-        <p className="text-muted-foreground mt-2 text-sm md:text-base">
-          Year, fuel type, and transmission
-        </p>
-      </div>
+      <StepHeader
+        title="Tell us more about your car"
+        description="Year, fuel type, and transmission"
+      />
 
       {/* =====================================
           YEAR
@@ -95,8 +91,8 @@ const StepDetails = () => {
               : ""
           }
           onValueChange={(v) =>
-            updateForm("year",parseInt(v),
-    )
+            updateForm("year", parseInt(v),
+            )
           }
         >
           <SelectTrigger className="h-12 rounded-xl bg-card border-border">
@@ -156,8 +152,8 @@ const StepDetails = () => {
                   onClick={() =>
                     updateForm(
                       'fuelType',
-                 
-                          fuel,
+
+                      fuel,
                     )
                   }
                   className={`

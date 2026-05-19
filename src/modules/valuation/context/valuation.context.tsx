@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
+import { LocationOption } from "@/lib/carData";
 
 /* ========================================================================== */
 /*                                   TYPES                                    */
@@ -97,8 +98,7 @@ export type ValuationFormState = {
 
   /* LOCATION */
 
-  city:
-  BaseOption | null;
+  city: LocationOption | null;
 
   /* OWNERSHIP */
 
@@ -147,40 +147,26 @@ export type ValuationState = {
 export type ValuationStepId =
 
   | "brand"
-
   | "model"
-
   | "details"
-
+  | "ownership"
   | "mileage"
-
   | "condition"
-
-  | "city"
-
-  | "ownership";
+  | "location";
 
 /* ========================================================================== */
 /*                              STEP ORDER                                    */
 /* ========================================================================== */
 
-const STEP_ORDER:
-  ValuationStepId[] = [
-
-    "brand",
-
-    "model",
-
-    "details",
-
-    "mileage",
-
-    "condition",
-
-    "city",
-
-    "ownership",
-  ];
+const STEP_ORDER: ValuationStepId[] = [
+  "brand",
+  "model",
+  "details",
+  "ownership",
+  "mileage",
+  "condition",
+  "location",
+];
 
 /* ========================================================================== */
 /*                             STEP FIELD MAP                                 */
@@ -206,6 +192,10 @@ const STEP_FIELDS:
     "transmission",
   ],
 
+  ownership: [
+    "ownership",
+  ],
+
   mileage: [
     "mileage",
   ],
@@ -216,12 +206,9 @@ const STEP_FIELDS:
     "conditionNotes",
   ],
 
-  city: [
-    "city",
-  ],
 
-  ownership: [
-    "ownership",
+  location: [
+    "city",
   ],
 };
 
@@ -244,6 +231,8 @@ const initialFormState:
 
   transmission: null,
 
+  ownership: null,
+
   mileage: null,
 
   condition: null,
@@ -254,7 +243,7 @@ const initialFormState:
 
   city: null,
 
-  ownership: null,
+
 
   variant: null,
 };
