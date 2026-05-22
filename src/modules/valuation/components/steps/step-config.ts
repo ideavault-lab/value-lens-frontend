@@ -2,7 +2,7 @@ import StepBrand from "./StepBrand";
 import StepCondition from "./StepCondition";
 import StepDetails from "./StepDetails";
 import StepLocation from "./StepLocation";
-import StepMileage from "./StepMileage";
+import StepKMDriven from "./StepKMDriven";
 import StepModel from "./StepModel";
 import StepOwnership from "./StepOwnership";
 
@@ -30,9 +30,8 @@ export const STEP_CONFIG = [
         component: StepDetails,
         isValid: (form: any) =>
             !!(
-                form.year &&
-                form.fuelType &&
-                form.transmission
+                form.variant?.id &&
+                form.year
             ),
     },
 
@@ -45,11 +44,11 @@ export const STEP_CONFIG = [
     },
 
     {
-        id: "mileage",
-        label: "Mileage",
-        component: StepMileage,
+        id: "kmDriven",
+        label: "Kilometers Driven",
+        component: StepKMDriven,
         isValid: (form: any) =>
-            !!form.mileage,
+            !!form.kmDriven,
     },
 
     {

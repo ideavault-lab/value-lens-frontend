@@ -1,62 +1,45 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useValuation } from "../../context/valuation.context";
-import { useMileageInsights } from "../../hooks/useVehicleSteps.hooks";
 import { getCurrentZone } from "./mileage/mileage.utils";
 import QuickPicks from "./mileage/QuickPicks";
 import MileageSlider from "./mileage/MileageSlider";
 import ReadoutBox from "./mileage/ReadoutBox";
 import StepHeader from "./StepHeader";
-
-// ─── Types from API Response ─────────────────────────────────────────────
-export interface MileageZone {
-  min: number;
-  max: number;
-  label: string;
-  emoji: string;
-  description: string;
-}
+import { useKMDrivenInsights } from "../../hooks/useVehicleSteps.hooks";
 
 // ─── Main Component ─────────────────────────────────────────────────────
-export default function StepMileage() {
+export default function StepKMDriven() {
   const { data, updateForm } = useValuation();
 
   const [selectedKm, setSelectedKm] = useState<number | null>(
-    data.form.mileage || null
+    data.form.kmDriven || null
   );
 
   // Fetch insights from backend
   const {
     data: insights,
     isLoading,
-    refetch,
-  } = useMileageInsights({
+  } = useKMDrivenInsights({
     modelId: data.form.model?.id,
-    fuelTypeId: data.form.fuelType?.id,
-    transmissionId: data.form.transmission?.id,
+    variantId: data.form.variant?.id,
     year: data.form.year,
+    ownerShip: data.form.ownership?.id,
   });
 
   // Sync with context when mileage changes
   useEffect(() => {
-    if (selectedKm !== data.form.mileage) {
-      setSelectedKm(data.form.mileage);
+    if (selectedKm !== data.form.kmDriven) {
+      setSelectedKm(data.form.kmDriven);
     }
-  }, [data.form.mileage]);
+  }, [data.form.kmDriven]);
 
   // Update context when user changes mileage
-  const handleMileageChange = useCallback((km: number | null) => {
+  const handleKMDrivenChange = useCallback((km: number | null) => {
     setSelectedKm(km);
-    updateForm("mileage", km);
+    updateForm("kmDriven", km);
   }, [updateForm]);
-
-  // Refetch insights when car details change
-  useEffect(() => {
-    if (data.form.model?.id && data.form.year) {
-      refetch();
-    }
-  }, [data.form.model?.id, data.form.fuelType?.id, data.form.transmission?.id, data.form.year, refetch]);
 
   const currentZone = getCurrentZone(selectedKm, insights?.zones || []);
 
@@ -64,7 +47,7 @@ export default function StepMileage() {
     <div className="space-y-6 px-1 pb-4">
       {/* Header */}
       <StepHeader
-        title="How far has it gone?"
+        title="How many kilometers has your car driven?"
         description="Mileage significantly impacts your vehicle’s valuation"
       />
 
@@ -78,14 +61,14 @@ export default function StepMileage() {
         }
         isLoading={isLoading}
         onChange={
-          handleMileageChange
+          handleKMDrivenChange
         }
       />
 
       {/* Slider */}
       <MileageSlider
         value={selectedKm}
-        onChange={handleMileageChange}
+        onChange={handleKMDrivenChange}
         zones={insights?.zones}
       />
 
@@ -99,7 +82,7 @@ export default function StepMileage() {
       <QuickPicks
         quickPicks={insights?.quickPicks || []}
         value={selectedKm}
-        onSelect={handleMileageChange}
+        onSelect={handleKMDrivenChange}
       />
 
     </div>

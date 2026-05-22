@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { useValuationConfirmation } from "@/stores/valuation/valuation-step-guard.store";
+
 import { LocationOption } from "@/lib/carData";
 
 /* ========================================================================== */
@@ -42,14 +43,41 @@ export type TransmissionOption = {
 
 export type VehicleModelOption = {
   id: string;
+
   slug: string;
+
   name: string;
 
-  launchYear: number;
+  segment?: string;
+};
 
-  fuelTypes: FuelTypeOption[];
+/* ========================================================================== */
+/*                              VARIANT TYPE                                  */
+/* ========================================================================== */
 
-  transmissions: TransmissionOption[];
+export type VehicleVariantOption = {
+
+  id: string;
+
+  year: number;
+
+  slug: string;
+
+  name: string;
+
+  fuelType: FuelTypeOption;
+
+  transmission: TransmissionOption;
+
+  engineCc: number;
+
+  mileage: number;
+
+  powerBhp: number;
+
+  drivetrain?: string;
+
+  torqueNm?: number;
 };
 
 /* ========================================================================== */
@@ -61,54 +89,52 @@ export type ValuationFormState = {
   /* VEHICLE */
 
   vehicleType:
-  VehicleTypeOption | null;
+    VehicleTypeOption | null;
 
   brand:
-  BaseOption | null;
+    BaseOption | null;
 
   model:
-  VehicleModelOption | null;
-
-  /* DETAILS STEP */
-
-  year:
-  number | null;
-
-  fuelType:
-  FuelTypeOption | null;
-
-  transmission:
-  TransmissionOption | null;
-
-  /* MILEAGE */
-
-  mileage:
-  number | null;
-
-  /* CONDITION STEP */
-
-  condition:
-  BaseOption | null;
-
-  conditionIssues:
-  string[];
-
-  conditionNotes:
-  string;
-
-  /* LOCATION */
-
-  city: LocationOption | null;
-
-  /* OWNERSHIP */
-
-  ownership:
-  BaseOption | null;
+    VehicleModelOption | null;
 
   /* VARIANT */
 
   variant:
-  BaseOption | null;
+    VehicleVariantOption | null;
+
+  /* DETAILS */
+
+  year:
+    number | null;
+
+  realMileage:
+    number | null;
+
+  /* KM DRIVEN */
+
+  kmDriven:
+    number | null;
+
+  /* OWNERSHIP */
+
+  ownership:
+    BaseOption | null;
+
+  /* CONDITION */
+
+  condition:
+    BaseOption | null;
+
+  conditionIssues:
+    string[];
+
+  conditionNotes:
+    string;
+
+  /* LOCATION */
+
+  city:
+    LocationOption | null;
 };
 
 /* ========================================================================== */
@@ -117,14 +143,8 @@ export type ValuationFormState = {
 
 export type ValuationMetaState = {
 
-  availableFuelTypes:
-  FuelTypeOption[];
-
-  availableTransmissions:
-  TransmissionOption[];
-
   availableYears:
-  number[];
+    number[];
 };
 
 /* ========================================================================== */
@@ -134,10 +154,10 @@ export type ValuationMetaState = {
 export type ValuationState = {
 
   form:
-  ValuationFormState;
+    ValuationFormState;
 
   meta:
-  ValuationMetaState;
+    ValuationMetaState;
 };
 
 /* ========================================================================== */
@@ -150,12 +170,12 @@ export type ValuationStepId =
   | "model"
   | "details"
   | "ownership"
-  | "mileage"
+  | "kmDriven"
   | "condition"
   | "location";
 
 /* ========================================================================== */
-/*                              STEP ORDER                                    */
+/*                                STEP ORDER                                  */
 /* ========================================================================== */
 
 const STEP_ORDER: ValuationStepId[] = [
@@ -163,13 +183,13 @@ const STEP_ORDER: ValuationStepId[] = [
   "model",
   "details",
   "ownership",
-  "mileage",
+  "kmDriven",
   "condition",
   "location",
 ];
 
 /* ========================================================================== */
-/*                             STEP FIELD MAP                                 */
+/*                               STEP FIELDS                                  */
 /* ========================================================================== */
 
 const STEP_FIELDS:
@@ -187,17 +207,17 @@ const STEP_FIELDS:
   ],
 
   details: [
+    "variant",
     "year",
-    "fuelType",
-    "transmission",
+    "realMileage",
   ],
 
   ownership: [
     "ownership",
   ],
 
-  mileage: [
-    "mileage",
+  kmDriven: [
+    "kmDriven",
   ],
 
   condition: [
@@ -205,7 +225,6 @@ const STEP_FIELDS:
     "conditionIssues",
     "conditionNotes",
   ],
-
 
   location: [
     "city",
@@ -225,15 +244,15 @@ const initialFormState:
 
   model: null,
 
+  variant: null,
+
   year: null,
 
-  fuelType: null,
+  realMileage: null,
 
-  transmission: null,
+  kmDriven: null,
 
   ownership: null,
-
-  mileage: null,
 
   condition: null,
 
@@ -242,10 +261,6 @@ const initialFormState:
   conditionNotes: "",
 
   city: null,
-
-
-
-  variant: null,
 };
 
 /* ========================================================================== */
@@ -254,10 +269,6 @@ const initialFormState:
 
 const initialMetaState:
   ValuationMetaState = {
-
-  availableFuelTypes: [],
-
-  availableTransmissions: [],
 
   availableYears: [],
 };
@@ -269,7 +280,7 @@ const initialMetaState:
 type ValuationContextType = {
 
   data:
-  ValuationState;
+    ValuationState;
 
   updateForm: (
     field: keyof ValuationFormState,
@@ -293,7 +304,7 @@ const ValuationContext =
   >(undefined);
 
 /* ========================================================================== */
-/*                             HELPER FUNCTIONS                               */
+/*                             HELPER FUNCTION                                */
 /* ========================================================================== */
 
 const getStepByField = (
@@ -333,16 +344,16 @@ export function ValuationProvider({
   const initialVehicleType =
     vehicleType
       ? {
-        slug: vehicleType,
+          slug: vehicleType,
 
-        name:
-          vehicleType.charAt(0).toUpperCase() +
-          vehicleType.slice(1),
-      }
+          name:
+            vehicleType.charAt(0).toUpperCase() +
+            vehicleType.slice(1),
+        }
       : null;
 
   /* ----------------------------------------------------------------------- */
-  /*                                 STATE                                   */
+  /*                                  STATE                                  */
   /* ----------------------------------------------------------------------- */
 
   const [data, setData] =
@@ -409,7 +420,7 @@ export function ValuationProvider({
   };
 
   /* ----------------------------------------------------------------------- */
-  /*                              APPLY UPDATE                               */
+  /*                             APPLY UPDATE                                */
   /* ----------------------------------------------------------------------- */
 
   const applyFormUpdate = (
@@ -422,7 +433,7 @@ export function ValuationProvider({
       const currentStep =
         getStepByField(field);
 
-      /* SAFE */
+      /* SAFE UPDATE */
 
       if (!currentStep) {
 
@@ -442,9 +453,12 @@ export function ValuationProvider({
 
       const nextForm: ValuationFormState = {
         ...prev.form,
+
         [field]: value,
       };
+
       /* RESET NEXT STEPS */
+
       STEP_ORDER.forEach(
         (step, index) => {
 
@@ -453,6 +467,7 @@ export function ValuationProvider({
           ) {
             return;
           }
+
           STEP_FIELDS[step].forEach(
             (fieldKey) => {
 
@@ -467,6 +482,7 @@ export function ValuationProvider({
           );
         }
       );
+
       /* KEEP VEHICLE TYPE */
 
       nextForm.vehicleType =
@@ -530,7 +546,7 @@ export function ValuationProvider({
   };
 
   /* ----------------------------------------------------------------------- */
-  /*                              UPDATE META                                */
+  /*                               UPDATE META                               */
   /* ----------------------------------------------------------------------- */
 
   const updateMeta = (
@@ -548,7 +564,7 @@ export function ValuationProvider({
   };
 
   /* ----------------------------------------------------------------------- */
-  /*                               RESET ALL                                 */
+  /*                                RESET                                    */
   /* ----------------------------------------------------------------------- */
 
   const resetData = () => {
@@ -567,7 +583,7 @@ export function ValuationProvider({
   };
 
   /* ----------------------------------------------------------------------- */
-  /*                                PROVIDER                                 */
+  /*                               PROVIDER                                  */
   /* ----------------------------------------------------------------------- */
 
   return (
@@ -588,7 +604,7 @@ export function ValuationProvider({
 }
 
 /* ========================================================================== */
-/*                                   HOOK                                     */
+/*                                    HOOK                                    */
 /* ========================================================================== */
 
 export function useValuation() {
