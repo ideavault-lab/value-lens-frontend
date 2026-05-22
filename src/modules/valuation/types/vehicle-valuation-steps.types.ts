@@ -1,3 +1,4 @@
+
 export type VehicleBrand = {
   id: string;
   slug: string;
@@ -42,16 +43,13 @@ export type VehicleModel = {
 
   name: string;
 
-  launchYear: number;
+  segment?: string;
 
-  fuelTypes: VehicleFuelType[];
-
-  transmissions: VehicleTransmission[];
+  image?: string;
 };
 
-
 //Mileage
-export interface MileageZone {
+export interface KMDrivenZone {
   min: number;
   max: number;
 
@@ -62,13 +60,29 @@ export interface MileageZone {
   description: string;
 }
 
-export interface MileageQuickPick {
+
+export type VehicleVariant = { 
+  id: string; 
+  slug: string; 
+  year: number; 
+  name: string; 
+  engineCc: number; 
+  mileage: number; 
+  powerBhp: number; 
+  torqueNm?: number; 
+  drivetrain?: string; 
+  exShowroomPriceLakh?: number; 
+  fuelType: VehicleFuelType; 
+  transmission: VehicleTransmission; 
+};
+
+export interface KMDrivenQuickPick {
   label: string;
 
   value: number;
 }
 
-export interface MileageInsights {
+export interface KMDrivenInsights {
 
   expectedKm: number;
 
@@ -80,8 +94,8 @@ export interface MileageInsights {
   };
 
   quickPicks:
-    MileageQuickPick[];
+    KMDrivenQuickPick[];
 
   zones:
-    MileageZone[];
+    KMDrivenZone[];
 }

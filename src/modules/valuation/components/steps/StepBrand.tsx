@@ -7,6 +7,8 @@ import { Search } from "lucide-react";
 import { useValuation } from "../../context/valuation.context";
 import { useVehicleBrands } from "../../hooks/useVehicleSteps.hooks";
 import StepHeader from "./StepHeader";
+import StepBrandSkeleton from "../skeletons/StepBrandSkeleton";
+import { QueryErrorState } from "@/components/ui/QueryErrorState";
 
 
 const StepBrand = () => {
@@ -19,7 +21,7 @@ const StepBrand = () => {
 
 
     //API hooks
-    const { data: vehicleBrands, isLoading, isError, error } = useVehicleBrands(data.form.vehicleType?.slug!, search.trim());
+    const { data: vehicleBrands, isLoading, isError, error, refetch, isFetching } = useVehicleBrands(data.form.vehicleType?.slug!, search.trim());
 
     const handleSelectBrand = (brandId: string, brandName: string) => {
         updateForm("brand", data.form.vehicleType ? {
@@ -51,75 +53,98 @@ const StepBrand = () => {
                 />
             </div>
 
-            {/* Brand Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto pr-1">
-                {vehicleBrands?.map(
-                    (brand, i) => (
-                        <motion.button
-                            key={brand.id}
-                            type="button"
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.03, duration: 0.3 }}
-                            onClick={() => handleSelectBrand(brand.id, brand.name)}
-                            className={`
+            {/* ERROR */}
+            {isError ? (
+
+                <QueryErrorState
+                    title="Failed to load brands"
+                    description={
+                        error instanceof Error
+                            ? error.message
+                            : "Something went wrong while fetching brands."
+                    }
+                    onRetry={refetch}
+                    isRetrying={isFetching}
+                />
+
+            ) : isLoading ? (
+
+                /* LOADING */
+                <StepBrandSkeleton />
+
+            ) : (
+
+
+                /* BRAND GRID */
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto pr-1">
+                    {vehicleBrands?.map(
+                        (brand, i) => (
+                            <motion.button
+                                key={brand.id}
+                                type="button"
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.03, duration: 0.3 }}
+                                onClick={() => handleSelectBrand(brand.id, brand.name)}
+                                className={`
               relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200
               hover:border-primary/40 hover:bg-accent/30
               ${data.form.brand?.id === brand.id
-                                    ? "border-primary bg-accent/50 shadow-sm"
-                                    : "border-border bg-card"
-                                }
+                                        ? "border-primary bg-accent/50 shadow-sm"
+                                        : "border-border bg-card"
+                                    }
             `}
-                        >
-                            <div className="flex items-center gap-3 w-full min-w-0">
-                                <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center overflow-hidden">
-                                    <img
-                                        src={brand.logo.light}
-                                        alt={brand.name}
-                                        className="w-6 h-6 object-contain"
-                                        onError={(e) => {
-                                            e.currentTarget.style.display = "none";
-                                        }}
-                                    />
-                                </div>
-
-                                {/* TEXT */}
-                                <div className="flex flex-col items-start min-w-0 flex-1 text-left">
-                                    <span className="font-medium text-xs sm:text-sm text-foreground truncate w-full">
-                                        {brand.name}
-                                    </span>
-                                    <span className="text-[10px] sm:text-xs text-muted-foreground truncate w-full">
-                                        {brand.country}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {data.form.brand?.id === brand.id && (
-                                <motion.div
-                                    layoutId="brand-check"
-                                    className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center"
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ type: "spring", stiffness: 500 }}
-                                >
-                                    <svg
-                                        className="w-3 h-3 text-primary-foreground"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={3}
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M5 13l4 4L19 7"
+                            >
+                                <div className="flex items-center gap-3 w-full min-w-0">
+                                    <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center overflow-hidden">
+                                        <img
+                                            src={brand.logo.light}
+                                            alt={brand.name}
+                                            className="w-6 h-6 object-contain"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = "none";
+                                            }}
                                         />
-                                    </svg>
-                                </motion.div>
-                            )}
-                        </motion.button>
-                    ))}
-            </div>
+                                    </div>
+
+                                    {/* TEXT */}
+                                    <div className="flex flex-col items-start min-w-0 flex-1 text-left">
+                                        <span className="font-medium text-xs sm:text-sm text-foreground truncate w-full">
+                                            {brand.name}
+                                        </span>
+                                        <span className="text-[10px] sm:text-xs text-muted-foreground truncate w-full">
+                                            {brand.country}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {data.form.brand?.id === brand.id && (
+                                    <motion.div
+                                        layoutId="brand-check"
+                                        className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center"
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: "spring", stiffness: 500 }}
+                                    >
+                                        <svg
+                                            className="w-3 h-3 text-primary-foreground"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth={3}
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M5 13l4 4L19 7"
+                                            />
+                                        </svg>
+                                    </motion.div>
+                                )}
+                            </motion.button>
+                        ))}
+                </div>
+            )}
         </div>
     );
 }

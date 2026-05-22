@@ -13,6 +13,10 @@ export const API_ENDPOINTS = {
     ) =>
       `/vehicles/${vehicleType}/brands/${brandId}/models`,
 
-    MILEAGE_INSIGHTS: `/vehicles/mileage-insights`,
+    VARIANTS: ( vehicleType: string, brandId: string, modelId: string ) => `/vehicles/${vehicleType}/brands/${brandId}/models/${modelId}/variants`,
+
+
+    KM_DRIVEN_INSIGHTS: `/vehicles/km-driven-insights`,
+
   },
 };

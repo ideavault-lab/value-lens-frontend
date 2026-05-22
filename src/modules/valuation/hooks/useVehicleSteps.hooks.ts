@@ -1,7 +1,7 @@
-import { useQuery }
+import { keepPreviousData, useQuery }
 from "@tanstack/react-query";
 
-import { getMileageInsights, getVehicleBrands, getVehicleModels }
+import { getKMDrivenInsights, getVehicleBrands, getVehicleModels, getVehicleVariants }
 from "../services/vehicle-steps.api";
 
 export function useVehicleBrands(
@@ -73,44 +73,86 @@ export function useVehicleModels(
   });
 }
 
-
-
-export function useMileageInsights(
-  payload: {
-    modelId?: string;
-    fuelTypeId?: string;
-    transmissionId?: string;
-    year?: number | null;
-  }
+export function useVehicleVariants(
+  vehicleType: string,
+  brandId: string,
+  modelId: string,
+  year?: number,
+  search?: string
 ) {
+
   return useQuery({
+
     queryKey: [
-      "vehicle",
-      "mileage-insights",
-      payload.modelId,
-      payload.fuelTypeId,
-      payload.transmissionId,
-      payload.year,
+      "vehicle-variants",
+      vehicleType,
+      brandId,
+      modelId,
+      year,
+      search,
     ],
 
     queryFn: async () => {
+
       const response =
-        await getMileageInsights({
-          modelId: payload.modelId!,
-          fuelTypeId: payload.fuelTypeId!,
-          transmissionId:
-            payload.transmissionId!,
-          year: payload.year!,
-        });
+        await getVehicleVariants(
+          vehicleType,
+          brandId,
+          modelId,
+          year,
+          search
+        );
 
       return response.data;
     },
 
     enabled:
+      !!vehicleType &&
+      !!brandId &&
+      !!modelId,
+
+    staleTime:
+      1000 * 60 * 10,
+  });
+}
+
+
+
+export function useKMDrivenInsights(
+  payload: {
+    modelId?: string;
+    variantId?: string;
+    year?: number | null;
+    ownerShip?: string;
+  }
+) {
+  return useQuery({
+    queryKey: [
+      "vehicle",
+      "km-driven-insights",
+      payload.modelId,
+      payload.variantId,
+      payload.year,
+      payload.ownerShip, //for future implementation if insights are also based on ownership
+    ],
+
+    queryFn: async () => {
+      const response =
+        await getKMDrivenInsights({
+          modelId: payload.modelId!,
+          variantId: payload.variantId!,
+          year: payload.year!,
+        });
+
+      return response.data;
+    },
+    placeholderData: keepPreviousData,
+
+    enabled:
       !!payload.modelId &&
-      !!payload.fuelTypeId &&
-      !!payload.transmissionId &&
-      !!payload.year,
+      !!payload.variantId &&
+      !!payload.year &&
+      !!payload.ownerShip,  
 
     staleTime: 5 * 60 * 1000,
 

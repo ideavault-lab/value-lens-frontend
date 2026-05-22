@@ -3,7 +3,7 @@
 import { API_ENDPOINTS } from "@/api/client/api-endpoints";
 import { http } from "@/api/client/http";
 import { ApiSuccessResponse } from "@/types/api.types";
-import { MileageInsights, VehicleBrand, VehicleModel } from "../types/vehicle-valuation-steps.types";
+import { KMDrivenInsights, VehicleBrand, VehicleModel, VehicleVariant } from "../types/vehicle-valuation-steps.types";
 
 // ========================================
 // BRANDS
@@ -56,20 +56,65 @@ export async function getVehicleModels(
 
 
 
-export async function getMileageInsights(
+export async function getVehicleVariants(
+  vehicleType: string,
+  brandId: string,
+  modelId: string,
+  year?: number | null,
+  search?: string
+) {
+
+  const params: Record<
+    string,
+    string | number
+  > = {};
+
+  // only append if exists
+  if (
+    year !== undefined &&
+    year !== null
+  ) {
+
+    params.year = year;
+  }
+
+  // only append if exists
+  if (search?.trim()) {
+
+    params.search =
+      search.trim();
+  }
+
+  return http.get<
+    ApiSuccessResponse<
+      VehicleVariant[]
+    >
+  >(
+    API_ENDPOINTS.VEHICLES.VARIANTS(
+      vehicleType,
+      brandId,
+      modelId
+    ),
+    {
+      params,
+    }
+  );
+}
+
+
+export async function getKMDrivenInsights(
   payload: {
     modelId: string;
-    fuelTypeId: string;
-    transmissionId: string;
+    variantId: string;
     year: number;
   }
 ) {
   return http.get<
     ApiSuccessResponse<
-      MileageInsights
+      KMDrivenInsights
     >
   >(
-    API_ENDPOINTS.VEHICLES.MILEAGE_INSIGHTS,
+    API_ENDPOINTS.VEHICLES.KM_DRIVEN_INSIGHTS,
     {
       params: payload
     }
