@@ -12,18 +12,16 @@ import {
 
 import { Input } from "@/components/ui/Input";
 
-import { MileageZone }
-from "../StepMileage";
 
-import { formatKm }
-from "./mileage.utils";
+import { formatKm } from "./km-driven.utils";
+import { KMDrivenZone } from "@/modules/valuation/types/vehicle-valuation-steps.types";
 
 const MAX_KM = 1000000;
 
 interface ReadoutBoxProps {
   value: number | null;
 
-  zone: MileageZone;
+  zone: KMDrivenZone;
 
   expectedKm?: number;
 

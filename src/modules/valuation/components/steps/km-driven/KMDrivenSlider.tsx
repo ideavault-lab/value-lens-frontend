@@ -1,16 +1,17 @@
+import { KMDrivenZone } from "@/modules/valuation/types/vehicle-valuation-steps.types";
 import React from "react";
-import { MileageZone } from "../StepMileage";
+
 
 const MAX_MILEAGE = 1000000; // 1000k
 
-const MileageSlider = ({
+const KMDrivenSlider = ({
   value,
   onChange,
   zones = [],
 }: {
   value: number | null;
   onChange: (v: number) => void;
-  zones?: MileageZone[];
+  zones?: KMDrivenZone[];
 }) => {
   const safeValue = value ?? 0;
 
@@ -63,4 +64,4 @@ const MileageSlider = ({
   );
 };
 
-export default MileageSlider;
+export default KMDrivenSlider;

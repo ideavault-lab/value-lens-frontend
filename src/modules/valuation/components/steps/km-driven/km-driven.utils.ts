@@ -1,4 +1,5 @@
-import { MileageZone } from "../StepMileage";
+import { KMDrivenZone } from "@/modules/valuation/types/vehicle-valuation-steps.types";
+
 
 // ─── Helper Functions ───────────────────────────────────────────────────
 export function formatKm(km: number | null): string {
@@ -6,7 +7,7 @@ export function formatKm(km: number | null): string {
   return km.toLocaleString("en-IN");
 }
 
-export function getCurrentZone(km: number | null, zones: MileageZone[]): MileageZone {
+export function getCurrentZone(km: number | null, zones: KMDrivenZone[]): KMDrivenZone {
   if (!km || km <= 0) {
     return {
       min: 0,
