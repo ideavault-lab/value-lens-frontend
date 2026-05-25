@@ -2,12 +2,14 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useValuation } from "../../context/valuation.context";
-import { getCurrentZone } from "./mileage/mileage.utils";
-import QuickPicks from "./mileage/QuickPicks";
-import MileageSlider from "./mileage/MileageSlider";
-import ReadoutBox from "./mileage/ReadoutBox";
+
+import QuickPicks from "./km-driven/QuickPicks";
+
+import ReadoutBox from "./km-driven/ReadoutBox";
 import StepHeader from "./StepHeader";
 import { useKMDrivenInsights } from "../../hooks/useVehicleSteps.hooks";
+import KMDrivenSlider from "./km-driven/KMDrivenSlider";
+import { getCurrentZone } from "./km-driven/km-driven.utils";
 
 // ─── Main Component ─────────────────────────────────────────────────────
 export default function StepKMDriven() {
@@ -66,7 +68,7 @@ export default function StepKMDriven() {
       />
 
       {/* Slider */}
-      <MileageSlider
+      <KMDrivenSlider
         value={selectedKm}
         onChange={handleKMDrivenChange}
         zones={insights?.zones}
