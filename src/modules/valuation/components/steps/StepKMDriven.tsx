@@ -23,6 +23,10 @@ export default function StepKMDriven() {
   const {
     data: insights,
     isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
   } = useKMDrivenInsights({
     modelId: data.form.model?.id,
     variantId: data.form.variant?.id,
@@ -85,6 +89,11 @@ export default function StepKMDriven() {
         quickPicks={insights?.quickPicks || []}
         value={selectedKm}
         onSelect={handleKMDrivenChange}
+        dataLoading={isLoading}
+         isError={isError}
+  error={error}
+  onRetry={refetch}
+  isRetrying={isFetching}
       />
 
     </div>

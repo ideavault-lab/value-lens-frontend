@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Bike,
   Car,
+  Loader2,
   LucideIcon,
   ShieldCheck,
   Sparkles,
@@ -28,6 +29,7 @@ import { VehicleSelectorCardSkeleton }
 import {
   useVehicleTypes,
 } from "../hooks/useVehicleTypes";
+import { useState } from "react";
 
 /* -------------------------------------------------------------------------- */
 /*                                    ICONS                                   */
@@ -79,6 +81,8 @@ export default function VehicleSelector() {
   const router =
     useRouter();
 
+  const [localLoading, setLocalLoading] = useState(false);
+
   const {
     data: vehicleTypes = [],
     isLoading,
@@ -97,7 +101,9 @@ export default function VehicleSelector() {
     enabled: boolean
   ) => {
 
-    if (!enabled) return;
+    if (!enabled || localLoading) return;
+
+    setLocalLoading(true);
 
     router.push(`/valuation/${slug}`);
   };
@@ -272,16 +278,16 @@ export default function VehicleSelector() {
                     whileHover={
                       isEnabled
                         ? {
-                            y: -5,
-                            scale: 1.015,
-                          }
+                          y: -5,
+                          scale: 1.015,
+                        }
                         : {}
                     }
                     whileTap={
                       isEnabled
                         ? {
-                            scale: 0.985,
-                          }
+                          scale: 0.985,
+                        }
                         : {}
                     }
                     onClick={() =>
@@ -290,11 +296,10 @@ export default function VehicleSelector() {
                         isEnabled
                       )
                     }
-                    className={`group relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] border p-6 text-left transition-all duration-300 md:min-h-[340px] md:p-7 ${
-                      isEnabled
+                    className={`group relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] border p-6 text-left transition-all duration-300 md:min-h-[340px] md:p-7 ${isEnabled
                         ? "cursor-pointer border-border bg-card/95 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
                         : "cursor-not-allowed border-border/60 bg-muted/30 opacity-75"
-                    }`}
+                      }`}
                   >
 
                     {/* GLOW */}
@@ -308,11 +313,10 @@ export default function VehicleSelector() {
                     <div className="relative z-10 flex items-start justify-between">
 
                       {/* ICON */}
-                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 md:h-20 md:w-20 ${
-                        isEnabled
+                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 md:h-20 md:w-20 ${isEnabled
                           ? "bg-primary/10 text-primary group-hover:scale-105 group-hover:bg-primary/15"
                           : "bg-muted text-muted-foreground"
-                      }`}
+                        }`}
                       >
 
                         <Icon
@@ -381,7 +385,11 @@ export default function VehicleSelector() {
 
                             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition-all duration-300 group-hover:translate-x-1">
 
-                              <ArrowRight className="h-5 w-5" />
+                              {localLoading ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                              ) : (
+                                <ArrowRight className="h-5 w-5" />
+                              )}
 
                             </div>
 

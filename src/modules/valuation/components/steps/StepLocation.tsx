@@ -160,8 +160,10 @@ const StepLocation = () => {
             location
           )
         }
-        className={`relative overflow-hidden rounded-2xl border p-3.5 text-left transition-all duration-200 hover:border-primary/30 hover:bg-accent/30 ${active
-            ? "border-primary bg-primary/5 shadow-sm"
+        className={`relative overflow-hidden rounded-xl p-3.5 text-left transition-all duration-200 border-2
+                        hover:border-primary/40
+                                    hover:bg-accent/30 ${active
+            ? "border-primary bg-accent/50 shadow-sm"
             : "border-border bg-card"
           }`}
       >
@@ -269,9 +271,13 @@ const StepLocation = () => {
             setSearch(e.target.value)
           }
           placeholder="Search city or state..."
-          variant="secondary"
           inputSize="lg"
-          className="pl-10"
+          className="                pl-10
+                        bg-card
+                        border-border
+                        h-12
+                        rounded-xl
+                        text-sm"
         />
 
       </div>
