@@ -195,7 +195,12 @@ export default function StepDetails() {
             }}
           >
 
-            <SelectTrigger className="h-12 rounded-2xl border-border bg-card">
+            <SelectTrigger className="
+                        bg-card
+                        border-border
+                        h-12
+                        rounded-xl
+                        text-sm">
 
               <SelectValue placeholder="All years" />
 
@@ -254,11 +259,12 @@ export default function StepDetails() {
               }
               placeholder="Search variants..."
               className="
-                h-12
-                rounded-2xl
-                border-border
-                bg-card
                 pl-10
+                        bg-card
+                        border-border
+                        h-12
+                        rounded-xl
+                        text-sm
               "
             />
 
@@ -352,25 +358,22 @@ export default function StepDetails() {
                         group
                         relative
                         overflow-hidden
-                        rounded-[30px]
+                        rounded-xl
                         border
                         p-5
                         text-left
                         transition-all
-                        duration-300
+                        duration-200
+                         border-2
+                        hover:border-primary/40
+                                    hover:bg-accent/30
 
-                        ${
-                          active
-                            ? `
-                              border-primary
-                              bg-primary/[0.05]
-                              shadow-lg
-                              shadow-primary/10
+                        ${active
+                          ? `
+                             border-primary bg-accent/50 shadow-sm
                             `
-                            : `
-                              border-border
-                              bg-card
-                              hover:border-primary/30
+                          : `
+                              border-border bg-card
                             `
                         }
                       `}
@@ -436,28 +439,6 @@ export default function StepDetails() {
                             >
                               {variant.year}
                             </div>
-
-                            {active && (
-
-                              <motion.div
-                                initial={{
-                                  scale: 0,
-                                }}
-                                animate={{
-                                  scale: 1,
-                                }}
-                                className="
-                                  rounded-full
-                                  bg-primary/10
-                                  p-1
-                                  text-primary
-                                "
-                              >
-
-                                <Sparkles className="h-3.5 w-3.5" />
-
-                              </motion.div>
-                            )}
 
                           </div>
 
@@ -705,10 +686,7 @@ export default function StepDetails() {
                             mt-4
                             overflow-hidden
                             rounded-2xl
-                            border
-                            border-primary/15
-                            bg-primary/[0.03]
-                            p-4
+                            p-1
                           "
                         >
 
