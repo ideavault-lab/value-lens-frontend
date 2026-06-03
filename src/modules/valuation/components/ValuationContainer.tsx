@@ -29,6 +29,7 @@ import {
 } from "@/stores/valuation/valuation-step-guard.store";
 
 import { STEP_CONFIG } from "./steps/step-config";
+import { useCreateValuationSession } from "@/modules/valuation-result/hooks/useValuation.hooks";
 
 /* -------------------------------------------------------------------------- */
 /*                               STEP CONFIG                                  */
@@ -71,9 +72,14 @@ const ValuationContent = ({
   const router =
     useRouter();
 
+    //context
   const {
     data,
   } = useValuation();
+
+    //hooks
+  const createValuation =
+  useCreateValuationSession();
 
   const isConfirmationOpen =
     useValuationConfirmation(
@@ -106,7 +112,7 @@ const ValuationContent = ({
   /*                              NAVIGATION                                */
   /* ---------------------------------------------------------------------- */
 
-  const next = () => {
+  const next = async () => {
 
     if (isConfirmationOpen) {
       return;
@@ -123,9 +129,38 @@ const ValuationContent = ({
       return;
     }
 
+   try {
+
+    const response =
+      await createValuation.mutateAsync(
+        data.form
+      );
+
+    const sessionId =
+      response?.data?.sessionId;
+
+    if (!sessionId) {
+
+      throw new Error(
+        "Session ID not returned"
+      );
+    }
+
     router.push(
-      `/valuation/${vehicleType}/result`
+      `/valuation/${vehicleType}/result?session=${sessionId}`
     );
+
+  } catch (error) {
+
+    console.error(
+      "Failed to create valuation session",
+      error
+    );
+
+    // toast.error(
+    //   "Failed to create valuation"
+    // );
+  }
   };
 
   const back = () => {
