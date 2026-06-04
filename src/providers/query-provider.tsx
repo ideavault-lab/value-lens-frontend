@@ -1,5 +1,6 @@
 "use client";
 
+import { ToastProvider } from "@/components/ui/toast/ToastProvider";
 import {
   QueryClient,
   QueryClientProvider,
@@ -30,7 +31,9 @@ export default function QueryProvider({
     <QueryClientProvider
       client={queryClient}
     >
+    <ToastProvider>
       {children}
+    </ToastProvider>
     </QueryClientProvider>
   );
 }

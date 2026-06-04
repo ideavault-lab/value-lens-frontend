@@ -18,5 +18,14 @@ export const API_ENDPOINTS = {
 
     KM_DRIVEN_INSIGHTS: `/vehicles/km-driven-insights`,
 
+
+  },
+
+  VALUATION: {
+
+    CREATE_SESSION: "/valuation/create-session",
+
+    // PREDICT: (sessionId: string) =>
+    //   `/valuation/predict/${sessionId}`,
   },
 };
