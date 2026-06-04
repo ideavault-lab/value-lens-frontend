@@ -4,5 +4,6 @@ export interface CreateValuationSessionResponse {
 
 export interface CreateValuationSessionApiResponse {
   status: boolean;
+  message: string;
   data: CreateValuationSessionResponse;
 }

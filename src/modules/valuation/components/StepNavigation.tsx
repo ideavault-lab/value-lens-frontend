@@ -12,6 +12,7 @@ interface StepNavigationProps {
   canProceed: boolean;
   isLoading?: boolean; // optional (safer)
   disabled?: boolean; // optional (safer)
+  highlightNext?: boolean;
 }
 
 export default function StepNavigation({
@@ -22,6 +23,7 @@ export default function StepNavigation({
   canProceed,
   isLoading = false,
   disabled = false,
+  highlightNext = false,
 }: StepNavigationProps) {
   const isDisabled = !canProceed || isLoading || disabled;
 
@@ -58,36 +60,54 @@ export default function StepNavigation({
       </Button>
 
       {/* Next */}
-      <Button
-        onClick={onNext}
-        disabled={isDisabled}
-        className={`
-          px-8 py-3 rounded-xl font-semibold transition-all duration-300 
-          ${isLast
-            ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30"
-            : "bg-foreground hover:bg-foreground/90 text-background"
-          }
-          disabled:opacity-40 disabled:cursor-not-allowed
-          group
-        `}
+
+      <motion.div
+        animate={
+          highlightNext
+            ? {
+              scale: [1, 1.08, 0.96, 1.04, 1],
+              rotate: [0, -2, 2, -1, 0],
+            }
+            : {}
+        }
+        transition={{
+          duration: 0.8,
+          ease: "easeOut",
+        }}
       >
-        {isLoading ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-            Predicting...
-          </div>
-        ) : isLast ? (
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" />
-            Get Valuation
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            Continue
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </div>
-        )}
-      </Button>
+        <Button
+          onClick={onNext}
+          disabled={isDisabled}
+          className={`
+      px-8 py-3 rounded-xl font-semibold
+      transition-all duration-300
+      ${isLast
+              ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+              : "bg-foreground hover:bg-foreground/90 text-background"
+            }
+      disabled:opacity-40
+      disabled:cursor-not-allowed
+      group
+    `}
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+              Predicting...
+            </div>
+          ) : isLast ? (
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Get Valuation
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              Continue
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          )}
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }

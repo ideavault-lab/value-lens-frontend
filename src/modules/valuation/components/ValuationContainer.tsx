@@ -30,6 +30,7 @@ import {
 
 import { STEP_CONFIG } from "./steps/step-config";
 import { useCreateValuationSession } from "@/modules/valuation-result/hooks/useValuation.hooks";
+import { useToast } from "@/components/ui/toast/useToast";
 
 /* -------------------------------------------------------------------------- */
 /*                               STEP CONFIG                                  */
@@ -69,117 +70,36 @@ const ValuationContent = ({
   vehicleType: string;
 }) => {
 
-  const router =
-    useRouter();
+  const router = useRouter();
+  const toast = useToast();
 
-    //context
+  const [highlightNext, setHighlightNext] =
+    useState(false);
+
+
+  //context
   const {
     data,
+
+    step,
+    direction,
+
+    nextStep,
+    previousStep,
   } = useValuation();
 
-    //hooks
+  //hooks
   const createValuation =
-  useCreateValuationSession();
+    useCreateValuationSession();
 
   const isConfirmationOpen =
     useValuationConfirmation(
       (state) => state.isOpen
     );
 
-  const [step, setStep] =
-    useState(0);
-
-  const [direction, setDirection] =
-    useState(1);
-
   const scrollRef =
     useRef<HTMLDivElement>(null);
 
-  /* ---------------------------------------------------------------------- */
-  /*                              STEP RESET                                */
-  /* ---------------------------------------------------------------------- */
-
-  useEffect(() => {
-
-    scrollRef.current?.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-
-  }, [step]);
-
-  /* ---------------------------------------------------------------------- */
-  /*                              NAVIGATION                                */
-  /* ---------------------------------------------------------------------- */
-
-  const next = async () => {
-
-    if (isConfirmationOpen) {
-      return;
-    }
-
-    console.log(data, "valuation data at step change");
-
-    if (step < TOTAL_STEPS - 1) {
-
-      setDirection(1);
-
-      setStep((prev) => prev + 1);
-
-      return;
-    }
-
-   try {
-
-    const response =
-      await createValuation.mutateAsync(
-        data.form
-      );
-
-    const sessionId =
-      response?.data?.sessionId;
-
-    if (!sessionId) {
-
-      throw new Error(
-        "Session ID not returned"
-      );
-    }
-
-    router.push(
-      `/valuation/${vehicleType}/result?session=${sessionId}`
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Failed to create valuation session",
-      error
-    );
-
-    // toast.error(
-    //   "Failed to create valuation"
-    // );
-  }
-  };
-
-  const back = () => {
-
-    if (isConfirmationOpen) {
-      return;
-    }
-
-    if (step > 0) {
-
-      setDirection(-1);
-
-      setStep((prev) => prev - 1);
-
-      return;
-    }
-
-    router.push("/valuation");
-  };
 
   /* ---------------------------------------------------------------------- */
   /*                              CURRENT STEP                              */
@@ -196,6 +116,109 @@ const ValuationContent = ({
     STEP_CONFIG[step].isValid(
       data.form
     );
+
+
+  /* ---------------------------------------------------------------------- */
+  /*                              STEP RESET                                */
+  /* ---------------------------------------------------------------------- */
+
+  useEffect(() => {
+
+    scrollRef.current?.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+
+  }, [step]);
+
+
+  /* ---------------------------------------------------------------------- */
+  /*                              HIGHLIGHT NEXT                             */
+  /* ---------------------------------------------------------------------- */
+  useEffect(() => {
+
+    if (canProceed) {
+
+      setHighlightNext(true);
+
+      const timer = setTimeout(
+        () => setHighlightNext(false),
+        1200
+      );
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [canProceed]);
+
+  /* ---------------------------------------------------------------------- */
+  /*                              NAVIGATION                                */
+  /* ---------------------------------------------------------------------- */
+
+  const next = async () => {
+
+    if (isConfirmationOpen) {
+      return;
+    }
+
+    console.log(data, "valuation data at step change");
+
+    if (step < TOTAL_STEPS - 1) {
+
+      nextStep();
+
+      return;
+    }
+
+    try {
+
+      const response =
+        await createValuation.mutateAsync(
+          data.form
+        );
+
+      const sessionId =
+        response?.data?.sessionId;
+
+      if (!sessionId) {
+        toast.error("Session ID not returned");
+        return;
+      }
+
+      toast.success(response.message || "Vehicle details saved");
+
+      router.push(
+        `/valuation/${vehicleType}/result?session=${sessionId}`
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Failed to create valuation session",
+        error
+      );
+
+      toast.error(
+        "Failed to create valuation session"
+      );
+    }
+  };
+
+  const back = () => {
+
+    if (isConfirmationOpen) {
+      return;
+    }
+
+    if (step > 0) {
+
+      previousStep();
+
+      return;
+    }
+
+    router.push("/valuation");
+  };
 
   /* ---------------------------------------------------------------------- */
   /*                                   UI                                   */
@@ -235,7 +258,7 @@ const ValuationContent = ({
         transition={{
           duration: 0.2,
         }}
-        className={`flex-1 overflow-y-auto pt-5 pr-1 sm:px-0 px-2 ${isConfirmationOpen ? "pointer-events-none select-none" : "" }`}
+        className={`flex-1 overflow-y-auto pt-5 pr-1 sm:px-0 px-2 ${isConfirmationOpen ? "pointer-events-none select-none" : ""}`}
       >
 
         <div
@@ -291,6 +314,7 @@ const ValuationContent = ({
           isLast={step === TOTAL_STEPS - 1}
           canProceed={canProceed}
           isLoading={false}
+          highlightNext={highlightNext}
         />
 
       </motion.div>

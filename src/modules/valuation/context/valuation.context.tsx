@@ -89,52 +89,52 @@ export type ValuationFormState = {
   /* VEHICLE */
 
   vehicleType:
-    VehicleTypeOption | null;
+  VehicleTypeOption | null;
 
   brand:
-    BaseOption | null;
+  BaseOption | null;
 
   model:
-    VehicleModelOption | null;
+  VehicleModelOption | null;
 
   /* VARIANT */
 
   variant:
-    VehicleVariantOption | null;
+  VehicleVariantOption | null;
 
   /* DETAILS */
 
   year:
-    number | null;
+  number | null;
 
   realMileage:
-    number | null;
+  number | null;
 
   /* KM DRIVEN */
 
   kmDriven:
-    number | null;
+  number | null;
 
   /* OWNERSHIP */
 
   ownership:
-    BaseOption | null;
+  BaseOption | null;
 
   /* CONDITION */
 
   condition:
-    BaseOption | null;
+  BaseOption | null;
 
   conditionIssues:
-    string[];
+  string[];
 
   conditionNotes:
-    string;
+  string;
 
   /* LOCATION */
 
   city:
-    LocationOption | null;
+  LocationOption | null;
 };
 
 /* ========================================================================== */
@@ -144,7 +144,7 @@ export type ValuationFormState = {
 export type ValuationMetaState = {
 
   availableYears:
-    number[];
+  number[];
 };
 
 /* ========================================================================== */
@@ -154,10 +154,10 @@ export type ValuationMetaState = {
 export type ValuationState = {
 
   form:
-    ValuationFormState;
+  ValuationFormState;
 
   meta:
-    ValuationMetaState;
+  ValuationMetaState;
 };
 
 /* ========================================================================== */
@@ -280,7 +280,7 @@ const initialMetaState:
 type ValuationContextType = {
 
   data:
-    ValuationState;
+  ValuationState;
 
   updateForm: (
     field: keyof ValuationFormState,
@@ -292,6 +292,16 @@ type ValuationContextType = {
   ) => void;
 
   resetData: () => void;
+
+  step: number;
+
+  direction: number;
+
+  nextStep: () => void;
+
+  previousStep: () => void;
+
+  goToStep: (index: number) => void;
 };
 
 /* ========================================================================== */
@@ -337,6 +347,24 @@ export function ValuationProvider({
   vehicleType,
 }: Props) {
 
+  const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  const nextStep = () => {
+    setDirection(1);
+    setStep((prev) => prev + 1);
+  };
+
+  const previousStep = () => {
+    setDirection(-1);
+    setStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  const goToStep = (index: number) => {
+    setDirection(index > step ? 1 : -1);
+    setStep(index);
+  };
+
   /* ----------------------------------------------------------------------- */
   /*                         INITIAL VEHICLE TYPE                            */
   /* ----------------------------------------------------------------------- */
@@ -344,12 +372,12 @@ export function ValuationProvider({
   const initialVehicleType =
     vehicleType
       ? {
-          slug: vehicleType,
+        slug: vehicleType,
 
-          name:
-            vehicleType.charAt(0).toUpperCase() +
-            vehicleType.slice(1),
-        }
+        name:
+          vehicleType.charAt(0).toUpperCase() +
+          vehicleType.slice(1),
+      }
       : null;
 
   /* ----------------------------------------------------------------------- */
@@ -596,6 +624,13 @@ export function ValuationProvider({
         updateMeta,
 
         resetData,
+
+        step,
+        direction,
+
+        nextStep,
+        previousStep,
+        goToStep,
       }}
     >
       {children}
