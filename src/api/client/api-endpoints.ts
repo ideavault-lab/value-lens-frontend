@@ -23,7 +23,7 @@ export const API_ENDPOINTS = {
 
   VALUATION: {
 
-    CREATE_SESSION: "/valuation/create-session",
+    CREATE_DRAFT: "/vehicles/drafts",
 
     // PREDICT: (sessionId: string) =>
     //   `/valuation/predict/${sessionId}`,

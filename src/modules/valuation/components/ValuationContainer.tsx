@@ -29,7 +29,7 @@ import {
 } from "@/stores/valuation/valuation-step-guard.store";
 
 import { STEP_CONFIG } from "./steps/step-config";
-import { useCreateValuationSession } from "@/modules/valuation-result/hooks/useValuation.hooks";
+import { buildDraftPayload, useCreateValuationDraft } from "@/modules/valuation-result/hooks/useValuation.hooks";
 import { useToast } from "@/components/ui/toast/useToast";
 
 /* -------------------------------------------------------------------------- */
@@ -73,9 +73,8 @@ const ValuationContent = ({
   const router = useRouter();
   const toast = useToast();
 
-  const [highlightNext, setHighlightNext] =
-    useState(false);
-
+  const [highlightNext, setHighlightNext] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //context
   const {
@@ -89,8 +88,8 @@ const ValuationContent = ({
   } = useValuation();
 
   //hooks
-  const createValuation =
-    useCreateValuationSession();
+  const { mutateAsync: createDraft, isPending: isCreatingDraft } =
+    useCreateValuationDraft();
 
   const isConfirmationOpen =
     useValuationConfirmation(
@@ -172,35 +171,65 @@ const ValuationContent = ({
 
     try {
 
-      const response =
-        await createValuation.mutateAsync(
-          data.form
-        );
+      setLoading(true);
+      const payload = buildDraftPayload(
+        data.form,
+        step,
+        // data.draftId,
+      );
 
-      const sessionId =
-        response?.data?.sessionId;
+      const response = await createDraft(
+        payload,
+      );
 
-      if (!sessionId) {
-        toast.error("Session ID not returned");
+      if (!response.status) {
+        toast.error(response.message || "Failed to create valuation draft");
+
+        setLoading(false);
         return;
       }
 
-      toast.success(response.message || "Vehicle details saved");
+      const draftId =
+        response.data.draftId;
 
-      router.push(
-        `/valuation/${vehicleType}/result?session=${sessionId}`
+      if (!draftId) {
+
+        toast.error(
+          "Draft ID not returned",
+        );
+        setLoading(false);
+        return;
+      }
+
+      /* Save draft id locally */
+
+      localStorage.setItem(
+        "valuation_draft_id",
+        draftId,
       );
 
+      /* Update context */
+
+      // updateDraftId(
+      //   draftId,
+      // );
+
+      /* Last step */
+
+      if (step === TOTAL_STEPS - 1) {
+        router.push(`/valuation/${vehicleType}/${draftId}/result`);
+
+        return;
+      }
+
+      nextStep();
     } catch (error) {
 
-      console.error(
-        "Failed to create valuation session",
-        error
-      );
+      console.error("Failed to create valuation sessiuseCreateValuationSessionon", error);
 
-      toast.error(
-        "Failed to create valuation session"
-      );
+      toast.error("Failed to create valuation session");
+
+      setLoading(false);
     }
   };
 
@@ -313,7 +342,7 @@ const ValuationContent = ({
           isFirst={step === 0}
           isLast={step === TOTAL_STEPS - 1}
           canProceed={canProceed}
-          isLoading={false}
+          isLoading={isCreatingDraft || loading}
           highlightNext={highlightNext}
         />
 
