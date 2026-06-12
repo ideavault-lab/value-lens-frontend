@@ -1,18 +1,19 @@
 import { http } from "@/api/client/http";
 import { API_ENDPOINTS } from "@/api/client/api-endpoints";
-import { ValuationFormState } from "@/modules/valuation/context/valuation.context";
-import { CreateValuationSessionApiResponse } from "../types/valuation.types";
+import { CreateValuationDraftApiResponse, SaveDraftPayload } from "../types/valuation.types";
 
-export async function createValuationSession(
-  payload: ValuationFormState
-): Promise<CreateValuationSessionApiResponse> {
+export async function createValuationDraft(
+  payload: SaveDraftPayload
+): Promise<CreateValuationDraftApiResponse> {
 
-  return http.post<
-    CreateValuationSessionApiResponse
+  const response = await http.post<
+    CreateValuationDraftApiResponse
   >(
-    API_ENDPOINTS.VALUATION.CREATE_SESSION,
+    API_ENDPOINTS.VALUATION.CREATE_DRAFT,
     payload
   );
+
+  return response;
 }
 
 // export async function getValuationResult(

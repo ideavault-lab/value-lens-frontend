@@ -16,16 +16,7 @@ export function ToastContainer({
   return (
     <div
       aria-label="Notifications"
-      className="
-        fixed
-        top-16
-        right-5
-        z-[9999]
-        flex
-        flex-col
-        gap-3
-        pointer-events-none
-      "
+      className="fixed top-16 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
     >
       <AnimatePresence
         mode="popLayout"
