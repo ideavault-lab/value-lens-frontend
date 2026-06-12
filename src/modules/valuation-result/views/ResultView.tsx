@@ -1,9 +1,9 @@
 import React from 'react'
 import ResultDashboard from '../components/ResultDashboard'
 
-const ResultView = () => {
+const ResultView = ({ draftId }: { draftId: string }) => {
   return (
-    <ResultDashboard />
+    <ResultDashboard draftId={draftId} />
   )
 }
 

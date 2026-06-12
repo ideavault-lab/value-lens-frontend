@@ -57,7 +57,7 @@ export interface ValuationFormData {
 interface ResultDashboardProps {
   result?: ValuationResult;
   formData?: ValuationFormData;
-  onReset?: () => void;
+  draftId: string;
 }
 
 // ─── DEMO DATA ────────────────────────────────────────────────────────────────
@@ -152,6 +152,7 @@ const demoResult: ValuationResult = {
 export default function ResultDashboard({
   result = demoResult,
   formData = demoFormData,
+  draftId
 }: ResultDashboardProps) {
   const onReset = () => {
     window.location.href = "/valuation";
