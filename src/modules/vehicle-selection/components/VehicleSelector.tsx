@@ -136,7 +136,7 @@ export default function VehicleSelector() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary backdrop-blur-sm sm:text-sm"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/10 px-4 py-2 text-[8px] font-semibold text-primary backdrop-blur-sm sm:text-sm"
           >
 
             <span className="relative flex h-2.5 w-2.5">
@@ -156,23 +156,21 @@ export default function VehicleSelector() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+            className="text-[28px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
             Find the real resale value
-            <span className="block text-primary">
-              of your vehicle
-            </span>
+            <span className="block text-primary">of your vehicle</span>
           </motion.h1>
 
-          {/* DESCRIPTION */}
+          {/* DESCRIPTION - Hidden on mobile */}
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.05 }}
-            className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+            className="mt-4 hidden max-w-2xl text-sm leading-relaxed text-muted-foreground sm:block sm:text-base"
           >
-            AI-driven market pricing with real-time resale demand,
-            depreciation trends and city-wise valuation insights.
+            AI-driven market pricing with real-time resale demand, depreciation
+            trends and city-wise valuation insights.
           </motion.p>
 
           {/* TRUST */}
@@ -180,20 +178,20 @@ export default function VehicleSelector() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.08 }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3"
+            className="mt-6 flex flex-wrap items-center justify-center gap-1 sm:gap-3"
           >
 
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 text-[11px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
+            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-2 py-2 text-[9px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
               <ShieldCheck className="h-3.5 w-3.5 text-primary" />
               100% Private
             </div>
 
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 text-[11px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
+            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-2 py-2 text-[9px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
               <TrendingUp className="h-3.5 w-3.5 text-primary" />
               Live Market Data
             </div>
 
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 text-[11px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
+            <div className="flex items-center gap-2 rounded-full border border-border bg-card/80 px-2 py-2 text-[9px] font-medium text-muted-foreground backdrop-blur-sm sm:px-4 sm:text-xs">
               <Timer className="h-3.5 w-3.5 text-primary" />
               Instant Estimate
             </div>
@@ -270,138 +268,133 @@ export default function VehicleSelector() {
                   item.enabled;
 
                 return (
+<motion.button
+  key={item.id}
+  type="button"
+  variants={itemVariants}
+  whileHover={
+    isEnabled
+      ? {
+          y: -4,
+          scale: 1.01,
+        }
+      : {}
+  }
+  whileTap={
+    isEnabled
+      ? {
+          scale: 0.98,
+        }
+      : {}
+  }
+  onClick={() =>
+    handleSelect(
+      item.slug,
+      isEnabled
+    )
+  }
+  className={`group relative overflow-hidden rounded-3xl border transition-all duration-300
 
-                  <motion.button
-                    key={item.id}
-                    type="button"
-                    variants={itemVariants}
-                    whileHover={
-                      isEnabled
-                        ? {
-                          y: -5,
-                          scale: 1.015,
-                        }
-                        : {}
-                    }
-                    whileTap={
-                      isEnabled
-                        ? {
-                          scale: 0.985,
-                        }
-                        : {}
-                    }
-                    onClick={() =>
-                      handleSelect(
-                        item.slug,
-                        isEnabled
-                      )
-                    }
-                    className={`group relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] border p-6 text-left transition-all duration-300 md:min-h-[340px] md:p-7 ${isEnabled
-                        ? "cursor-pointer border-border bg-card/95 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
-                        : "cursor-not-allowed border-border/60 bg-muted/30 opacity-75"
-                      }`}
-                  >
+  flex min-h-[140px] flex-row items-center gap-4 p-4 text-left
 
-                    {/* GLOW */}
-                    {isEnabled && (
+  sm:flex-col sm:items-start sm:p-6 sm:min-h-[220px]
 
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+  lg:min-h-[320px]
 
-                    )}
+  ${
+    isEnabled
+      ? "cursor-pointer border-border bg-card/95 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
+      : "cursor-not-allowed border-border/60 bg-muted/30 opacity-75"
+  }`}
+>
+  {/* Glow */}
+  {isEnabled && (
+    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+  )}
 
-                    {/* TOP */}
-                    <div className="relative z-10 flex items-start justify-between">
+  {/* Icon */}
+  <div
+    className={`relative z-10 flex shrink-0 items-center justify-center rounded-2xl transition-all duration-300
 
-                      {/* ICON */}
-                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 md:h-20 md:w-20 ${isEnabled
-                          ? "bg-primary/10 text-primary group-hover:scale-105 group-hover:bg-primary/15"
-                          : "bg-muted text-muted-foreground"
-                        }`}
-                      >
+    h-14 w-14
 
-                        <Icon
-                          size={38}
-                          strokeWidth={1.8}
-                        />
+    sm:h-16 sm:w-16
 
-                      </div>
+    lg:h-20 lg:w-20
 
-                      {/* BADGE */}
-                      {item.popular ? (
+    ${
+      isEnabled
+        ? "bg-primary/10 text-primary group-hover:scale-105 group-hover:bg-primary/15"
+        : "bg-muted text-muted-foreground"
+    }`}
+  >
+    <Icon
+      size={28}
+      strokeWidth={1.8}
+      className="sm:h-8 sm:w-8 lg:h-10 lg:w-10"
+    />
+  </div>
 
-                        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20">
+  {/* Content */}
+  <div className="relative z-10 flex min-w-0 flex-1 flex-col sm:mt-6">
+    {/* Top Row */}
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0">
+        <h3 className="truncate text-lg font-semibold tracking-tight text-foreground sm:text-xl lg:text-[28px]">
+          {item.label}
+        </h3>
 
-                          <Sparkles className="h-3 w-3" />
+        <p className="mt-1 text-xs font-medium text-muted-foreground sm:hidden">
+          {isEnabled
+            ? "Ready Now"
+            : "Launching Soon"}
+        </p>
+      </div>
 
-                          Popular
+      {/* Badge */}
+      {item.popular ? (
+        <div className="hidden shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 sm:inline-flex">
+          <Sparkles className="h-3 w-3" />
+          Popular
+        </div>
+      ) : !isEnabled ? (
+        <div className="hidden shrink-0 rounded-full border border-border bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground sm:block">
+          Coming Soon
+        </div>
+      ) : null}
+    </div>
 
-                        </div>
+    {/* Description */}
+    <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:line-clamp-2 lg:block">
+      {item.description}
+    </p>
 
-                      ) : !isEnabled ? (
+    {/* Footer */}
+    <div className="mt-auto flex items-center justify-between pt-3 sm:border-t sm:border-border sm:pt-5">
+      <div className="hidden flex-col sm:flex">
+        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          Estimation
+        </span>
 
-                        <div className="rounded-full border border-border bg-background/80 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                          Coming Soon
-                        </div>
+        <span className="mt-1 text-sm font-semibold text-foreground">
+          {isEnabled
+            ? "Ready Now"
+            : "Launching Soon"}
+        </span>
+      </div>
 
-                      ) : null}
-
-                    </div>
-
-                    {/* BODY */}
-                    <div className="relative z-10 mt-7 flex flex-1 flex-col">
-
-                      <div>
-
-                        <h3 className="text-2xl font-semibold tracking-tight text-foreground md:text-[28px]">
-                          {item.label}
-                        </h3>
-
-                        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground md:text-[15px]">
-                          {item.description}
-                        </p>
-
-                      </div>
-
-                      {/* FOOTER */}
-                      <div className="mt-auto pt-7">
-
-                        <div className="flex items-center justify-between border-t border-border pt-5">
-
-                          <div className="flex flex-col">
-
-                            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                              Estimation
-                            </span>
-
-                            <span className="mt-1 text-sm font-semibold text-foreground">
-                              {isEnabled
-                                ? "Ready Now"
-                                : "Launching Soon"}
-                            </span>
-
-                          </div>
-
-                          {isEnabled && (
-
-                            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition-all duration-300 group-hover:translate-x-1">
-
-                              {localLoading ? (
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                              ) : (
-                                <ArrowRight className="h-5 w-5" />
-                              )}
-
-                            </div>
-
-                          )}
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  </motion.button>
+      {isEnabled && (
+        <div className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all duration-300 group-hover:translate-x-1 lg:h-11 lg:w-11 lg:rounded-2xl">
+          {localLoading ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <ArrowRight className="h-5 w-5" />
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+</motion.button>
                 );
               })}
 
