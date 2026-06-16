@@ -25,7 +25,6 @@ export const API_ENDPOINTS = {
 
     CREATE_DRAFT: "/vehicles/drafts",
 
-    // PREDICT: (sessionId: string) =>
-    //   `/valuation/predict/${sessionId}`,
+    ESTIMATE: (draftId: string) => `/valuation/drafts/${draftId}/estimate`,
   },
 };
