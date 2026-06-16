@@ -452,121 +452,69 @@ export type OwnershipOption = {
 };
 
 export const OWNER_TYPES: OwnershipOption[] = [
-
   {
     id: "first",
-
     slug: "first-owner",
-
     label: "First Owner",
-
     shortLabel: "1",
-
     description:
-      "Single-owner vehicles usually have cleaner records, better maintenance consistency, and stronger resale demand.",
-
+      "Cleanest records, best maintenance, and highest resale demand.",
     badge: "Highest Resale",
-
     valueImpact: "high",
-
     marketDemand: "Excellent",
-
     resaleStrength: 95,
-
     buyerTrust: 94,
-
-    recommendedMileage:
-      "Ideal below 60,000 km",
-
+    recommendedMileage: "Ideal below 60,000 km",
     marketInsight:
       "Most preferred category in premium and mid-range used-car markets.",
   },
-
   {
     id: "second",
-
     slug: "second-owner",
-
     label: "Second Owner",
-
     shortLabel: "2",
-
     description:
-      "Second-owner cars remain highly acceptable in the market when mileage and condition are well maintained.",
-
+      "Highly acceptable when mileage and condition are well maintained.",
     badge: "Market Preferred",
-
     valueImpact: "medium",
-
     marketDemand: "Good",
-
     resaleStrength: 82,
-
     buyerTrust: 80,
-
-    recommendedMileage:
-      "Best below 90,000 km",
-
+    recommendedMileage: "Best below 90,000 km",
     marketInsight:
       "Strong resale performance when supported by service history.",
   },
-
   {
     id: "third",
-
     slug: "third-owner",
-
     label: "Third Owner",
-
     shortLabel: "3",
-
     description:
-      "Higher ownership count may slightly reduce buyer confidence and financing attractiveness.",
-
+      "Slightly lower buyer confidence and financing appeal.",
     badge: "Value Sensitive",
-
     valueImpact: "medium",
-
     marketDemand: "Average",
-
     resaleStrength: 63,
-
     buyerTrust: 58,
-
-    recommendedMileage:
-      "Typically above 90,000 km",
-
+    recommendedMileage: "Typically above 90,000 km",
     marketInsight:
       "Pricing becomes highly dependent on condition and maintenance quality.",
   },
-
   {
     id: "fourth_plus",
-
     slug: "fourth-owner-or-more",
-
     label: "Fourth Owner or More",
-
     shortLabel: "4+",
-
     description:
-      "Multi-owner vehicles generally face lower demand due to perceived wear, uncertain maintenance history, and resale risk.",
-
+      "Lower demand due to perceived wear and uncertain history.",
     badge: "Lower Demand",
-
     valueImpact: "low",
-
     marketDemand: "Low",
-
     resaleStrength: 38,
-
     buyerTrust: 35,
-
-    recommendedMileage:
-      "Usually high mileage vehicles",
-
+    recommendedMileage: "Usually high mileage vehicles",
     marketInsight:
-      "Commonly evaluated as budget-market vehicles where condition matters more than ownership history.",
+      "Commonly evaluated as budget-market vehicles where condition matters more.",
   },
 ];
 

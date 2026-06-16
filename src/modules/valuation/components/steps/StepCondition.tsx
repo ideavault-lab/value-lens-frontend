@@ -152,144 +152,58 @@ const StepCondition = () => {
       {/* CONDITION GRID                                                     */}
       {/* ------------------------------------------------------------------ */}
 
-      <div
-        className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          gap-3
-        "
-      >
-
-        {(CONDITIONS as ConditionItem[]).map((cond, i) => {
-
-          const active =
-            selectedCondition === cond.id;
+      {/* CONDITION CARDS - Improved Layout */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {CONDITIONS.map((cond, i) => {
+          const active = selectedCondition === cond.id;
 
           return (
             <motion.button
               key={cond.id}
               type="button"
-              initial={{
-                opacity: 0,
-                y: 12,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: i * 0.03,
-                duration: 0.3,
-              }}
-              whileTap={{
-                scale: 0.985,
-              }}
-              onClick={() =>
-                handleSelectCondition(cond)
-              }
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.03, duration: 0.3 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => handleSelectCondition(cond)}
               className={`
-                relative
-                flex items-start gap-3
-                p-4
-                rounded-xl
-                border-2
-                text-left
-                transition-all
-                duration-200
-
-                hover:border-primary/40
-                hover:bg-accent/30
-
+                group relative flex h-full min-h-[110px] items-start gap-4 
+                rounded-2xl border-2 p-4 text-left transition-all duration-200
+                hover:border-primary/40 hover:bg-accent/30
                 ${active
-                  ? `
-                      border-primary
-                      bg-accent/50
-                      shadow-sm
-                    `
-                  : `
-                      border-border
-                      bg-card
-                    `
+                  ? "border-primary bg-accent/50 shadow-sm"
+                  : "border-border bg-card"
                 }
               `}
             >
-
-              {/* ICON */}
+              {/* Icon */}
               <div
-                className={`
-                  h-11 w-11
-                  rounded-lg
-                  shrink-0
-                  flex items-center justify-center
-                  text-xl
-
-                  ${active
-                    ? "bg-muted"
-                    : "bg-muted"
-                  }
-                `}
+                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl transition-all
+                  ${active ? "bg-white" : "bg-white/0 group-hover:bg-muted/70"}`}
               >
                 {cond.icon}
               </div>
 
-              {/* CONTENT */}
-              <div className="flex-1 min-w-0">
-
-                <div className="flex items-center gap-2">
-
-                  <h3
-                    className="
-                      text-sm sm:text-base
-                      font-semibold
-                      text-foreground
-                      truncate
-                    "
-                  >
-                    {cond.label}
-                  </h3>
-
-                </div>
-
-                <p
-                  className="
-                    mt-1
-                    text-xs sm:text-sm
-                    text-muted-foreground
-                    leading-relaxed
-                    line-clamp-2
-                  "
-                >
+              {/* Content */}
+              <div className="flex-1 pt-1">
+                <h3 className="text-lg font-semibold text-foreground">
+                  {cond.label}
+                </h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
                   {cond.description}
                 </p>
               </div>
 
-              {/* CHECK */}
+              {/* Checkmark */}
               {active && (
                 <motion.div
                   layoutId="condition-check"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 500,
-                  }}
-                  className="
-                    absolute
-                    top-2 right-2
-                    h-5 w-5
-                    rounded-full
-                    bg-primary
-                    flex items-center justify-center
-                  "
+                  transition={{ type: "spring", stiffness: 500 }}
+                  className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-primary"
                 >
-                  <Check
-                    className="
-                      h-3 w-3
-                      text-primary-foreground
-                    "
-                    strokeWidth={3}
-                  />
+                  <Check className="h-4 w-4 text-primary-foreground" strokeWidth={3} />
                 </motion.div>
               )}
             </motion.button>
