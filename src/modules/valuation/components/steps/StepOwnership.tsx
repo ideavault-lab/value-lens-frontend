@@ -17,7 +17,7 @@ const StepOwnership = () => {
   );
 
   return (
-    <div className="space-y-6 p-4 pb-12">
+    <div className="space-y-6 p-2 pb-10">
       <StepHeader
         title="How many owners has the car had?"
         description="Ownership history affects resale value"

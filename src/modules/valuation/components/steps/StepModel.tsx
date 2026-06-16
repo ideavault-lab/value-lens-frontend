@@ -57,7 +57,7 @@ const StepModel = () => {
     };
 
     return (
-        <div className="space-y-6 p-2">
+        <div className="space-y-6 p-2 pb-10">
 
             {/* HEADER */}
 
