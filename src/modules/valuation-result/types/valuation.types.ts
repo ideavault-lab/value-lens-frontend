@@ -39,3 +39,32 @@ export interface CreateValuationDraftApiResponse {
   message: string;
   data: CreateValuationDraftResponse;
 }
+
+
+export interface ValuationAPIResponse {
+  status: boolean;
+  statusCode: number;
+  message?: string;
+
+  data: {
+    estimatedPrice: number;
+
+    priceRange: {
+      low: number;
+      high: number;
+    };
+
+    confidence: {
+      score: number;
+      label: string;
+
+      dataQuality: {
+        sampleSize: number;
+        tierUsed: string | null;
+        topSimilarityScore: number;
+      };
+    };
+  };
+
+  timestamp?: string;
+}
