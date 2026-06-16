@@ -62,42 +62,42 @@ const QuickPicks = ({
         </div>
       </div>
 
-        {/* ERROR */}
-        {isError ? (
+      {/* ERROR */}
+      {isError ? (
 
-          <QueryErrorState
-            title="Failed to load mileage suggestions"
-            description={
-              error instanceof Error
-                ? error.message
-                : "Something went wrong while fetching km-driven suggestions."
-            }
-            onRetry={onRetry}
-            isRetrying={isRetrying}
-          />
+        <QueryErrorState
+          title="Failed to load mileage suggestions"
+          description={
+            error instanceof Error
+              ? error.message
+              : "Something went wrong while fetching km-driven suggestions."
+          }
+          onRetry={onRetry}
+          isRetrying={isRetrying}
+        />
 
-        ) : dataLoading ? (
+      ) : dataLoading ? (
 
-          /* LOADING ONLY PICKS AREA */
-          <QuickPicksSkeleton />
+        /* LOADING ONLY PICKS AREA */
+        <QuickPicksSkeleton />
 
-        ) : !quickPicks.length ? null : (
+      ) : !quickPicks.length ? null : (
 
-          /* PICKS */
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        /* PICKS */
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 
-            {quickPicks.map((pick) => {
+          {quickPicks.map((pick) => {
 
-              const isSelected = value === pick.value;
+            const isSelected = value === pick.value;
 
-              return (
-                <Button
-                  key={pick.label}
-                  type="button"
-                  variant="outline"
-                  onClick={() => onSelect(pick.value)}
-                  className={cn(
-                    `
+            return (
+              <Button
+                key={pick.label}
+                type="button"
+                variant="outline"
+                onClick={() => onSelect(pick.value)}
+                className={cn(
+                  `
                   relative
                   h-auto
                   min-h-[84px]
@@ -116,8 +116,8 @@ const QuickPicks = ({
                   hover:shadow-sm
                   active:scale-[0.98]
                   `,
-                    isSelected &&
-                    `
+                  isSelected &&
+                  `
                     border-primary
                     ring-2
                     ring-primary/15
@@ -125,13 +125,13 @@ const QuickPicks = ({
                     text-foreground
                     shadow-sm
                     `
-                  )}
-                >
+                )}
+              >
 
-                  {/* Selected Check */}
-                  {isSelected && (
-                    <div
-                      className="
+                {/* Selected Check */}
+                {isSelected && (
+                  <div
+                    className="
                       absolute
                       right-3
                       top-3
@@ -144,62 +144,62 @@ const QuickPicks = ({
                       bg-primary
                       text-primary-foreground
                     "
-                    >
-                      <Check className="h-3 w-3" />
-                    </div>
-                  )}
+                  >
+                    <Check className="h-3 w-3" />
+                  </div>
+                )}
 
-                  {/* Label */}
-                  <div className="space-y-1">
+                {/* Label */}
+                <div className="space-y-1">
 
-                    <p
-                      className={cn(
-                        `
+                  <p
+                    className={cn(
+                      `
                       text-sm
                       font-semibold
                       leading-none
                       `,
-                        isSelected
-                          ? "text-primary"
-                          : "text-zinc-800"
-                      )}
-                    >
-                      {pick.label}
-                    </p>
+                      isSelected
+                        ? "text-primary"
+                        : "text-zinc-800"
+                    )}
+                  >
+                    {pick.label}
+                  </p>
 
-                    <p className="text-xs text-zinc-500">
-                      Suggested usage
-                    </p>
-                  </div>
+                  <p className="text-xs text-zinc-500">
+                    Suggested usage
+                  </p>
+                </div>
 
-                  {/* Value */}
-                  <div className="pt-3">
+                {/* Value */}
+                <div className="pt-3">
 
-                    <p
-                      className={cn(
-                        `
+                  <p
+                    className={cn(
+                      `
                       text-lg
                       font-bold
                       tracking-tight
                       `,
-                        isSelected
-                          ? "text-primary"
-                          : "text-zinc-900"
-                      )}
-                    >
-                      {formatKm(pick.value)}
-                    </p>
-
-                    <span className="text-xs text-zinc-400">
+                      isSelected
+                        ? "text-primary"
+                        : "text-zinc-900"
+                    )}
+                  >
+                    {formatKm(pick.value)}  <span className="text-xs text-zinc-400">
                       kilometers
                     </span>
-                  </div>
-                </Button>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                  </p>
+
+
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 };
 

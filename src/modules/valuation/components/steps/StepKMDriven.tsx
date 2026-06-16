@@ -72,11 +72,11 @@ export default function StepKMDriven() {
       />
 
       {/* Slider */}
-      <KMDrivenSlider
+      {/* <KMDrivenSlider
         value={selectedKm}
         onChange={handleKMDrivenChange}
         zones={insights?.zones}
-      />
+      /> */}
 
       <div className="flex items-center gap-3">
         <div className="flex-1 h-px bg-zinc-100" />
