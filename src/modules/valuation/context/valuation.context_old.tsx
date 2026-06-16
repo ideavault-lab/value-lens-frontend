@@ -4,7 +4,6 @@ import {
   createContext,
   ReactNode,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -335,12 +334,6 @@ const getStepByField = (
 };
 
 /* ========================================================================== */
-/*                           STORAGE CONFIG                                   */
-/* ========================================================================== */
-
-export const STORAGE_KEY = "valuation_in_progress";
-
-/* ========================================================================== */
 /*                                 PROVIDER                                   */
 /* ========================================================================== */
 
@@ -391,56 +384,19 @@ export function ValuationProvider({
   /*                                  STATE                                  */
   /* ----------------------------------------------------------------------- */
 
-const [data, setData] = useState<ValuationState>({
-    form: {
-      ...initialFormState,
-      vehicleType: vehicleType
-        ? { slug: vehicleType, name: vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1) }
-        : null,
-    },
-    meta: initialMetaState,
-  });
+  const [data, setData] =
+    useState<ValuationState>({
+      form: {
+        ...initialFormState,
 
-  /* ----------------------------------------------------------------------- */
-  /*                        PERSISTENCE LOGIC                                */
-  /* ----------------------------------------------------------------------- */
+        vehicleType:
+          initialVehicleType,
+      },
 
-  // Load saved progress on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
+      meta:
+        initialMetaState,
+    });
 
-    try {
-      const parsed: { form: ValuationFormState; step: number; vehicleType: string } =
-        JSON.parse(saved);
-
-      if (parsed.vehicleType === vehicleType) {
-        setData((prev) => ({ ...prev, form: parsed.form }));
-        if (typeof parsed.step === "number") {
-          setStep(parsed.step);
-        }
-      } else {
-        // Different vehicle type → clear old data
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    } catch (e) {
-      console.error("Failed to restore valuation progress", e);
-      localStorage.removeItem(STORAGE_KEY);
-    }
-  }, [vehicleType]);
-
-  // Auto-save whenever form or step changes
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        form: data.form,
-        step,
-        vehicleType,
-      })
-    );
-  }, [data.form, step, vehicleType]);
-  
   /* ----------------------------------------------------------------------- */
   /*                        CHECK DEPENDENT STEPS                            */
   /* ----------------------------------------------------------------------- */
@@ -495,59 +451,144 @@ const [data, setData] = useState<ValuationState>({
   /*                             APPLY UPDATE                                */
   /* ----------------------------------------------------------------------- */
 
-  const applyFormUpdate = (field: keyof ValuationFormState, value: any) => {
+  const applyFormUpdate = (
+    field: keyof ValuationFormState,
+    value: any
+  ) => {
+
     setData((prev) => {
-      const currentStepId = getStepByField(field);
-      if (!currentStepId) {
+
+      const currentStep =
+        getStepByField(field);
+
+      /* SAFE UPDATE */
+
+      if (!currentStep) {
+
         return {
           ...prev,
-          form: { ...prev.form, [field]: value },
+
+          form: {
+            ...prev.form,
+
+            [field]: value,
+          },
         };
       }
 
-      const currentStepIndex = STEP_ORDER.indexOf(currentStepId);
-      const nextForm: ValuationFormState = { ...prev.form, [field]: value };
+      const currentStepIndex =
+        STEP_ORDER.indexOf(currentStep);
 
-      // Reset dependent future steps
-      STEP_ORDER.forEach((stepId, idx) => {
-        if (idx <= currentStepIndex) return;
-        STEP_FIELDS[stepId].forEach((f) => {
-          (nextForm as any)[f] = initialFormState[f];
-        });
-      });
+      const nextForm: ValuationFormState = {
+        ...prev.form,
 
-      nextForm.vehicleType = prev.form.vehicleType;
+        [field]: value,
+      };
 
-      return { ...prev, form: nextForm };
+      /* RESET NEXT STEPS */
+
+      STEP_ORDER.forEach(
+        (step, index) => {
+
+          if (
+            index <= currentStepIndex
+          ) {
+            return;
+          }
+
+          STEP_FIELDS[step].forEach(
+            (fieldKey) => {
+
+              (
+                nextForm as Record<
+                  keyof ValuationFormState,
+                  ValuationFormState[keyof ValuationFormState]
+                >
+              )[fieldKey] =
+                initialFormState[fieldKey];
+            }
+          );
+        }
+      );
+
+      /* KEEP VEHICLE TYPE */
+
+      nextForm.vehicleType =
+        prev.form.vehicleType;
+
+      return {
+        ...prev,
+
+        form: nextForm,
+      };
     });
   };
-
 
   /* ----------------------------------------------------------------------- */
   /*                              UPDATE FORM                                */
   /* ----------------------------------------------------------------------- */
 
-  const updateForm = (field: keyof ValuationFormState, value: any) => {
-    const shouldConfirm = hasDependentValues(field, data.form);
+  const updateForm = (
+    field: keyof ValuationFormState,
+    value: any
+  ) => {
+
+    const shouldConfirm =
+      hasDependentValues(
+        field,
+        data.form
+      );
+
+    /* DIRECT UPDATE */
 
     if (!shouldConfirm) {
-      applyFormUpdate(field, value);
+
+      applyFormUpdate(
+        field,
+        value
+      );
+
       return;
     }
 
-    useValuationConfirmation.getState().openConfirmation({
-      title: "Change selection?",
-      description: "Changing this will reset the following vehicle details.",
-      onConfirm: () => applyFormUpdate(field, value),
-    });
+    /* CONFIRMATION */
+
+    useValuationConfirmation
+      .getState()
+      .openConfirmation({
+
+        title:
+          "Change selection?",
+
+        description:
+          "Changing this will reset the following vehicle details.",
+
+        onConfirm: () => {
+
+          applyFormUpdate(
+            field,
+            value
+          );
+        },
+      });
   };
 
   /* ----------------------------------------------------------------------- */
   /*                               UPDATE META                               */
   /* ----------------------------------------------------------------------- */
 
-  const updateMeta = (values: Partial<ValuationMetaState>) => {
-    setData((prev) => ({ ...prev, meta: { ...prev.meta, ...values } }));
+  const updateMeta = (
+    values: Partial<ValuationMetaState>
+  ) => {
+
+    setData((prev) => ({
+      ...prev,
+
+      meta: {
+        ...prev.meta,
+        ...values,
+      },
+    }));
   };
 
   /* ----------------------------------------------------------------------- */
@@ -555,15 +596,18 @@ const [data, setData] = useState<ValuationState>({
   /* ----------------------------------------------------------------------- */
 
   const resetData = () => {
+
     setData({
       form: {
         ...initialFormState,
-        vehicleType: data.form.vehicleType,
+
+        vehicleType:
+          initialVehicleType,
       },
-      meta: initialMetaState,
+
+      meta:
+        initialMetaState,
     });
-    setStep(0);
-    localStorage.removeItem(STORAGE_KEY);
   };
 
   /* ----------------------------------------------------------------------- */

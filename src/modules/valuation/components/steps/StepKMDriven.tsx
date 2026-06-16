@@ -50,7 +50,7 @@ export default function StepKMDriven() {
   const currentZone = getCurrentZone(selectedKm, insights?.zones || []);
 
   return (
-    <div className="space-y-6 px-1 pb-4">
+    <div className="space-y-6 p-2 pb-10">
       {/* Header */}
       <StepHeader
         title="How many kilometers has your car driven?"

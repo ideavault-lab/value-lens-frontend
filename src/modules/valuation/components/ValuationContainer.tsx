@@ -20,6 +20,7 @@ import StepNavigation
   from "./StepNavigation";
 
 import {
+  STORAGE_KEY,
   useValuation,
   ValuationProvider,
 } from "../context/valuation.context";
@@ -208,6 +209,7 @@ const ValuationContent = ({
         draftId,
       );
 
+      localStorage.removeItem(STORAGE_KEY);
       /* Update context */
 
       // updateDraftId(
