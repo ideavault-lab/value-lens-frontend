@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { createValuationDraft, getValuationResult} from "../services/valuation-service.api";
+import { createValuationDraft, getValuationMeta, getValuationResult} from "../services/valuation-service.api";
 import { ValuationFormState } from "@/modules/valuation/context/valuation.context";
 import { SaveDraftPayload } from "../types/valuation.types";
 
@@ -117,5 +117,102 @@ export function useValuationResult(draftId: string) {
     enabled: !!draftId,
 
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+
+//valuation summary hook
+export interface ValuationMetaUI {
+
+  brand: string;
+
+  brandLogo?: string;
+
+  model: string;
+
+  variant: string;
+
+  fuelType?: string;
+
+  transmission?: string;
+
+  year: number;
+
+  ownerType: string;
+
+  condition?: string;
+
+  location?: string;
+}
+
+function mapMetaResponse(
+  response: any
+): ValuationMetaUI {
+
+  const data = response.data;
+
+  return {
+
+    brand:
+      data.brand.name,
+
+    brandLogo:
+      data.brand.logo,
+
+    model:
+      data.model.name,
+
+    variant:
+      data.variant.name,
+
+    fuelType:
+      data.variant.fuelType,
+
+    transmission:
+      data.variant.transmission,
+
+    year:
+      data.year,
+
+    ownerType:
+      data.ownerType,
+
+    condition:
+      data.condition,
+
+    location:
+      data.location,
+  };
+
+}
+
+export function useValuationMeta(
+  draftId: string
+) {
+
+  return useQuery({
+
+    queryKey: [
+      "valuation",
+      "meta",
+      draftId,
+    ],
+
+    queryFn: async () => {
+
+      const response =
+        await getValuationMeta(
+          draftId
+        );
+
+      return mapMetaResponse(
+        response
+      );
+    },
+
+    enabled: !!draftId,
+
+    staleTime:
+      1000 * 60 * 30,
   });
 }

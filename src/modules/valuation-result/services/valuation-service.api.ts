@@ -1,6 +1,6 @@
 import { http } from "@/api/client/http";
 import { API_ENDPOINTS } from "@/api/client/api-endpoints";
-import { CreateValuationDraftApiResponse, SaveDraftPayload, ValuationAPIResponse } from "../types/valuation.types";
+import { CreateValuationDraftApiResponse, SaveDraftPayload, ValuationAPIResponse, ValuationMetaResponse } from "../types/valuation.types";
 
 export async function createValuationDraft(
   payload: SaveDraftPayload
@@ -23,6 +23,17 @@ export async function getValuationResult(
   ValuationAPIResponse
   >(
     API_ENDPOINTS.VALUATION.ESTIMATE(
+      draftId
+    )
+  );
+}
+
+export async function getValuationMeta(
+  draftId: string
+) {
+
+  return http.get<ValuationMetaResponse>(
+    API_ENDPOINTS.VALUATION.META(
       draftId
     )
   );
