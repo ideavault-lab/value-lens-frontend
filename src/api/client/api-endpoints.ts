@@ -25,6 +25,10 @@ export const API_ENDPOINTS = {
 
     CREATE_DRAFT: "/vehicles/drafts",
 
+
+    META: (draftId: string) =>
+      `/valuation/drafts/${draftId}/meta`,
+
     ESTIMATE: (draftId: string) => `/valuation/drafts/${draftId}/estimate`,
   },
 };

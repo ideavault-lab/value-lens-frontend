@@ -68,3 +68,33 @@ export interface ValuationAPIResponse {
 
   timestamp?: string;
 }
+
+
+export interface ValuationMetaResponse {
+
+  brand: {
+    id: string;
+    name: string;
+    logo?: string;
+  };
+
+  model: {
+    id: string;
+    name: string;
+  };
+
+  variant: {
+    id: string;
+    name: string;
+    fuelType?: string;
+    transmission?: string;
+  };
+
+  year: number;
+
+  ownerType: string;
+
+  condition: string;
+
+  location: string;
+}

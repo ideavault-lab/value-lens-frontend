@@ -12,7 +12,7 @@ import { SegmentInsights } from "./SegmentInsights";
 import { ValuationSnapshot } from "./ValuationSnapshot";
 import { Button } from "@/components/ui/Button";
 import { RotateCcw } from "lucide-react";
-import { useValuationResult } from "../hooks/useValuation.hooks";
+import { useValuationMeta, useValuationResult } from "../hooks/useValuation.hooks";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -121,10 +121,18 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   // `live` = real API data (price, confidence, reasoning from backend)
   // `demo` = placeholder data for sections the API doesn't cover yet
   const {
-    data: live,
+    data: meta,
+    isLoading: metaLoading,
+  } = useValuationMeta(
+    draftId
+  );
+  const {
+    data: estimate,
     isLoading,
     isError,
   } = useValuationResult(draftId);
+
+
 
   const demo = demoResult;
   const formData = demoFormData;
@@ -132,8 +140,8 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   const onReset = () => { window.location.href = "/valuation"; };
 
   const handleShare = () => {
-    const text = live
-      ? `My ${live.year} ${live.brand} ${live.model} is valued at ${formatINR(live.price)}!`
+    const text = estimate
+      ? `My ${estimate.year} ${estimate.brand} ${estimate.model} is valued at ${formatINR(estimate.price)}!`
       : `My ${formData.year} ${formData.brandName} ${formData.model} valuation is ready!`;
     if (navigator.share) navigator.share({ title: "Car Valuation", text });
     else navigator.clipboard?.writeText(text);
@@ -143,7 +151,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   const metrics = [
     {
       label: "Estimated value",
-      value: isLoading ? "—" : isError ? "N/A" : formatINR(live!.price),
+      value: isLoading ? "—" : isError ? "N/A" : formatINR(estimate!.price),
       sub: "Market best-fit",
       color: "orange" as const,
     },
@@ -153,13 +161,13 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
         ? "—"
         : isError
           ? "N/A"
-          : `${formatINR(live!.priceLow)} – ${formatINR(live!.priceHigh)}`,
+          : `${formatINR(estimate!.priceLow)} – ${formatINR(estimate!.priceHigh)}`,
       sub: "Fair market band",
     },
     {
       label: "Confidence",
-      value: isLoading ? "—" : isError ? "N/A" : `${live!.confidence}%`,
-      sub: isLoading || isError ? "AI accuracy" : live!.confidenceLabel,
+      value: isLoading ? "—" : isError ? "N/A" : `${estimate!.confidence}%`,
+      sub: isLoading || isError ? "AI accuracy" : estimate!.confidenceLabel,
       color: "blue" as const,
     },
     // These two have no live equivalent yet — intentionally demo
@@ -187,31 +195,32 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     { label: "Age", value: demo.factors.age_impact },
   ];
 
+  //for pricecard
   const specs = [
-    formData.fuel && formData.fuel.charAt(0).toUpperCase() + formData.fuel.slice(1),
-    formData.transmission && formData.transmission.charAt(0).toUpperCase() + formData.transmission.slice(1),
-    formData.condition && `${formData.condition} condition`,
-    formData.owner_type && `${formData.owner_type.replace("_", " ")} owner`,
-    formData.location,
+    meta?.fuelType && meta.fuelType.charAt(0).toUpperCase() + meta.fuelType.slice(1),
+    meta?.transmission && meta.transmission.charAt(0).toUpperCase() + meta.transmission.slice(1),
+    meta?.condition && `${meta.condition} condition`,
+    meta?.ownerType && `${meta.ownerType.replace("_", " ")}`,
+    meta?.location,
   ].filter(Boolean) as string[];
 
   // ── PriceCard explanation copy ───────────────────────────────────────────
   const explanation = isError
     ? "We couldn't retrieve a valuation for this vehicle. Please try again."
-    : live
-      ? live.reasoning || `${live.confidenceLabel} confidence estimate for your ${live.brand} ${live.model}.`
+    : estimate
+      ? estimate.reasoning || `${estimate.confidenceLabel} confidence estimate for your ${estimate.brand} ${estimate.model}.`
       : "Analyzing market conditions for your vehicle…";
 
   return (
     <div className="max-w-5xl mx-auto px-3 sm:px-5 pb-16">
       <ValuationHeader
-        brand={formData.brandName}
-        brandLogo={formData.brandLogo}
-        model={formData.model}
-        year={formData.year}
-        fuel={formData.fuel}
-        transmission={formData.transmission}
-        ownerType={formData.owner_type}
+    
+        brand={meta?.brand ?? ""}
+        brandLogo={meta?.brandLogo}
+        model={meta?.model ?? ""}
+        variant={meta?.variant ?? ""}
+        year={meta?.year ?? 0}
+        ownerType={meta?.ownerType}
         onShare={handleShare}
       />
 
@@ -229,14 +238,15 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
 
           {/* ← LIVE API DATA ONLY */}
           <PriceCard
-            price={live?.price}
-            priceLow={live?.priceLow}
-            priceHigh={live?.priceHigh}
-            confidence={live?.confidence}
-            confidenceLabel={live?.confidenceLabel}
+            price={estimate?.price}
+            priceLow={estimate?.priceLow}
+            priceHigh={estimate?.priceHigh}
+            confidence={estimate?.confidence}
+            confidenceLabel={estimate?.confidenceLabel}
             explanation={explanation}
             specs={specs}
             loading={isLoading}
+            metaLoading={metaLoading}
             error={isError}
           />
 
