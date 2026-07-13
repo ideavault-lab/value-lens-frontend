@@ -172,12 +172,12 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
       color: "blue" as const,
     },
     // These two have no live equivalent yet — intentionally demo
-    // {
-    //   label: "Retention score",
-    //   value: `${demo.scores?.value_retention ?? 91}/100`,
-    //   sub: "Value retention",
-    //   color: "green" as const,
-    // },
+    {
+      label: "Retention score",
+      value: `${demo.scores?.value_retention ?? 91}/100`,
+      sub: "Value retention",
+      color: "green" as const,
+    },
     {
       label: "Market demand",
       value: "High",
@@ -186,15 +186,11 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     },
   ];
 
-  const factors: Factor[] = [
-    { label: "Condition", value: demo.factors.condition_impact },
-    { label: "Location", value: demo.factors.location_impact },
-    { label: "Ownership", value: demo.factors.owner_impact },
-    { label: "Fuel type", value: demo.factors.fuel_impact },
-    { label: "Gearbox", value: demo.factors.transmission_impact },
-    { label: "Mileage", value: demo.factors.km_impact },
-    { label: "Age", value: demo.factors.age_impact },
-  ];
+  const factors: Factor[] =
+    estimate?.priceFactors?.map((factor) => ({
+      label: factor.label,
+      value: factor.value,
+    })) ?? [];
 
   //for pricecard
   const specs = [
@@ -215,7 +211,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   return (
     <div className="max-w-5xl mx-auto px-3 sm:px-5 pb-16">
       <ValuationHeader
-    
+
         brand={meta?.brand ?? ""}
         brandLogo={meta?.brandLogo}
         model={meta?.model ?? ""}
@@ -226,12 +222,12 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
       />
 
       <MetricCards metrics={metrics} />
-
+{/* 
       <ScoreCards
         retentionScore={demo.scores?.value_retention ?? 91}
         ownershipScore={demo.scores?.ownership_score ?? 88}
         demandIndex={demo.scores?.demand_index ?? 78}
-      />
+      /> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
         {/* Left column */}
@@ -252,7 +248,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
           />
 
           {/* ← DEMO DATA (no backend equivalent yet) */}
-          <FactorAnalysis factors={factors} />
+          <FactorAnalysis factors={factors} loading={metaLoading || isLoading} />
           {/* <SegmentCompetitorChart
             models={demo.competitors!}
             segment={formData.segment ?? "Premium Hatchback"}
@@ -265,15 +261,15 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
 
         {/* Right column — all demo */}
         <div className="space-y-4 min-w-0">
-         <FeatureCard
-    enabled={false}
-    title="AI Price Forecast"
-    description="Forecasts are being trained using verified resale transactions, depreciation patterns and live market demand."
->
-          <ProjectedTrendChart
-            projections={demo.projections!}
-            carLabel={`${formData.brandName} ${formData.model}`}
-          />
+          <FeatureCard
+            enabled={false}
+            title="AI Price Forecast"
+            description="Forecasts are being trained using verified resale transactions, depreciation patterns and live market demand."
+          >
+            <ProjectedTrendChart
+              projections={demo.projections!}
+              carLabel={`${formData.brandName} ${formData.model}`}
+            />
           </FeatureCard>
           <SegmentInsights
             segment={formData.segment ?? "Premium Hatchback"}
