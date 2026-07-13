@@ -64,6 +64,12 @@ export function useCreateValuationDraft() {
   });
 }
 
+export interface PriceFactor {
+  key: string;
+  label: string;
+  value: number;
+  note?: string | null;
+}
 export interface ValuationResultUI {
   price: number;       // raw rupees, e.g. 544000
   priceLow: number;
@@ -76,6 +82,7 @@ export interface ValuationResultUI {
   model: string;
   year: number;
   variant?: string;
+  priceFactors: PriceFactor[];
 }
 
 function mapValuationResponse(res: any): ValuationResultUI {
@@ -102,6 +109,12 @@ function mapValuationResponse(res: any): ValuationResultUI {
     model:          data.meta?.model ?? "",
     year:           data.meta?.year ?? 0,
     variant:        data.meta?.variant,
+    priceFactors:   data.priceFactors?.map((f: any) => ({
+      key: f.key,
+      label: f.label,
+      value: f.value,
+      note: f.note,
+    })),
   };
 }
 

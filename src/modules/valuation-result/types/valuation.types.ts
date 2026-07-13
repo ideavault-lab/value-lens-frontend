@@ -64,6 +64,14 @@ export interface ValuationAPIResponse {
         topSimilarityScore: number;
       };
     };
+    priceFactors: [
+      {
+        key: string;
+        label: string;
+        value: number;
+        note?: string;
+      }
+    ];
   };
 
   timestamp?: string;
