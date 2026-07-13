@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 
 import { useState } from "react";
+import ThemeProvider from "./theme-provider";
 
 export default function QueryProvider({
   children,
@@ -31,9 +32,11 @@ export default function QueryProvider({
     <QueryClientProvider
       client={queryClient}
     >
-    <ToastProvider>
-      {children}
-    </ToastProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

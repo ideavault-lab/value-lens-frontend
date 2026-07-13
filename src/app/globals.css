@@ -139,6 +139,17 @@
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  transition:
+    background-color .25s ease,
+    border-color .25s ease,
+    color .25s ease,
+    fill .25s ease,
+    stroke .25s ease;
+}
+
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));

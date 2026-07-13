@@ -13,6 +13,7 @@ import { ValuationSnapshot } from "./ValuationSnapshot";
 import { Button } from "@/components/ui/Button";
 import { RotateCcw } from "lucide-react";
 import { useValuationMeta, useValuationResult } from "../hooks/useValuation.hooks";
+import FeatureCard from "@/components/common/FeatureCard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -151,13 +152,13 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   const metrics = [
     {
       label: "Estimated value",
-      value: isLoading ? "—" : isError ? "N/A" : formatINR(estimate!.price),
+      value: metaLoading || isLoading ? "—" : isError ? "N/A" : formatINR(estimate!.price),
       sub: "Market best-fit",
       color: "orange" as const,
     },
     {
       label: "Price range",
-      value: isLoading
+      value: metaLoading || isLoading
         ? "—"
         : isError
           ? "N/A"
@@ -166,21 +167,21 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     },
     {
       label: "Confidence",
-      value: isLoading ? "—" : isError ? "N/A" : `${estimate!.confidence}%`,
-      sub: isLoading || isError ? "AI accuracy" : estimate!.confidenceLabel,
+      value: metaLoading || isLoading ? "—" : isError ? "N/A" : `${estimate!.confidence}%`,
+      sub: metaLoading || isLoading || isError ? "AI accuracy" : estimate!.confidenceLabel,
       color: "blue" as const,
     },
     // These two have no live equivalent yet — intentionally demo
-    {
-      label: "Retention score",
-      value: `${demo.scores?.value_retention ?? 91}/100`,
-      sub: "Value retention",
-      color: "green" as const,
-    },
+    // {
+    //   label: "Retention score",
+    //   value: `${demo.scores?.value_retention ?? 91}/100`,
+    //   sub: "Value retention",
+    //   color: "green" as const,
+    // },
     {
       label: "Market demand",
       value: "High",
-      sub: formData.location ?? "Your region",
+      sub: meta?.location ?? "N/A",
       color: "amber" as const,
     },
   ];
@@ -252,10 +253,10 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
 
           {/* ← DEMO DATA (no backend equivalent yet) */}
           <FactorAnalysis factors={factors} />
-          <SegmentCompetitorChart
+          {/* <SegmentCompetitorChart
             models={demo.competitors!}
             segment={formData.segment ?? "Premium Hatchback"}
-          />
+          /> */}
           <AlternativeRecommendations
             alternatives={demo.alternatives!}
             segment={formData.segment ?? "Premium Hatchback"}
@@ -264,16 +265,22 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
 
         {/* Right column — all demo */}
         <div className="space-y-4 min-w-0">
+         <FeatureCard
+    enabled={false}
+    title="AI Price Forecast"
+    description="Forecasts are being trained using verified resale transactions, depreciation patterns and live market demand."
+>
           <ProjectedTrendChart
             projections={demo.projections!}
             carLabel={`${formData.brandName} ${formData.model}`}
           />
+          </FeatureCard>
           <SegmentInsights
             segment={formData.segment ?? "Premium Hatchback"}
             location={formData.location}
             brand={formData.brandName}
           />
-          <ValuationSnapshot location={formData.location} />
+          {/* <ValuationSnapshot location={formData.location} /> */}
         </div>
       </div>
 
