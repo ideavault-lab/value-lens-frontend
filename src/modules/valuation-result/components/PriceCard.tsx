@@ -16,18 +16,24 @@ interface PriceCardProps {
   metaLoading?: boolean;
   error?: boolean;
 }
+export function formatINR(amount?: number) {
+  if (amount == null || Number.isNaN(amount)) {
+    return "—";
+  }
 
-export function formatINR(amount: number): string {
-  if (amount >= 1_00_00_000) {
-    return `₹${(amount / 1_00_00_000).toFixed(2)}Cr`;
+  if (amount >= 10000000) {
+    return `₹${(amount / 10000000).toFixed(2)} Cr`;
   }
-  if (amount >= 1_00_000) {
-    return `₹${(amount / 1_00_000).toFixed(2)}L`;
+
+  if (amount >= 100000) {
+    return `₹${(amount / 100000).toFixed(2)} L`;
   }
-  if (amount >= 1_000) {
-    return `₹${(amount / 1_000).toFixed(1)}K`;
-  }
-  return `₹${amount}`;
+
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
 function Skeleton({
@@ -95,24 +101,32 @@ export function PriceCard({
   metaLoading = false,
   error = false,
 }: PriceCardProps) {
-  const [displayed, setDisplayed] = React.useState(0);
+  const [displayed, setDisplayed] = React.useState<number | null>(null);
 
-  React.useEffect(() => {
-    if (price == null) {
-      setDisplayed(0);
-      return;
+React.useEffect(() => {
+  if (price == null) {
+    setDisplayed(null);
+    return;
+  }
+
+  const duration = 1400;
+  const start = performance.now();
+
+  const animate = (now: number) => {
+    const progress = Math.min((now - start) / duration, 1);
+
+    const eased =
+      1 - Math.pow(2, -10 * progress);
+
+    setDisplayed(price * eased);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
     }
-    const duration = 1400;
-    const start = performance.now();
-    const animate = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(2, -10 * progress);
-      setDisplayed(Math.round(price * eased));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, [price]);
+  };
 
+  requestAnimationFrame(animate);
+}, [price]);
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden">
       {/* HEADER */}
@@ -121,7 +135,7 @@ export function PriceCard({
           Estimated Market Value
         </p>
 
-        {loading ? (
+        {metaLoading || loading ? (
           <div className="flex flex-col items-center gap-2">
             <div className="flex justify-center">
               <Skeleton className="h-12 w-50 rounded-xl" />
@@ -144,7 +158,7 @@ export function PriceCard({
               transition={{ duration: 0.4 }}
               className="text-5xl font-bold tracking-tight text-primary tabular-nums"
             >
-              {formatINR(displayed)}
+              {formatINR(displayed ?? 0)}
             </motion.p>
 
             <p className="h-5 mt-3 text-sm text-muted-foreground">

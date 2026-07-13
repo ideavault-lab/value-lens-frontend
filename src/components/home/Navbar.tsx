@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAV_LINKS } from "@/lib/homeData";
+import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -76,6 +77,8 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
+
             <Link href="/valuation">
               <Button
                 variant="outline"
@@ -173,6 +176,14 @@ export default function Navbar() {
                     {link.label}
                   </a>
                 ))}
+
+                <div className="mt-4 flex items-center justify-between rounded-xl border border-border p-3">
+  <span className="text-sm font-medium">
+    Theme
+  </span>
+
+  <ThemeToggle />
+</div>
 
                 <Link
                   href="/valuation"
