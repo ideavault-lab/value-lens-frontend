@@ -39,42 +39,168 @@ export interface CreateValuationDraftApiResponse {
   message: string;
   data: CreateValuationDraftResponse;
 }
-
+// ============================================================================
+// Valuation API Response
+// ============================================================================
 
 export interface ValuationAPIResponse {
   status: boolean;
   statusCode: number;
-  message?: string;
+  message: string;
+  timestamp: string;
 
-  data: {
-    estimatedPrice: number;
+  data: ValuationData;
+}
 
-    priceRange: {
-      low: number;
-      high: number;
-    };
+// ============================================================================
+// Main Data
+// ============================================================================
 
-    confidence: {
-      score: number;
-      label: string;
+export interface ValuationData {
+  estimatedPrice: number;
 
-      dataQuality: {
-        sampleSize: number;
-        tierUsed: string | null;
-        topSimilarityScore: number;
-      };
-    };
-    priceFactors: [
-      {
-        key: string;
-        label: string;
-        value: number;
-        note?: string;
-      }
-    ];
+  priceRange: PriceRange;
+
+  confidence: Confidence;
+
+  marketSummary: MarketSummary | null;
+
+  comparables: ComparableVehicle[];
+
+  priceFactors: PriceFactor[];
+
+  aiInsights: AIInsights;
+
+  segmentIntelligence: SegmentIntelligence[];
+
+  warnings: string[];
+
+  meta: VehicleMeta;
+}
+
+// ============================================================================
+// Price
+// ============================================================================
+
+export interface PriceRange {
+  low: number;
+  high: number;
+}
+
+// ============================================================================
+// Confidence
+// ============================================================================
+
+export interface Confidence {
+  score: number;
+  label: string;
+  dataQuality: string;
+
+  dataStats: {
+    sampleSize: number;
+    tierUsed: string | null;
+    topSimilarityScore: number;
   };
+}
 
-  timestamp?: string;
+// ============================================================================
+// Market Summary
+// ============================================================================
+
+export interface MarketSummary {
+  averagePrice: number;
+  medianPrice: number;
+  weightedAveragePrice: number;
+  listingCount: number;
+};
+
+// ============================================================================
+// Comparable Vehicles
+// ============================================================================
+
+export interface ComparableVehicle {
+  id?: string;
+
+  brand: string;
+  model: string;
+  variant?: string;
+
+  year: number;
+
+  kmDriven: number;
+
+  price: number;
+
+  similarityScore: number;
+
+  location?: string;
+
+  source?: string;
+}
+
+// ============================================================================
+// Price Factors
+// ============================================================================
+
+export interface PriceFactor {
+  key: string;
+
+  label: string;
+
+  value: number;
+
+  note: string | null;
+}
+
+// ============================================================================
+// AI Insights
+// ============================================================================
+
+export interface AIInsights {
+  priceSentiment:
+    | "undervalued"
+    | "fairly_priced"
+    | "overvalued";
+
+  reasoning: string;
+
+  sellerTip: string;
+
+  buyerTip: string;
+
+  strengths: string[];
+
+  weaknesses: string[];
+}
+
+// ============================================================================
+// Segment Intelligence
+// ============================================================================
+
+export interface SegmentIntelligence {
+  key: string;
+
+  label: string;
+
+  insight: string;
+}
+
+// ============================================================================
+// Vehicle Meta
+// ============================================================================
+
+export interface VehicleMeta {
+  vehicleType: string;
+
+  brand: string;
+
+  model: string;
+
+  variant: string;
+
+  year: number;
+
+  estimatedAt: string;
 }
 
 
