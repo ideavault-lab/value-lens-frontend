@@ -101,7 +101,7 @@ export function PriceCard({
   metaLoading = false,
   error = false,
 }: PriceCardProps) {
-  const [displayed, setDisplayed] = React.useState<number | null>(null);
+const [displayed, setDisplayed] = React.useState<number | null>(null);
 
 React.useEffect(() => {
   if (price == null) {
@@ -109,20 +109,32 @@ React.useEffect(() => {
     return;
   }
 
-  const duration = 1400;
+  const duration = 1200;
   const start = performance.now();
 
-  const animate = (now: number) => {
-    const progress = Math.min((now - start) / duration, 1);
+  const animate = (time: number) => {
+    const progress = Math.min((time - start) / duration, 1);
 
+    // Ease Out Expo
     const eased =
-      1 - Math.pow(2, -10 * progress);
+      progress === 1
+        ? 1
+        : 1 - Math.pow(2, -10 * progress);
 
-    setDisplayed(price * eased);
+    // Animate
+    const current = price * eased;
 
-    if (progress < 1) {
-      requestAnimationFrame(animate);
+    // Round during animation so formatting stays consistent
+    const rounded =
+      Math.round(current / 1000) * 1000;
+
+    if (progress >= 1) {
+      setDisplayed(price); // exact backend value
+      return;
     }
+
+    setDisplayed(rounded);
+    requestAnimationFrame(animate);
   };
 
   requestAnimationFrame(animate);

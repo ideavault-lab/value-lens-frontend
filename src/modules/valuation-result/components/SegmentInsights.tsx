@@ -1,79 +1,85 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { SegmentIntelligenceItem } from "../hooks/useValuation.hooks";
 
-interface SegmentInsightsProps {
-  segment?: string;
-  location?: string;
-  brand?: string;
+interface Props {
+  insights: SegmentIntelligenceItem[];
+  loading?: boolean;
 }
 
-interface InsightItem {
-  icon: string;
-  text: React.ReactNode;
-}
+const icons: Record<string, string> = {
+  demand: "📈",
+  positioning: "🎯",
+  depreciation: "📉",
+  timing: "📅",
+};
 
 export function SegmentInsights({
-  segment = "Premium Hatchback",
-  location = "Kerala",
-  brand = "Toyota",
-}: SegmentInsightsProps) {
-  const insights: InsightItem[] = [
-    {
-      icon: "📊",
-      text: (
-        <>
-          <strong className="text-foreground font-medium">{segment}s</strong> retain value better
-          than compact sedans — avg 4.8% annual depreciation vs 6.2%.
-        </>
-      ),
-    },
-    {
-      icon: "🌍",
-      text: (
-        <>
-          <strong className="text-foreground font-medium">{location} market</strong> shows higher
-          demand for petrol manuals — approx 22% faster turnaround time.
-        </>
-      ),
-    },
-    {
-      icon: "🏆",
-      text: (
-        <>
-          <strong className="text-foreground font-medium">{brand}</strong> ranks among top brands
-          for value retention — strong reliability perception drives resale.
-        </>
-      ),
-    },
-    {
-      icon: "📅",
-      text: (
-        <>
-          Best sell window:{" "}
-          <strong className="text-foreground font-medium">Oct – Dec</strong>. Festival season
-          drives higher buyer activity in your region.
-        </>
-      ),
-    },
-  ];
+  insights,
+  loading = false,
+}: Props) {
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <h3 className="mb-4 text-sm font-semibold">
+          🧠 Segment Intelligence
+        </h3>
+
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-16 animate-pulse rounded-xl bg-secondary"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!insights.length) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <h3 className="text-sm font-semibold">
+          🧠 Segment Intelligence
+        </h3>
+
+        <p className="mt-3 text-sm text-muted-foreground">
+          No market intelligence is available.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5">
-      <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-2">
-        <span className="text-base">🧠</span> Segment intelligence
-      </p>
-      <div className="space-y-2.5">
-        {insights.map((item, i) => (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
+        🧠 Segment Intelligence
+      </h3>
+
+      <div className="space-y-3">
+        {insights.map((item, index) => (
           <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 6 }}
+            key={item.key}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 + i * 0.07 }}
-            className="flex items-start gap-3 p-3 bg-secondary/40 rounded-xl border border-border/50"
+            transition={{ delay: index * 0.08 }}
+            className="rounded-xl border border-border bg-secondary/30 p-4"
           >
-            <span className="text-base flex-shrink-0 mt-0.5">{item.icon}</span>
-            <p className="text-xs text-muted-foreground leading-relaxed">{item.text}</p>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-lg">
+                {icons[item.key] ?? "ℹ️"}
+              </span>
+
+              <h4 className="text-sm font-semibold">
+                {item.label}
+              </h4>
+            </div>
+
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {item.insight}
+            </p>
           </motion.div>
         ))}
       </div>

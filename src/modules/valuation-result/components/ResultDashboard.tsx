@@ -167,8 +167,8 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     },
     {
       label: "Confidence",
-      value: metaLoading || isLoading ? "—" : isError ? "N/A" : `${estimate!.confidence}%`,
-      sub: metaLoading || isLoading || isError ? "AI accuracy" : estimate!.confidenceLabel,
+      value: metaLoading || isLoading ? "—" : isError ? "N/A" : `${estimate!.confidence.score}%`,
+      sub: metaLoading || isLoading || isError ? "AI accuracy" : estimate!.confidence.label,
       color: "blue" as const,
     },
     // These two have no live equivalent yet — intentionally demo
@@ -205,7 +205,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
   const explanation = isError
     ? "We couldn't retrieve a valuation for this vehicle. Please try again."
     : estimate
-      ? estimate.reasoning || `${estimate.confidenceLabel} confidence estimate for your ${estimate.brand} ${estimate.model}.`
+      ? estimate.reasoning || `${estimate.confidence.label} confidence estimate for your ${estimate.brand} ${estimate.model}.`
       : "Analyzing market conditions for your vehicle…";
 
   return (
@@ -222,7 +222,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
       />
 
       <MetricCards metrics={metrics} />
-{/* 
+      {/* 
       <ScoreCards
         retentionScore={demo.scores?.value_retention ?? 91}
         ownershipScore={demo.scores?.ownership_score ?? 88}
@@ -238,8 +238,8 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
             price={estimate?.price}
             priceLow={estimate?.priceLow}
             priceHigh={estimate?.priceHigh}
-            confidence={estimate?.confidence}
-            confidenceLabel={estimate?.confidenceLabel}
+            confidence={estimate?.confidence.score}
+            confidenceLabel={estimate?.confidence.label}
             explanation={explanation}
             specs={specs}
             loading={isLoading}
@@ -261,7 +261,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
 
         {/* Right column — all demo */}
         <div className="space-y-4 min-w-0">
-          <FeatureCard
+          {/* <FeatureCard
             enabled={false}
             title="AI Price Forecast"
             description="Forecasts are being trained using verified resale transactions, depreciation patterns and live market demand."
@@ -270,11 +270,11 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
               projections={demo.projections!}
               carLabel={`${formData.brandName} ${formData.model}`}
             />
-          </FeatureCard>
+          </FeatureCard> */}
           <SegmentInsights
-            segment={formData.segment ?? "Premium Hatchback"}
-            location={formData.location}
-            brand={formData.brandName}
+            loading={isLoading}
+
+            insights={estimate?.segmentIntelligence ?? []}
           />
           {/* <ValuationSnapshot location={formData.location} /> */}
         </div>
