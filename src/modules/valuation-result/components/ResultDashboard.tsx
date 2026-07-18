@@ -12,7 +12,7 @@ import { SegmentInsights } from "./SegmentInsights";
 import { ValuationSnapshot } from "./ValuationSnapshot";
 import { Button } from "@/components/ui/Button";
 import { RotateCcw } from "lucide-react";
-import { useValuationMeta, useValuationResult } from "../hooks/useValuation.hooks";
+import { useSuggestAlternatives, useValuationMeta, useValuationResult } from "../hooks/useValuation.hooks";
 import FeatureCard from "@/components/common/FeatureCard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -107,12 +107,12 @@ const demoResult: ValuationResult = {
     { name: "Jazz", price: 8.2 },
     { name: "Altroz", price: 7.85 },
   ],
-  alternatives: [
-    { make: "Hyundai", model: "i20", price: 8.6, fuel: "Petrol", transmission: "Manual", resaleScore: 89 },
-    { make: "Maruti", model: "Baleno", price: 8.1, fuel: "Petrol", transmission: "Auto", resaleScore: 87 },
-    { make: "Tata", model: "Altroz", price: 7.85, fuel: "Petrol", transmission: "Manual", resaleScore: 82 },
-    { make: "Honda", model: "Jazz", price: 8.2, fuel: "Petrol", transmission: "CVT", resaleScore: 85 },
-  ],
+  // alternatives: [
+  //   { make: "Hyundai", model: "i20", price: 8.6, fuel: "Petrol", transmission: "Manual", resaleScore: 89 },
+  //   { make: "Maruti", model: "Baleno", price: 8.1, fuel: "Petrol", transmission: "Auto", resaleScore: 87 },
+  //   { make: "Tata", model: "Altroz", price: 7.85, fuel: "Petrol", transmission: "Manual", resaleScore: 82 },
+  //   { make: "Honda", model: "Jazz", price: 8.2, fuel: "Petrol", transmission: "CVT", resaleScore: 85 },
+  // ],
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -132,6 +132,20 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     isLoading,
     isError,
   } = useValuationResult(draftId);
+
+  const isDependenciesReady = !!meta?.modelId && estimate?.price != null;
+
+  const {
+  data: alternativesData,
+  isLoading: alternativesLoading,
+} = useSuggestAlternatives(
+  {
+    modelId: meta?.modelId ?? "",
+    predictedPrice: estimate?.price ?? 0,
+    vehicleAgeYears: new Date().getFullYear() - (meta?.year ?? new Date().getFullYear()),
+    enabled: isDependenciesReady,
+  }
+);
 
 
 
@@ -190,6 +204,16 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
     estimate?.priceFactors?.map((factor) => ({
       label: factor.label,
       value: factor.value,
+    })) ?? [];
+
+    const alternatives: Alternative[] =
+    alternativesData?.map((alt) => ({
+      make: alt.make,
+      name: alt.name,
+      price: alt.price,
+      fuel: alt.fuel,
+      transmission: alt.transmission,
+      resaleScore: alt.resaleScore,
     })) ?? [];
 
   //for pricecard
@@ -254,8 +278,9 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
             segment={formData.segment ?? "Premium Hatchback"}
           /> */}
           <AlternativeRecommendations
-            alternatives={demo.alternatives!}
+            alternatives={alternatives!}
             segment={formData.segment ?? "Premium Hatchback"}
+            loading={metaLoading || isLoading || alternativesLoading}
           />
         </div>
 

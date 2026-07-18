@@ -15,9 +15,9 @@ export const API_ENDPOINTS = {
 
     VARIANTS: ( vehicleType: string, brandId: string, modelId: string ) => `/vehicles/${vehicleType}/brands/${brandId}/models/${modelId}/variants`,
 
-
     KM_DRIVEN_INSIGHTS: `/vehicles/km-driven-insights`,
 
+    ALTERNATIVES: `/vehicles/alternatives`,
 
   },
 
