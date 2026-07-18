@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export interface Alternative {
   make: string;
-  model: string;
+  name: string;
   price: number;
   fuel?: string;
   transmission?: string;
@@ -14,11 +14,13 @@ export interface Alternative {
 interface AlternativeRecommendationsProps {
   alternatives: Alternative[];
   segment?: string;
+  loading?: boolean;
 }
 
 export function AlternativeRecommendations({
   alternatives,
   segment = "Premium Hatchback",
+  loading = false,
 }: AlternativeRecommendationsProps) {
   const getScoreColor = (score?: number) => {
     if (!score) return "text-muted-foreground";
@@ -41,7 +43,7 @@ export function AlternativeRecommendations({
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2.5">
         {alternatives.map((alt, i) => (
           <motion.div
-            key={`${alt.make}-${alt.model}`}
+            key={`${alt.make}-${alt.name}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + i * 0.08 }}
@@ -50,7 +52,7 @@ export function AlternativeRecommendations({
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
               {alt.make}
             </p>
-            <p className="text-sm font-medium text-foreground">{alt.model}</p>
+            <p className="text-sm font-medium text-foreground">{alt.name}</p>
             <p className="text-base font-semibold text-primary mt-1.5">
               ₹{alt.price}L
             </p>

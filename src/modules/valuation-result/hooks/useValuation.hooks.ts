@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { createValuationDraft, getValuationMeta, getValuationResult } from "../services/valuation-service.api";
+import { createValuationDraft, getSuggestAlternatives, getValuationMeta, getValuationResult } from "../services/valuation-service.api";
 import { ValuationFormState } from "@/modules/valuation/context/valuation.context";
 import { SaveDraftPayload, ValuationAPIResponse } from "../types/valuation.types";
 
@@ -120,6 +120,15 @@ export interface ValuationResultUI {
   year: number;
 }
 
+export interface Alternative {
+  make: string;
+  model: string;
+  price: number;
+  fuel?: string;
+  transmission?: string;
+  resaleScore?: number;
+}
+
 function mapValuationResponse(res: ValuationAPIResponse): ValuationResultUI {
   const data = res?.data; // ← one level only, NOT res.data.data
 
@@ -179,7 +188,7 @@ function mapValuationResponse(res: ValuationAPIResponse): ValuationResultUI {
   };
 }
 
-export function useValuationResult(draftId: string) {
+export function   useValuationResult(draftId: string) {
   return useQuery({
     queryKey: ["valuation", "result", draftId],
 
@@ -201,6 +210,8 @@ export interface ValuationMetaUI {
   brand: string;
 
   brandLogo?: string;
+
+  modelId: string;
 
   model: string;
 
@@ -232,6 +243,8 @@ function mapMetaResponse(
 
     brandLogo:
       data.brand.logo,
+
+    modelId: data.model.id,
 
     model:
       data.model.name,
@@ -288,5 +301,18 @@ export function useValuationMeta(
 
     staleTime:
       1000 * 60 * 30,
+  });
+}
+
+export function useSuggestAlternatives(
+  {modelId, predictedPrice, vehicleAgeYears, enabled}: {modelId: string, predictedPrice: number, vehicleAgeYears: number, enabled: boolean}
+) {
+  return useQuery({
+    queryKey: ["valuation", "alternatives", modelId, predictedPrice, vehicleAgeYears],
+    queryFn: async () => {
+      const response = await getSuggestAlternatives({modelId, predictedPrice, vehicleAgeYears});
+      return response.data;
+    },
+    enabled
   });
 }

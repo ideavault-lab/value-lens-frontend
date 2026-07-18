@@ -1,6 +1,6 @@
 import { http } from "@/api/client/http";
 import { API_ENDPOINTS } from "@/api/client/api-endpoints";
-import { CreateValuationDraftApiResponse, SaveDraftPayload, ValuationAPIResponse, ValuationMetaResponse } from "../types/valuation.types";
+import { CreateValuationDraftApiResponse, SaveDraftPayload, ValuationAPIResponse, ValuationMetaResponse, AlternativeResponse } from "../types/valuation.types";
 
 export async function createValuationDraft(
   payload: SaveDraftPayload
@@ -36,5 +36,18 @@ export async function getValuationMeta(
     API_ENDPOINTS.VALUATION.META(
       draftId
     )
+  );
+}
+
+export async function getSuggestAlternatives(
+  params: {
+    modelId: string;
+    predictedPrice: number;
+    vehicleAgeYears: number;
+  }
+) {
+  return http.get<AlternativeResponse>(
+    API_ENDPOINTS.VEHICLES.ALTERNATIVES,
+    { params }
   );
 }

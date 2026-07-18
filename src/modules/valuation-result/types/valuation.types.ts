@@ -1,3 +1,5 @@
+import { Alternative } from "../components/AlternativeRecommendations";
+
 export interface SaveDraftPayload {
   draftId?: string;
 
@@ -50,6 +52,17 @@ export interface ValuationAPIResponse {
   timestamp: string;
 
   data: ValuationData;
+}
+
+
+
+export interface AlternativeResponse {
+  status: boolean;
+  statusCode: number;
+  message: string;
+  timestamp: string;
+
+  data: Alternative[];
 }
 
 // ============================================================================
