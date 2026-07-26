@@ -1,30 +1,25 @@
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
-import CTA from "@/components/home/CTA";
-import Features from "@/components/home/Features";
-import Footer from "@/components/home/Footer";
-import Hero from "@/components/home/Hero";
-import HowItWorks from "@/components/home/HowItsWorks";
-import MarketInsights from "@/components/home/MarketInsights";
 import Navbar from "@/components/home/Navbar";
-import Stats from "@/components/home/Stats";
-import Testimonials from "@/components/home/Testimonials";
-import VehicleTypes from "@/components/home/vehicleTypes";
-
-export default function Page() {
+import Hero from "@/components/home/Hero";
+import WhyAI from "@/components/home/WhyAI";
+import IntelligenceEngine from "@/components/home/IntelligenceEngine";
+import VehicleUniverse from "@/components/home/VehicleUniverse";
+import FinalCTA from "@/components/home/FinalCTA";
+import Footer from "@/components/home/Footer";
+ 
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <main className="overflow-x-hidden">
       <Navbar />
       <Hero />
-      <Stats />
-      <VehicleTypes />
-      <HowItWorks />
-      <MarketInsights />
-      <Features />
-      <Testimonials />
-      <CTA />
+      <WhyAI />
+      <IntelligenceEngine />
+      <VehicleUniverse />
+      <FinalCTA />
       <Footer />
-    </div>
+    </main>
   );
 }
+ 
