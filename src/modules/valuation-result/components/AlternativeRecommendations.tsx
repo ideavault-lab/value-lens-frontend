@@ -3,78 +3,140 @@
 import { motion } from "framer-motion";
 
 export interface Alternative {
-  make: string;
-  name: string;
+  id: string;
+  brand: string;
+  model: string;
+  variant: string;
+  year: number;
+  fuel: string;
+  transmission: string;
+  segment: string;
   price: number;
-  fuel?: string;
-  transmission?: string;
-  resaleScore?: number;
+  resaleDemand: number;
 }
 
 interface AlternativeRecommendationsProps {
   alternatives: Alternative[];
-  segment?: string;
   loading?: boolean;
+}
+
+function formatPrice(price: number) {
+  // Guard against broken backend values (e.g. 4.57e+83)
+  if (!price || price > 1000) return "—";
+  return `₹${price.toFixed(2)}L`;
+}
+
+function demandLabel(value: number) {
+  if (value >= 1.3) return { text: "High", color: "text-emerald-500" };
+  if (value >= 1.15) return { text: "Good", color: "text-primary" };
+  return { text: "Average", color: "text-muted-foreground" };
 }
 
 export function AlternativeRecommendations({
   alternatives,
-  segment = "Premium Hatchback",
-  loading = false,
+  loading,
 }: AlternativeRecommendationsProps) {
-  const getScoreColor = (score?: number) => {
-    if (!score) return "text-muted-foreground";
-    if (score >= 88) return "text-emerald-600 dark:text-emerald-400";
-    if (score >= 80) return "text-amber-600 dark:text-amber-400";
-    return "text-muted-foreground";
-  };
+  if (loading) {
+    return (
+      <div className="bg-card border border-border rounded-2xl p-6">
+        <div className="h-4 w-48 bg-muted rounded animate-pulse mb-3" />
+        <div className="h-3 w-64 bg-muted/70 rounded animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!alternatives.length) {
+    return (
+      <div className="bg-card border border-border rounded-2xl p-6">
+        <p className="text-sm font-medium text-foreground">
+          Similar vehicles
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          No recommendations available right now.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5">
-      <div className="mb-4">
-        <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <span className="text-base">💡</span> You may also consider
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6">
+      {/* Header */}
+      <div className="mb-5">
+        <p className="text-sm font-semibold text-foreground">
+          Similar vehicles worth considering
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          {segment} · similar price band · comparable resale
+          Based on market value & resale demand
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2.5">
-        {alternatives.map((alt, i) => (
-          <motion.div
-            key={`${alt.make}-${alt.name}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + i * 0.08 }}
-            className="bg-secondary/40 border border-border rounded-xl p-3 hover:border-primary/40 transition-colors"
-          >
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
-              {alt.make}
-            </p>
-            <p className="text-sm font-medium text-foreground">{alt.name}</p>
-            <p className="text-base font-semibold text-primary mt-1.5">
-              ₹{alt.price}L
-            </p>
-            <div className="flex flex-wrap gap-1 mt-2">
-              {alt.fuel && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-card border border-border text-muted-foreground">
+      {/* Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+        {alternatives.map((alt, index) => {
+          const demand = demandLabel(alt.resaleDemand);
+
+          return (
+            <motion.div
+              key={alt.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="group rounded-xl border border-border bg-background/60 p-4 hover:border-primary/30 hover:bg-background transition-all"
+            >
+              {/* Top row */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground truncate">
+                    {alt.brand}
+                  </p>
+                  <h3 className="font-semibold text-foreground leading-snug truncate">
+                    {alt.model}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                    {alt.variant}
+                  </p>
+                </div>
+
+                <span className="shrink-0 text-[11px] font-medium rounded-md border border-border bg-card px-2 py-1 text-muted-foreground">
+                  {alt.year}
+                </span>
+              </div>
+
+              {/* Price */}
+              <div className="mt-4">
+                <p className="text-[11px] text-muted-foreground mb-0.5">
+                  Est. market value
+                </p>
+                <p className="text-xl font-bold text-primary tracking-tight">
+                  {formatPrice(alt.price)}
+                </p>
+              </div>
+
+              {/* Tags */}
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="rounded-md bg-secondary/80 px-2 py-0.5 text-[11px] text-muted-foreground">
                   {alt.fuel}
                 </span>
-              )}
-              {alt.transmission && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-card border border-border text-muted-foreground">
+                <span className="rounded-md bg-secondary/80 px-2 py-0.5 text-[11px] text-muted-foreground">
                   {alt.transmission}
                 </span>
-              )}
-            </div>
-            {alt.resaleScore !== undefined && (
-              <p className={`text-[11px] font-medium mt-2 ${getScoreColor(alt.resaleScore)}`}>
-                ↑ Resale {alt.resaleScore}/100
-              </p>
-            )}
-          </motion.div>
-        ))}
+                <span className="rounded-md bg-secondary/80 px-2 py-0.5 text-[11px] text-muted-foreground capitalize">
+                  {alt.segment.replaceAll("_", " ")}
+                </span>
+              </div>
+
+              {/* Demand */}
+              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                <span className="text-[11px] text-muted-foreground">
+                  Resale demand
+                </span>
+                <span className={`text-xs font-semibold ${demand.color}`}>
+                  {demand.text} · ×{alt.resaleDemand.toFixed(2)}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

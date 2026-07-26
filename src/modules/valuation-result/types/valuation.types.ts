@@ -56,13 +56,29 @@ export interface ValuationAPIResponse {
 
 
 
+// api/types/alternative.ts
+export interface AlternativeApiItem {
+  id: string;
+  brand: string;
+  model: string;
+  variant: string;
+  year: number;
+  fuel: string;
+  transmission: string;
+  segment: string;
+  price: number;
+  resaleDemand: number;
+}
+
+
+
 export interface AlternativeResponse {
   status: boolean;
   statusCode: number;
   message: string;
   timestamp: string;
 
-  data: Alternative[];
+  data: AlternativeApiItem[];
 }
 
 // ============================================================================
