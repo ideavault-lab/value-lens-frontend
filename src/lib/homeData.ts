@@ -75,8 +75,7 @@ export const MARKET_ROWS = [
 ];
 
 export const NAV_LINKS = [
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Vehicle Types", href: "#vehicle-types" },
-    { label: "Market Insights", href: "#market" },
-    { label: "Features", href: "#features" },
+    { label: "Value my vehicle", href: "/valuation" },
+    { label: "How it works", href: "#how-it-works" },
+    { label: "Vehicle types", href: "#vehicle-universe" },
 ];
