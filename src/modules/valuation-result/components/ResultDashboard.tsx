@@ -206,15 +206,19 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
       value: factor.value,
     })) ?? [];
 
-    const alternatives: Alternative[] =
-    alternativesData?.map((alt) => ({
-      make: alt.make,
-      name: alt.name,
-      price: alt.price,
-      fuel: alt.fuel,
-      transmission: alt.transmission,
-      resaleScore: alt.resaleScore,
-    })) ?? [];
+const alternatives: Alternative[] =
+  alternativesData?.map((alt) => ({
+    id: alt.id,
+    brand: alt.brand,
+    model: alt.model,
+    variant: alt.variant,
+    year: alt.year,
+    fuel: alt.fuel,
+    transmission: alt.transmission,
+    segment: alt.segment,
+    price: alt.price,
+    resaleDemand: alt.resaleDemand,
+  })) ?? [];
 
   //for pricecard
   const specs = [
@@ -278,8 +282,7 @@ export default function ResultDashboard({ draftId }: ResultDashboardProps) {
             segment={formData.segment ?? "Premium Hatchback"}
           /> */}
           <AlternativeRecommendations
-            alternatives={alternatives!}
-            segment={formData.segment ?? "Premium Hatchback"}
+            alternatives={alternatives ?? []}
             loading={metaLoading || isLoading || alternativesLoading}
           />
         </div>
