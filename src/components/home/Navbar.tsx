@@ -79,7 +79,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
 
-            <Link href="/valuation">
+            <Link href="/sign-in">
               <Button
                 variant="outline"
                 size="sm"
