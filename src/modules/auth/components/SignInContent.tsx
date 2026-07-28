@@ -1,4 +1,20 @@
 export function SignInContent() {
+
+  // const router = useRouter();
+  // const params = useSearchParams();
+  // const redirectTo = params.get("redirect") || "/";
+
+  // async function handleSubmit(formData: FormData) {
+  //   // call your sign-in / sign-up API here
+  //   const res = await fetch(`/api/auth/${mode}`, {
+  //     method: "POST",
+  //     body: formData,
+  //   });
+
+  //   if (res.ok) router.push(redirectTo);
+  // }
+
+
   return (<>
   {/* Sign in content */}
       <main className="flex-1 flex items-center justify-center">
