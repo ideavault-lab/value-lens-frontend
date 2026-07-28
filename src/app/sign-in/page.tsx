@@ -99,7 +99,7 @@ export default function SignInPage() {
               Don&apos;t have an account?{" "}
               <a
                 href="/sign-up"
-                className="font-medium text-slate-900 hover:underline"
+                className="font-medium text-popover-foreground hover:underline"
               >
                 Sign up
               </a>
