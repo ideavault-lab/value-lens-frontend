@@ -11,9 +11,10 @@ export default function Footer() {
     <footer className="border-t border-border bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+          {/* <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <Car className="h-4 w-4 text-primary-foreground" />
-          </div>
+          </div> */}
+          <img src="/value-lens.png" alt="ValueLens Logo" className="h-9 w-9" />
           <span className="font-heading font-bold text-foreground">
             Value<span className="text-primary">LENS</span>
           </span>

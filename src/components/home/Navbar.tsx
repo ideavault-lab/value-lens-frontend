@@ -53,9 +53,10 @@ export default function Navbar() {
             href="/"
             className="flex items-center gap-2.5"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
+            {/* <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
               <Car className="h-5 w-5 text-primary-foreground" />
-            </div>
+            </div> */}
+            <img src="/value-lens.png" alt="ValueLens Logo" className="h-9 w-9" />
 
             <span className="font-heading text-xl font-bold whitespace-nowrap">
               Value<span className="text-primary">LENS</span>
@@ -83,7 +84,7 @@ export default function Navbar() {
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-full px-4"
+                className="rounded-full px-5"
               >
                 Sign In
               </Button>
@@ -182,9 +183,18 @@ export default function Navbar() {
     Theme
   </span>
 
-  <ThemeToggle />
+  <ThemeToggle onClick={() => setOpen(false)} />
 </div>
 
+<Link href="/sign-in">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full w-full px-4 mt-4"
+              >
+                Sign In
+              </Button>
+            </Link>
                 <Link
                   href="/valuation"
                   onClick={() => setOpen(false)}

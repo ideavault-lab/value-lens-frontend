@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Manrope, Syne } from "next/font/google";
 
 import "./globals.css";
 
@@ -7,16 +7,18 @@ import QueryProvider from "@/providers/query-provider";
 
 /* ------------------ FONTS ------------------ */
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
-const playfair = Playfair_Display({
+const syne = Syne({
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 /* ------------------ METADATA ------------------ */
@@ -126,13 +128,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${manrope.variable} ${syne.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background text-foreground">
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+      <body className="min-h-screen bg-background text-foreground font-body">
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
