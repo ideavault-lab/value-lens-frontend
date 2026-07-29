@@ -48,19 +48,27 @@ export default function Navbar() {
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5"
-          >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-              <Car className="h-5 w-5 text-primary-foreground" />
-            </div>
+       {/* Logo */}
+<Link
+  href="/"
+  className="group flex items-center gap-3 select-none"
+>
+  <img
+    src="/value-lens.png"
+    alt="ValueLens"
+    className="h-10 w-10 transition-transform duration-300 group-hover:scale-105"
+  />
 
-            <span className="font-heading text-xl font-bold whitespace-nowrap">
-              Value<span className="text-primary">LENS</span>
-            </span>
-          </Link>
+  <div className="leading-none">
+    <h1 className="font-heading text-[1.45rem] font-semibold tracking-[-0.03em] text-foreground">
+      Value<span className="text-primary">LENS</span>
+    </h1>
+
+    <p className="mt-1 text-[10px] uppercase tracking-[0.34em] text-muted-foreground">
+      Vehicle Intelligence
+    </p>
+  </div>
+</Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
@@ -83,7 +91,7 @@ export default function Navbar() {
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-full px-4"
+                className="rounded-full px-5"
               >
                 Sign In
               </Button>
@@ -182,9 +190,18 @@ export default function Navbar() {
     Theme
   </span>
 
-  <ThemeToggle />
+  <ThemeToggle onClick={() => setOpen(false)} />
 </div>
 
+<Link href="/sign-in">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full w-full px-4 mt-4"
+              >
+                Sign In
+              </Button>
+            </Link>
                 <Link
                   href="/valuation"
                   onClick={() => setOpen(false)}
