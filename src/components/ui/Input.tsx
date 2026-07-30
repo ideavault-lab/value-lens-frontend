@@ -5,6 +5,7 @@ import {
   cva,
   type VariantProps,
 } from "class-variance-authority";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
@@ -30,7 +31,6 @@ const inputVariants = cva(
         primary: `
           border-input
           bg-background
-
           focus:border-primary/30
           focus:ring-4
           focus:ring-primary/10
@@ -39,7 +39,6 @@ const inputVariants = cva(
         secondary: `
           border-border
           bg-muted/40
-
           focus:border-primary/20
           focus:bg-background
         `,
@@ -47,7 +46,6 @@ const inputVariants = cva(
         ghost: `
           border-transparent
           bg-transparent
-
           focus:border-primary/20
           focus:bg-background
         `,
@@ -73,19 +71,19 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {}
+    VariantProps<typeof inputVariants> {
+  error?: string;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                 COMPONENT                                  */
 /* -------------------------------------------------------------------------- */
 
-const Input = React.forwardRef<
-  HTMLInputElement,
-  InputProps
->(
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
+      error,
       variant,
       inputSize,
       type = "text",
@@ -94,29 +92,56 @@ const Input = React.forwardRef<
     ref
   ) => {
     return (
-      <input
-        ref={ref}
-        type={type}
-        className={cn(
-          inputVariants({
-            variant,
-            inputSize,
-          }),
-          className
-        )}
-        {...props}
-      />
+      <div className="space-y-1">
+        <input
+          ref={ref}
+          type={type}
+          className={cn(
+            inputVariants({
+              variant,
+              inputSize,
+            }),
+            error &&
+              "border-destructive ring-2 ring-destructive/10 focus:ring-destructive/20",
+            className
+          )}
+          {...props}
+        />
+
+        <AnimatePresence initial={false}>
+          {error && (
+            <motion.p
+              key="input-error"
+              initial={{
+                opacity: 0,
+                height: 0,
+                y: -6,
+              }}
+              animate={{
+                opacity: 1,
+                height: "auto",
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                y: -6,
+              }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+              className="overflow-hidden text-xs text-destructive"
+            >
+              * {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     );
   }
 );
 
 Input.displayName = "Input";
 
-/* -------------------------------------------------------------------------- */
-/*                                   EXPORTS                                  */
-/* -------------------------------------------------------------------------- */
-
-export {
-  Input,
-  inputVariants,
-};
+export { Input, inputVariants };

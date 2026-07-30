@@ -35,10 +35,17 @@ async function request<T>(
     );
   }
 
+   console.log("API URL:", env.API_URL);
+  console.log("Endpoint:", endpoint);
+  console.log("Final URL:", url.toString());
+
+
   const response = await fetch(
     url.toString(),
     {
       ...fetchOptions,
+
+      credentials: "include",
 
       headers: {
         "Content-Type":
@@ -50,6 +57,8 @@ async function request<T>(
       cache: "no-store",
     }
   );
+
+    console.log("Response:", response);
 
   const data = await response.json();
 

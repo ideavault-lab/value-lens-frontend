@@ -31,4 +31,9 @@ export const API_ENDPOINTS = {
 
     ESTIMATE: (draftId: string) => `/valuation/drafts/${draftId}/estimate`,
   },
+
+  AUTH: {
+    SIGN_UP: "/auth/sign-up",
+    SIGN_IN: "/auth/sign-in",
+  }
 };
