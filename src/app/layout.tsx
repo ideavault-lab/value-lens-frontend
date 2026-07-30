@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     apple: "/value-lens.png",
   },
 
-  manifest: "/manifest.json",
+  // manifest: "/manifest.json",
 
   openGraph: {
     title: "ValueLens • AI Vehicle Valuation",

@@ -9,11 +9,11 @@ const AUTH_ROUTES = ["/sign-in", "/sign-up"];
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-//   const token = await getToken({
-//     req,
-//     secret: process.env.NEXTAUTH_SECRET,
-//   });
-const token = req.cookies.get("next-auth.session-token")?.value;
+  //   const token = await getToken({
+  //     req,
+  //     secret: process.env.NEXTAUTH_SECRET,
+  //   });
+  const token = req.cookies.get("accessToken")?.value;
   const isAuthed = !!token;
 
   const isProtected = PROTECTED_ROUTES.some((r) => pathname.startsWith(r));
