@@ -7,13 +7,15 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAV_LINKS } from "@/lib/homeData";
 import ThemeToggle from "../ui/ThemeToggle";
-import { useCurrentUser } from "@/modules/auth/hooks/useAuth.hooks";
+import { useCurrentUser, useLogout } from "@/modules/auth/hooks/useAuth.hooks";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -47,6 +49,17 @@ export default function Navbar() {
   }, []);
 
   const { data: user } = useCurrentUser();
+  const {
+    mutateAsync: logout,
+    isPending,
+  } = useLogout();
+
+  async function handleLogout() {
+    await logout();
+
+    router.replace("/");
+    router.refresh();
+  }
 
   return (
     <>
@@ -187,14 +200,13 @@ export default function Navbar() {
                       </Link>
 
                       <button
-                        onClick={() => {
-                          setMenuOpen(false);
-                          // TODO: wire to your logout mutation / auth hook
-                        }}
+                        onClick={handleLogout}
+                        disabled={isPending}
+
                         className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
                       >
                         <LogOut className="h-4 w-4" />
-                        Log out
+                        {isPending ? "Signing out..." : "Logout"}
                       </button>
                     </motion.div>
                   )}
@@ -317,14 +329,12 @@ export default function Navbar() {
 
                 {user && (
                   <button
-                    onClick={() => {
-                      setOpen(false);
-                      // TODO: wire to your logout mutation / auth hook
-                    }}
+                    onClick={handleLogout}
+                    disabled={isPending}
                     className="mt-3 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
                   >
                     <LogOut className="h-4 w-4" />
-                    Log out
+                    {isPending ? "Signing out..." : "Log out"}
                   </button>
                 )}
               </div>

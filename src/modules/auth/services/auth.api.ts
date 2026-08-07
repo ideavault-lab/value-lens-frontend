@@ -44,3 +44,10 @@ export async function getCurrentUser() {
     API_ENDPOINTS.AUTH.CURRENT_USER
   );
 }
+
+export async function logout() {
+  return http.post<ApiSuccessResponse<null>>(
+    API_ENDPOINTS.AUTH.LOGOUT,
+    {}
+  );
+}

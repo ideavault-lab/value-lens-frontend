@@ -1,5 +1,5 @@
-import { useMutation , useQuery } from "@tanstack/react-query";
-import { getCurrentUser, signIn, signUp } from "../services/auth.api";
+import { useMutation , useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCurrentUser, logout, signIn, signUp } from "../services/auth.api";
 
 
 export function useSignUp() {
@@ -41,5 +41,26 @@ export function useCurrentUser() {
 
     retry: false,
     staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function useLogout() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["auth", "logout"],
+
+    mutationFn: logout,
+
+    onSuccess: () => {
+      queryClient.setQueryData(
+        ["auth", "current-user"],
+        null
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["auth", "current-user"],
+      });
+    },
   });
 }
