@@ -13,17 +13,16 @@ import {
 } from "@/schemas/auth/sign-in.schema";
 
 import { useSignIn } from "../hooks/useAuth.hooks";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export function SignInContent() {
+export function SignInContent({
+  redirect = "/",
+}: {
+  redirect?: string;
+})  {
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const redirect =
-    searchParams.get("redirect") || "/";
-
-
+ 
   const {
     register,
     handleSubmit,
