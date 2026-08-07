@@ -38,3 +38,9 @@ export async function signIn(
     payload
   );
 }
+
+export async function getCurrentUser() {
+  return http.get<ApiSuccessResponse<AuthUser>>(
+    API_ENDPOINTS.AUTH.CURRENT_USER
+  );
+}

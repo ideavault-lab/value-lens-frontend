@@ -35,5 +35,6 @@ export const API_ENDPOINTS = {
   AUTH: {
     SIGN_UP: "/auth/sign-up",
     SIGN_IN: "/auth/sign-in",
+    CURRENT_USER: "/auth/me",
   }
 };

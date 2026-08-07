@@ -5,8 +5,8 @@ export interface AuthUser {
   fullName: string;
   email: string;
   avatarUrl: string | null;
-  role: string;
-  provider: string;
+  role: "user" | "admin";
+  provider: "credentials" | "google" | "github";
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
