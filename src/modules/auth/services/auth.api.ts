@@ -13,6 +13,10 @@ import {
 // } from "../types/auth-response.types";
 
 import { SignUpSchema } from "@/schemas/auth/sign-up.schema";
+import { AuthUser } from "../types/auth.types";
+import { SignInSchema } from "@/schemas/auth/sign-in.schema";
+
+
 export async function signUp(
   payload: SignUpSchema
 ) {
@@ -20,6 +24,17 @@ export async function signUp(
     ApiSuccessResponse<any>
   >(
     API_ENDPOINTS.AUTH.SIGN_UP,
+    payload
+  );
+}
+
+
+
+export async function signIn(
+  payload: SignInSchema
+) {
+  return http.post<ApiSuccessResponse<AuthUser>>(
+    API_ENDPOINTS.AUTH.SIGN_IN,
     payload
   );
 }
